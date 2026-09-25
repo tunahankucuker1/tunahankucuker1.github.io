@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>İdari Destek · Canlı Rapor</title>
+<style>
+/* BİLGEM Power BI kurumsal şablonu: lavanta zemin, beyaz dikey menü, mavi-turkuaz bant, buzlu cam panel */
+:root{--bant1:#3D66C0;--bant2:#4A86B8;--bant3:#50A0A8;--yesil:#9BE3A9;--koyu:#1F2A37;--metin:#2B3440;--gri:#5F6B78;--cizgi:rgba(255,255,255,.75);--mavi:#3D66C0}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#C9D2EA;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,system-ui,sans-serif;color:var(--metin)}
+button,input,select{font-family:inherit}
+.num{font-variant-numeric:tabular-nums}
+#sahne{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;
+  background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+/* sol menü */
+.menu{position:absolute;z-index:10;left:24px;top:28px;width:96px;height:664px;border-radius:12px;background:linear-gradient(90deg,#FBFCFE 0%,#E3E7EF 100%);box-shadow:0 6px 18px rgba(46,64,120,.28),inset 0 1px 0 #fff;display:flex;flex-direction:column;align-items:center;padding-top:12px}
+.menu .logo{width:72px;height:auto;margin-bottom:10px}
+.mdug{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;margin-top:12px;color:#40495A;font-size:12.5px}
+.mdug .kut{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#FFFFFF,#EDF0F5);box-shadow:0 3px 8px rgba(46,64,120,.22),inset 0 1px 0 #fff;color:#6B7688;transition:.15s}
+.mdug:hover .kut{transform:translateY(-1px);box-shadow:0 6px 12px rgba(46,64,120,.28)}
+.mdug .kut svg{width:28px;height:28px}
+.mdug.secili .kut{background:linear-gradient(135deg,#3F68C1 0%,#4F9DAA 100%);color:#fff;box-shadow:0 4px 12px rgba(61,102,192,.45)}
+.mdug.secili{color:#1F2A37;font-weight:600}
+.menu .alt-not{margin-top:auto;margin-bottom:12px;font-size:10.5px;color:#6B7688;text-align:center;line-height:1.35;padding:0 6px}
+.menu .alt-not b{display:block;color:#2F9E5F;font-size:10.5px}
+.menu .alt-not b.eski{color:#C77700}
+/* bant ve paneller */
+/* sayfa katmanı tam ekranı kaplar ama tıklamayı yalnız kendi öğelerine alır; sol menü her zaman tıklanır */
+.sayfa{position:absolute;inset:0;left:0;top:0;pointer-events:none}
+.sayfa>*{pointer-events:auto}
+.sayfa.gizli{display:none}
+svg [data-i]{cursor:pointer}
+.secim-not{position:absolute;right:12px;top:10px;font-size:11.5px;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px;cursor:pointer}
+.secim-not:empty{display:none}
+.panel .secim-not{color:#2B3440;background:rgba(255,255,255,.6);border-color:rgba(61,102,192,.35);top:8px}
+.hl-var .hs:not(.secili){opacity:.42}
+.hs.secili .ad{font-weight:700;color:#1F2A37}
+.bant{position:absolute;left:134px;top:28px;width:1122px;height:258px;border-radius:14px;background:linear-gradient(115deg,var(--bant1) 0%,var(--bant2) 55%,var(--bant3) 100%);box-shadow:0 10px 26px rgba(46,72,150,.38)}
+.cam{position:absolute;border-radius:10px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 2px 6px rgba(20,40,90,.12);color:#fff}
+.cam .bs{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:17px;font-weight:400;letter-spacing:.2px;color:#F3F7FF}
+.cam .dg{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:31px;font-weight:300;color:#fff;white-space:nowrap}
+.cam .dg small{font-size:15px;opacity:.85;margin-left:3px}
+.cam .ek{position:absolute;left:0;right:0;bottom:5px;text-align:center;font-size:10.5px;color:rgba(255,255,255,.8)}
+.cam .ek~.dg,.cam .dg:has(+.ek){bottom:24px}
+.tarihler{position:absolute;left:0;right:0;top:38px;display:flex;justify-content:center;gap:8px}
+.tarihler input{width:104px;height:30px;border:1px solid rgba(255,255,255,.85);border-radius:3px;background:rgba(255,255,255,.15);color:#fff;font-size:12.5px;padding:0 6px;color-scheme:dark}
+.hizli{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:4px}
+.hizli button{appearance:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font-size:10.5px;border-radius:999px;padding:2px 8px;cursor:pointer}
+.hizli button.secili,.hizli button:hover{background:rgba(255,255,255,.25)}
+.grf-bas{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:17px;color:#F3F7FF}
+.lej{position:absolute;left:12px;top:10px;display:flex;gap:14px;font-size:12.5px;color:#fff;align-items:center}
+.lej i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#fff;margin-right:5px;vertical-align:-1px}
+.lej i.cz{width:18px;height:3px;border-radius:2px;background:var(--yesil);position:relative}
+.alt{position:absolute;left:134px;top:302px;width:1122px;height:390px;border-radius:14px;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.55);box-shadow:0 10px 24px rgba(46,72,150,.22)}
+.dilim-seridi{position:absolute;left:10px;top:10px;right:10px;height:58px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(244,246,250,.88));box-shadow:0 3px 10px rgba(46,64,120,.18);display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:9px 10px}
+.dilim{border-radius:7px;background:linear-gradient(180deg,#F1F3F7,#E4E8EF);box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(46,64,120,.18);display:flex;align-items:center;gap:6px;padding:0 8px;min-width:0}
+.dilim label{font-size:12px;color:#3B4452;white-space:nowrap}
+.dilim select{flex:1;min-width:0;height:26px;border:1px solid #D3D9E3;border-radius:4px;background:#fff;font-size:11.5px;color:#333;padding:0 4px}
+.panel{position:absolute;border-radius:10px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);overflow:hidden}
+.panel .pbas{font-size:14.5px;color:#243044;text-align:center;margin-top:8px}
+/* tablo */
+.tablo{position:absolute;overflow:auto}
+.tablo table{width:100%;border-collapse:collapse;font-size:12.5px;color:#26303C;table-layout:fixed}
+.tablo td .alt-metin{font-size:11px;color:#5F6B78;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.tablo td .ust-metin{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tablo th{position:sticky;top:0;text-align:left;font-weight:600;font-size:12.5px;color:#1C2530;padding:8px 8px 6px;background:rgba(214,222,241,.96);z-index:1;white-space:nowrap}
+.tablo td{padding:6px 8px;border-bottom:1px solid var(--cizgi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tablo td.s,.tablo th.s{text-align:right}
+.tablo tbody tr{cursor:pointer}
+.tablo tbody tr:hover td{background:rgba(255,255,255,.45)}
+.tablo tfoot td{font-weight:700;border-bottom:0;position:sticky;bottom:0;background:rgba(214,222,241,.96)}
+.tablo::-webkit-scrollbar{width:8px;height:8px}.tablo::-webkit-scrollbar-thumb{background:rgba(90,105,140,.35);border-radius:8px}
+/* yatay çubuk listesi */
+.hlist{position:absolute;overflow:auto;padding:4px 14px}
+.hs{display:grid;grid-template-columns:128px 1fr 52px;align-items:center;gap:8px;font-size:12px;height:24px;cursor:default}
+.hs.tik{cursor:pointer}.hs.tik:hover .ad{color:var(--mavi);text-decoration:underline}
+.hs .ad{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#2B3440;text-align:right}
+.hs .y{height:14px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden;display:flex}
+.hs .y span{display:block;height:100%}
+.hs .s{font-size:12px;color:#1F2A37}
+/* ısı haritası */
+.isi{position:absolute;display:grid;gap:3px}
+.isi .h{font-size:10.5px;color:#4A5565;text-align:center}
+.isi .g{font-size:11px;color:#4A5565;align-self:center}
+.isi .c{border-radius:3px;display:grid;place-items:center;font-size:10.5px}
+/* mail arama */
+.ara{position:absolute;left:152px;top:44px;width:560px;height:46px}
+.ara input{width:100%;height:46px;border-radius:8px;border:1px solid rgba(255,255,255,.85);background:#fff;padding:0 14px 0 42px;font-size:16px;color:#1F2A37;outline:none;box-shadow:0 3px 10px rgba(20,40,90,.2)}
+.ara svg{position:absolute;left:13px;top:13px;width:20px;height:20px;color:#6B7688}
+.ara-not{position:absolute;left:152px;top:96px;width:560px;font-size:11px;color:rgba(255,255,255,.9)}
+.ara-not code{background:rgba(255,255,255,.18);border-radius:3px;padding:0 4px;font-family:inherit}
+mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
+/* ayrıntı paneli (konuşma) */
+.detay{position:absolute;right:24px;top:28px;width:560px;height:664px;border-radius:14px;background:rgba(250,251,254,.98);box-shadow:-10px 0 40px rgba(20,40,90,.35);z-index:20;display:flex;flex-direction:column;transform:translateX(620px);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.detay.acik{transform:none}
+.dbas{padding:14px 18px 10px;border-bottom:1px solid #E1E6EF;background:linear-gradient(115deg,var(--bant1),var(--bant3));color:#fff;border-radius:14px 14px 0 0}
+.dbas h2{margin:6px 0 4px;font-size:17px;font-weight:600;line-height:1.3}
+.dbas .b{font-size:11.5px;opacity:.9;line-height:1.45}
+.dbas .ust{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dbas a,.dbas button{appearance:none;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.15);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;text-decoration:none;cursor:pointer}
+.dgov{overflow:auto;padding:4px 18px 16px;flex:1}
+.ileti{padding:10px 0;border-bottom:1px solid #E6EAF1}
+.ileti .u{display:flex;justify-content:space-between;gap:8px;font-size:12.5px}
+.ileti .u b{color:#1F2A37}
+.ileti .u span{color:#6B7688;font-size:11.5px;white-space:nowrap}
+.ileti .a{font-size:11px;color:#6B7688;margin-top:2px;word-break:break-word}
+.ileti .m{white-space:pre-wrap;font-size:12.5px;line-height:1.5;margin-top:6px;color:#26303C;background:#F1F4F9;border-radius:6px;padding:8px 10px}
+.ileti .ek{font-size:11px;color:#4A5565;margin-top:4px}
+.etiket-cip{display:inline-block;font-size:10.5px;background:rgba(255,255,255,.2);border-radius:999px;padding:1px 8px;margin-right:4px}
+/* ipucu */
+.ipucu{position:fixed;z-index:50;pointer-events:none;background:rgba(31,42,55,.95);color:#fff;font-size:12px;padding:6px 9px;border-radius:4px;opacity:0;transition:opacity .1s;max-width:260px;line-height:1.4}
+.ipucu.acik{opacity:1}
+.bilgi{font-size:11px;color:#4A5565}
+/* şifre ekranı (yalnız şifreli yayında) */
+#kilit{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+#kilit[hidden]{display:none}
+.kilit-kart{width:380px;border-radius:16px;background:linear-gradient(180deg,#FBFCFE,#E9EDF4);box-shadow:0 18px 50px rgba(46,64,120,.35);padding:26px 28px 22px;text-align:center}
+.kilit-kart img{width:92px}
+.kilit-bant{margin:14px -28px 14px;padding:12px;color:#fff;font-size:17px;background:linear-gradient(115deg,#3D66C0,#50A0A8)}
+.kilit-kart p{font-size:13px;color:#4A5565;margin:0 0 14px;line-height:1.45}
+.kilit-kart input{width:100%;height:40px;border:1px solid #CBD3E1;border-radius:8px;padding:0 12px;font-size:15px}
+.kilit-kart button{margin-top:12px;width:100%;height:40px;border:0;border-radius:8px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(115deg,#3D66C0,#4F9DAA)}
+.kilit-hata{min-height:18px;margin-top:10px;font-size:12.5px;color:#B42318}
+</style>
+</head>
+<body>
+<div id="sahne">
+  <nav class="menu">
+    <img class="logo" src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <button class="mdug" id="temizle" title="Bütün filtreleri temizle"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></span></button>
+    <button class="mdug" data-sayfa="ana"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Ana Sayfa</button>
+    <button class="mdug" data-sayfa="hiz"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></span>Hizmet Hızı</button>
+    <button class="mdug" data-sayfa="arac"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg></span>Araç ve Yakıt</button>
+    <button class="mdug" data-sayfa="mail"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>Mail Arama</button>
+    <div class="alt-not" id="guncel"></div>
+  </nav>
+
+  <!-- ================= ANA SAYFA ================= -->
+  <section class="sayfa" id="s-ana">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">E-posta<br>Talebi</div><div class="dg num" id="a-e"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Araç<br>Rezervasyonu</div><div class="dg num" id="a-r"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>E-posta Talebi</span><span><i class="cz"></i>Araç Rezervasyonu</span></div>
+        <div class="grf-bas">Aylara Göre Talep Adedi</div><svg id="a-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="a-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="a-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:330px;height:302px"><div class="pbas">Hizmet Bölümlerine Göre Talep</div><div class="hlist" id="a-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:350px;top:78px;width:762px;height:302px"><div class="tablo" id="a-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= HİZMET HIZI ================= -->
+  <section class="sayfa gizli" id="s-hiz">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Medyan<br>İlk Yanıt</div><div class="dg num" id="h-med"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">1 Saatte<br>Yanıt</div><div class="dg num" id="h-1s"></div><div class="ek" id="h-kap"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Talep oranı</span><span><i class="cz"></i>Kümülatif</span></div>
+        <div class="grf-bas">İlk Yanıt Süresi Dağılımı (iş saati)</div><svg id="h-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="h-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="h-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Bölümlere Göre Medyan İlk Yanıt (dk)</div><div class="hlist" id="h-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:400px;height:302px"><div class="pbas">Talepler Ne Zaman Geliyor?</div><div class="isi" id="h-isi" style="left:10px;top:40px;right:10px;bottom:12px"></div></div>
+      <div class="panel" style="left:790px;top:78px;width:322px;height:302px"><div class="pbas">Aylara Göre Medyan İlk Yanıt</div><svg id="h-ay" width="322" height="262" style="position:absolute;left:0;top:34px"></svg><div class="secim-not" id="h-ay-secim" style="top:30px"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= ARAÇ VE YAKIT ================= -->
+  <section class="sayfa gizli" id="s-arac">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Son Dakika<br>Talebi</div><div class="dg num" id="v-son"></div><div class="ek">24 saatten az önce</div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Yakıt<br>Alımı</div><div class="dg num" id="v-tl"></div><div class="ek" id="v-litre"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Rezervasyon</span><span><i class="cz"></i>Kümülatif %</span></div>
+        <div class="grf-bas">Rezervasyon Yolculuktan Ne Kadar Önce Yapılıyor?</div><svg id="v-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="v-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="v-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Gidiş Amacı</div><div class="hlist" id="v-amac" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:360px;height:302px"><div class="pbas">En Çok Rezervasyon Yapan Birimler</div><div class="hlist" id="v-birim" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:750px;top:78px;width:362px;height:302px"><div class="pbas">Aylık Yakıt Alımı (TL) ve TL/Litre</div><svg id="v-yakit" width="362" height="262" style="position:absolute;left:0;top:34px"></svg><div class="secim-not" id="v-yakit-secim" style="top:30px"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= MAİL ARAMA ================= -->
+  <section class="sayfa gizli" id="s-mail">
+    <div class="bant">
+      <div class="ara" style="left:12px;top:14px;width:600px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Kişi, e-posta, konu, cümle, birim, ek adı ile ara…" autocomplete="off" spellcheck="false"></div>
+      <div class="ara-not" style="left:14px;top:66px;width:600px">Büyük/küçük harf ve Türkçe karakter fark etmez · birden çok kelime: hepsi aranır · tam ifade: <code>"oda talebi"</code> · hariç: <code>-iptal</code></div>
+      <div class="cam" style="left:12px;top:96px;width:230px;height:150px"><div class="bs">Tarih Aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli" style="bottom:48px"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div>
+        <div class="ek" style="bottom:10px;font-size:11.5px"><label style="cursor:pointer"><input type="checkbox" id="m-ek"> Yalnız eki olanlar</label></div></div>
+      <div class="cam" style="left:254px;top:96px;width:175px;height:150px"><div class="bs">Konuşma</div><div class="dg num" id="m-k" style="bottom:36px;font-size:38px"></div></div>
+      <div class="cam" style="left:441px;top:96px;width:175px;height:150px"><div class="bs">Talep</div><div class="dg num" id="m-t" style="bottom:36px;font-size:38px"></div></div>
+      <div class="cam" style="left:628px;top:14px;width:482px;height:232px"><div class="grf-bas">Bulunan Konuşmalar · Aylara Göre</div><svg id="m-grafik" width="482" height="232" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="m-secim" style="top:40px"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="m-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:1102px;height:302px"><div class="tablo" id="m-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <aside class="detay" id="detay">
+    <div class="dbas"><div class="ust"><div id="d-etiket"></div><div style="display:flex;gap:6px"><button id="d-kapat">Kapat ✕</button></div></div>
+      <h2 id="d-konu"></h2><div class="b" id="d-bilgi"></div></div>
+    <div class="dgov" id="d-gov"></div>
+  </aside>
+</div>
+<div class="ipucu" id="ipucu"></div>
+<div id="kilit" hidden>
+  <form id="kilit-form" class="kilit-kart" autocomplete="off">
+    <img src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <div class="kilit-bant">İdari Destek · Canlı Rapor</div>
+    <p>Bu rapor kuruma özel bilgiler içerir ve şifrelidir. Size iletilen şifreyi girin.</p>
+    <input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre">
+    <button type="submit">Raporu aç</button>
+    <div id="kilit-hata" class="kilit-hata"></div>
+  </form>
+</div>
+
+<script src="veri.enc.js"></script>
+<script>
+function baslat(){
+"use strict";
+const V = window.CANLI, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const YAYIN = !!window.CANLI_SIFRELI;  // şifreli yayın kopyası: saat başı yenilenmez
+const AY = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"], GUN = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
+const KIS = new Set(["BİLGEM","BÜİT","HİSAR","AGENA","TÜBİTAK","UEKAE","BTE","YTE","İLTAREN","MMU","GİS","KAMUSM","SGE","YZE","İK","AR-GE","ARGE","GSY","EMY","BT","SAGE","MİLGEM","KAAN","TSK","SSB"]);
+const sayi = n => Math.round(n ?? 0).toLocaleString("tr-TR"), ond = (n, b = 1) => (n ?? 0).toLocaleString("tr-TR", {maximumFractionDigits: b});
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const norm = s => String(s || "").toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ı/g, "i");
+const bas = s => String(s || "").split(/(\s+)/).map(w => { const h = w.replace(/[.,()]/g, "").toLocaleUpperCase("tr-TR"); if (KIS.has(h)) return w.toLocaleUpperCase("tr-TR"); const k = w.toLocaleLowerCase("tr-TR"); return ["ve", "ile", "için"].includes(k) ? k : k.replace(/^(\(?)(\S)/, (m, a, b) => a + b.toLocaleUpperCase("tr-TR")); }).join("");
+const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const tOku = s => { const [y, m, g] = s.split("-").map(Number); return new Date(y, m - 1, g); };
+const gEkle = (s, n) => { const d = tOku(s); d.setDate(d.getDate() + n); return iso(d); };
+const aylar = (a, b) => { const o = []; let y = +a.slice(0, 4), m = +a.slice(5, 7); while (y < +b.slice(0, 4) || (y === +b.slice(0, 4) && m <= +b.slice(5, 7))) { o.push(y + "-" + String(m).padStart(2, "0")); if (++m > 12) { m = 1; y++; } } return o; };
+const AYU = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const ayAd = a => AYU[+a.slice(5, 7) - 1] + " " + a.slice(0, 4);
+const sure = dk => dk == null ? "–" : dk < 60 ? Math.round(dk) + " dk" : dk < 540 ? ond(dk / 60, 1) + " sa" : ond(dk / 540, 1) + " iş günü";
+const say = (d, f) => { const m = new Map(); for (const r of d) { const k = f(r); if (k) m.set(k, (m.get(k) || 0) + 1); } return [...m].sort((a, b) => b[1] - a[1]); };
+const medyan = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), h = s.length >> 1; return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2; };
+const BUGUN = V.meta.uretim.slice(0, 10), BOL = V.bolumler;
+
+/* veri */
+// İK'da aynı birimin farklı yazımları (ör. "Yönetim" / "Yönetimi") tek adla gösterilir.
+const BIRIM_AD = new Map(), birimKanon = u => { if (!u) return ""; const k = norm(u).replace(/yonetimi/g, "yonetim"); if (!BIRIM_AD.has(k)) BIRIM_AD.set(k, u); return BIRIM_AD.get(k); };
+const MAIL = V.mailler;
+for (const m of MAIL) {
+  m.bi = birimKanon(m.bi); m.ek = [].concat(...m.i.map(x => x.ek || [])); m.idx = norm([m.u, m.a, m.e, m.bi, m.en, m.y, m.d, m.kutu.join(" "), m.ek.join(" "), ...m.i.map(x => [x.a, x.e, x.kime, x.bilgi, x.m].join(" "))].join(" \u0001 ")); m.te = m.bt; }
+const TALEP_MAIL = MAIL.filter(m => m.d === "Talep");
+const REZ = (V.rezervasyon || []).map(r => ({t: r[0], s: r[1], on: r[2], yol: r[3], cik: r[4], varis: r[5], du: r[6], am: r[7], bi: birimKanon(r[8]), en: r[9]}));
+const YAKIT = V.yakit_plaka_ay || [];
+
+/* durum (adres çubuğunda saklanır) */
+const D = {sayfa: "ana", bas: V.meta.donem_baslangic, son: BUGUN, q: "", f: {}, ek: false};
+try { Object.assign(D, JSON.parse(decodeURIComponent(location.hash.slice(1)) || "{}")); } catch (e) {}
+D.f = D.f || {};
+const kaydet = () => { try { history.replaceState(null, "", "#" + encodeURIComponent(JSON.stringify(D))); } catch (e) {} };
+
+/* ölçekleme: Power BI "sayfaya sığdır" */
+function olcekle() { const s = Math.min(innerWidth / 1280, innerHeight / 720), x = (innerWidth - 1280 * s) / 2, y = (innerHeight - 720 * s) / 2; $("#sahne").style.transform = `translate(${x}px,${y}px) scale(${s})`; }
+addEventListener("resize", olcekle); olcekle();
+
+/* üst bilgi */
+(() => { const d = new Date(V.meta.uretim.replace(" ", "T") + ":00"), saat = (Date.now() - d) / 36e5;
+  $("#guncel").innerHTML = YAYIN ? `<b style="color:#3D66C0">● Yayın kopyası</b>Veri tarihi<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}`
+    : `<b class="${saat > 3 ? "eski" : ""}">● ${saat > 3 ? Math.floor(saat) + " saattir yenilenmedi" : "Canlı"}</b>Son güncelleme<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}<br><span style="opacity:.8">Saat başı yenilenir</span>`; })();
+
+/* ipucu */
+const IP = $("#ipucu");
+document.addEventListener("mousemove", e => { const h = e.target.closest && e.target.closest("[data-ip]"); if (!h) { IP.classList.remove("acik"); return; }
+  IP.innerHTML = h.getAttribute("data-ip"); IP.classList.add("acik"); IP.style.left = Math.min(e.clientX + 12, innerWidth - IP.offsetWidth - 8) + "px"; IP.style.top = (e.clientY + 14 + IP.offsetHeight > innerHeight ? e.clientY - IP.offsetHeight - 10 : e.clientY + 14) + "px"; });
+
+/* ---------- grafikler (bant içinde beyaz çubuk + yeşil çizgi; Power BI karma grafik gibi) ---------- */
+function karma(svg, etiket, cubuk, cizgi, sec = {}) {
+  // Yerleşim (yukarıdan aşağı): başlık ve lejant · çizgi bölgesi · çubuklar · eksen etiketleri. Hiçbiri üst üste binmez.
+  const W = +svg.getAttribute("width"), H = +svg.getAttribute("height"), sol = sec.sol ?? 26, sag = sec.sag ?? 26, alt = sec.alt ?? 30;
+  const cUst = sec.cUst ?? 60, cH = sec.cH ?? 30, ust = sec.ust ?? (cizgi ? cUst + cH + 30 : 56);
+  const n = etiket.length, g = (W - sol - sag) / Math.max(n, 1), bw = Math.min(sec.bw ?? 54, g * .66), ih = H - ust - alt;
+  const cm = Math.max(1, ...cubuk), lm = cizgi ? Math.max(1, ...cizgi) : 1, renk = sec.renk || "#fff", yazi = sec.yazi || "#fff";
+  let s = "";
+  // Power BI gibi çapraz filtre: sec.tik(i) tıklanınca çağrılır; sec.secili seçili sütundur, diğerleri soluklaşır.
+  const secili = sec.secili ?? -1, di = i => sec.tik ? ` data-i="${i}"` : "";
+  etiket.forEach((e, i) => { const v = cubuk[i] || 0, h = v / cm * (ih - 18), x = sol + g * i + (g - bw) / 2, y = ust + ih - h;
+    const op = secili >= 0 && i !== secili ? .32 : sec.soluk && sec.soluk[i] ? .55 : .96;
+    const ip = esc(`<b>${e}</b><br>${sec.ad1 || ""}: ${sec.f1 ? sec.f1(v) : sayi(v)}${sec.tik ? `<br><i>${i === secili ? "Seçimi kaldırmak" : "Filtrelemek"} için tıklayın</i>` : ""}`);
+    if (sec.tik) s += `<rect x="${sol + g * i}" y="${ust - 8}" width="${g}" height="${ih + 8}" fill="transparent"${di(i)} data-ip="${ip}"/>`;  // geniş tıklama alanı, çubuğun altında
+    s += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h, v ? 1.5 : 0)}" fill="${renk}" opacity="${op}"${di(i)} data-ip="${ip}"/>`;
+    if (v) s += `<text x="${x + bw / 2}" y="${y - 6}" fill="${yazi}" font-size="12.5" text-anchor="middle" opacity="${secili >= 0 && i !== secili ? .55 : 1}">${sec.f1 ? sec.f1(v) : sayi(v)}</text>`;
+    s += `<text x="${sol + g * i + g / 2}" y="${H - 12}" fill="${yazi}" font-size="12" text-anchor="middle" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`; });
+  if (cizgi) { const cmin = Math.min(...cizgi), yy = v => cUst + (lm > cmin ? (1 - (v - cmin) / (lm - cmin)) : .5) * cH, p = cizgi.map((v, i) => [sol + g * i + g / 2, yy(v)]);
+    s += `<polyline points="${p.map(q => q.join(",")).join(" ")}" fill="none" stroke="${sec.cz || "#9BE3A9"}" stroke-width="2.4"/>`;
+    p.forEach((q, i) => { s += `<circle cx="${q[0]}" cy="${q[1]}" r="${i === secili ? 5.5 : 4}" fill="${sec.cz || "#9BE3A9"}" stroke="#fff" stroke-width="1.2"${di(i)} data-ip="${esc(`<b>${etiket[i]}</b><br>${sec.ad2 || ""}: ${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}`)}"/>`;
+      s += `<text x="${q[0]}" y="${q[1] - 9}" fill="${yazi}" font-size="12" text-anchor="middle">${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}</text>`; }); }
+  svg.innerHTML = s;
+  if (sec.tik) svg.querySelectorAll("[data-i]").forEach(el => el.addEventListener("click", () => sec.tik(+el.dataset.i)));
+}
+function hliste(el, satirlar, sec = {}) {
+  const m = Math.max(1, ...satirlar.map(r => r.v)), secili = sec.secili || "";
+  el.classList.toggle("hl-var", !!secili && satirlar.some(r => (r.k ?? r.ad) === secili));
+  el.innerHTML = satirlar.length ? satirlar.map((r, i) => `<div class="hs${r.tik ? " tik" : ""}${secili && (r.k ?? r.ad) === secili ? " secili" : ""}" data-i="${i}" data-ip="${esc((r.ip || `<b>${esc(r.ad)}</b><br>${sec.f ? sec.f(r.v) : sayi(r.v)}`) + (r.tik ? "<br><i>Filtrelemek için tıklayın</i>" : ""))}"><div class="ad">${esc(r.ad)}</div><div class="y"><span style="width:${r.v / m * 100}%;background:${r.renk || sec.renk || "#3D66C0"}"></span></div><div class="s num">${sec.f ? sec.f(r.v) : sayi(r.v)}</div></div>`).join("")
+    : `<div class="bilgi" style="text-align:center;padding-top:40px">Bu seçimde kayıt yok</div>`;
+  el.querySelectorAll(".tik").forEach(d => d.onclick = () => satirlar[+d.dataset.i].tik());
+}
+const degistir = (k, v) => { D.f[k] = D.f[k] === v ? "" : v; ciz(); };  // aynı öğeye ikinci tıklama filtreyi kaldırır
+function secimNot(id, metin, k) { const el = $(id); el.textContent = metin ? metin + "  ✕" : ""; el.title = "Seçimi kaldır"; el.onclick = () => { D.f[k] = ""; ciz(); }; }
+const temizAd = a => String(a || "").replace(/\s*\(.*?\)\s*/g, " ").replace(/,.*$/, "").trim();
+
+/* ---------- dilimleyiciler (Power BI slicer gibi: "Etiket  [Tümü ▼]") ---------- */
+function dilimler(kok, tanim, kayitlar) {
+  // tanim: [{k, ad, f: kayit=>değer, gor: değer=>metin}]
+  kok.innerHTML = tanim.map(t => `<div class="dilim"><label>${t.ad}</label><select data-k="${t.k}"></select></div>`).join("");
+  for (const t of tanim) {
+    const diger = kayitlar.filter(r => tanim.every(u => u.k === t.k || !D.f[u.k] || u.f(r) === D.f[u.k]));
+    const liste = say(diger, t.f); if (D.f[t.k] && !liste.some(x => x[0] === D.f[t.k])) liste.push([D.f[t.k], 0]);
+    const sel = kok.querySelector(`[data-k="${t.k}"]`);
+    sel.innerHTML = `<option value="">Tümü</option>` + liste.map(([v, n]) => `<option value="${esc(v)}"${v === D.f[t.k] ? " selected" : ""}>${esc(t.gor ? t.gor(v) : v)} (${sayi(n)})</option>`).join("");
+    sel.onchange = () => { D.f[t.k] = sel.value; ciz(); };
+  }
+  return kayitlar.filter(r => tanim.every(u => !D.f[u.k] || u.f(r) === D.f[u.k]));
+}
+const tarihte = r => r.t >= D.bas && r.t <= D.son;
+const BOLUM_DILIM = {k: "bolum", ad: "Bölüm", f: m => m.b, gor: v => v + " " + (BOL[v] || "")};
+const MAIL_DILIM = [BOLUM_DILIM, {k: "tur", ad: "Talep Türü", f: m => m.y}, {k: "kutu", ad: "Kutu", f: m => m.kutu[0]},
+  {k: "enstitu", ad: "Enstitü", f: m => m.en, gor: bas}, {k: "birim", ad: "Birim", f: m => m.bi, gor: bas}, {k: "eden", ad: "Talep Eden", f: m => m.bt}];
+
+const suz = (kayitlar, tanim, haric) => kayitlar.filter(r => tanim.every(u => u.k === haric || !D.f[u.k] || u.f(r) === D.f[u.k]));
+const ayda = (dizi, ay) => ay ? dizi.filter(r => r.t.startsWith(ay)) : dizi;
+
+/* ---------- ANA SAYFA ---------- */
+function ana() {
+  const taban = TALEP_MAIL.filter(tarihte), tumM = dilimler($("#a-dilim"), MAIL_DILIM, taban);
+  const tumR = REZ.filter(r => tarihte(r) && (!D.f.enstitu || r.en === D.f.enstitu) && (!D.f.birim || r.bi === D.f.birim) && (!D.f.bolum || D.f.bolum === "01") && !D.f.tur && !D.f.kutu && (!D.f.eden || D.f.eden === "BİLGEM birimi"));
+  const ay = aylar(D.bas, D.son).slice(-12), M = ayda(tumM, D.f.ay), R = ayda(tumR, D.f.ay);
+  $("#a-e").textContent = sayi(M.length); $("#a-r").textContent = sayi(R.length);
+  karma($("#a-grafik"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => tumM.filter(m => m.t.startsWith(a)).length), ay.map(a => tumR.filter(r => r.t.startsWith(a)).length),
+    {ad1: "E-posta talebi", ad2: "Araç rezervasyonu", soluk: ay.map(a => a === BUGUN.slice(0, 7)), secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#a-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  // bölüm listesi, bölüm dışındaki filtrelerle hesaplanır; seçili bölüm vurgulanır (Power BI çapraz vurgusu)
+  const bolumTaban = ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay);
+  hliste($("#a-bolum"), Object.entries(BOL).map(([no, ad]) => ({k: no, ad: no + " " + ad, v: bolumTaban.filter(m => m.b === no).length, tik: () => degistir("bolum", no)})).sort((a, b) => b.v - a.v), {secili: D.f.bolum});
+  const liste = [...M].sort((a, b) => (b.t + b.s).localeCompare(a.t + a.s));
+  $("#a-tablo").innerHTML = `<table><colgroup><col style="width:108px"><col style="width:128px"><col><col style="width:140px"><col style="width:130px"><col style="width:60px"></colgroup><thead><tr><th>Talep Tarihi</th><th>Talep Türü</th><th>Konu</th><th>Talep Eden</th><th>Birim</th><th class="s">İlk Yanıt</th></tr></thead><tbody>` +
+    liste.slice(0, 300).map((m, i) => `<tr data-i="${i}" title="Maili görmek için tıklayın"><td class="num">${m.t.split("-").reverse().join(".")} ${m.s}</td><td title="${esc(m.b + " " + (BOL[m.b] || ""))}">${esc(m.y)}</td><td title="${esc(m.u)}">${esc(m.u)}</td><td title="${esc(m.a + " · " + m.e)}">${esc(temizAd(m.a) || m.e)}</td><td title="${esc(bas(m.en))}">${esc(bas(m.bi) || m.bt)}</td><td class="s">${sure(m.yd)}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>Toplam</td><td></td><td>${sayi(M.length)} talep${liste.length > 300 ? " · ilk 300 satır" : ""}</td><td></td><td></td><td class="s">${sure(medyan(M.filter(m => m.yd != null).map(m => m.yd)))}</td></tr></tfoot></table>`;
+  $("#a-tablo").querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => ac(liste[+tr.dataset.i]));
+}
+
+/* ---------- HİZMET HIZI ---------- */
+const KOVA = [["≤15 dk", 15], ["15–60 dk", 60], ["1–2 sa", 120], ["2–4 sa", 240], ["4 sa–1 gün", 540], ["1–2 gün", 1080], ["2 gün+", 1e9]];
+function hiz() {
+  const taban = TALEP_MAIL.filter(tarihte), tumAll = dilimler($("#h-dilim"), MAIL_DILIM, taban), Mall = tumAll.filter(m => m.yd != null);
+  const kovaNo = m => KOVA.findIndex(([, ust]) => m.yd <= ust), kv = D.f.kova === "" || D.f.kova == null ? -1 : +D.f.kova;
+  const May = ayda(Mall, D.f.ay), Mkova = kv >= 0 ? Mall.filter(m => kovaNo(m) === kv) : Mall, M = kv >= 0 ? May.filter(m => kovaNo(m) === kv) : May;
+  const tum = kv >= 0 ? M : ayda(tumAll, D.f.ay);
+  const md = medyan(May.map(m => m.yd));
+  $("#h-med").innerHTML = md == null ? "–" : md < 60 ? Math.round(md) + "<small>dk</small>" : ond(md / 60, 1) + "<small>sa</small>";
+  $("#h-1s").textContent = May.length ? "%" + Math.round(May.filter(m => m.yd <= 60).length / May.length * 100) : "–";
+  $("#h-kap").textContent = `${sayi(May.length)} talepte ölçüldü`;
+  $("#h-kap").title = `Yanıtı Gmail'de görünen ${sayi(May.length)} talep (toplam ${sayi(ayda(tumAll, D.f.ay).length)}). Telefonla ya da kurumsal kutudan bilgi kopyası olmadan verilen yanıtlar ölçülemez.`;
+  const k = KOVA.map((_, i) => May.filter(m => kovaNo(m) === i).length);
+  let kum = 0; const kumy = k.map(v => (kum += v, May.length ? kum / May.length * 100 : 0));
+  karma($("#h-grafik"), KOVA.map(x => x[0]), k.map(v => May.length ? v / May.length * 100 : 0), kumy,
+    {f1: v => "%" + ond(v, 1), f2: v => "%" + Math.round(v), ad1: "Talep oranı", ad2: "Kümülatif", bw: 64, secili: kv, tik: i => { D.f.kova = kv === i ? "" : String(i); ciz(); }});
+  secimNot("#h-secim", kv >= 0 ? "Seçili: " + KOVA[kv][0] : "", "kova");
+  const bt = kv >= 0 ? ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay).filter(m => m.yd != null && kovaNo(m) === kv) : ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay).filter(m => m.yd != null);
+  hliste($("#h-bolum"), Object.entries(BOL).map(([no, ad]) => { const v = bt.filter(m => m.b === no).map(m => m.yd); return {k: no, ad: no + " " + ad, v: medyan(v) ?? 0, n: v.length, ip: `<b>${no} ${ad}</b><br>Medyan ilk yanıt: ${sure(medyan(v))}<br>${v.length} talepte ölçüldü`, tik: () => degistir("bolum", no)}; }).filter(r => r.n).sort((a, b) => a.v - b.v), {f: v => Math.round(v) + " dk", renk: "#4A86B8", secili: D.f.bolum});
+  // ısı haritası: gün × saat
+  const saatler = []; for (let h = 7; h <= 18; h++) saatler.push(h);
+  const tb = GUN.slice(0, 5).map(() => saatler.map(() => 0)); for (const m of tum) { const g = (tOku(m.t).getDay() + 6) % 7, h = +m.s.slice(0, 2); if (g < 5) tb[g][Math.min(Math.max(h, 7), 18) - 7]++; }
+  const tm = Math.max(1, ...tb.flat()), isi = $("#h-isi"); isi.style.gridTemplateColumns = `32px repeat(${saatler.length},1fr)`; isi.style.gridTemplateRows = `16px repeat(5,1fr)`;
+  isi.innerHTML = "<div></div>" + saatler.map(h => `<div class="h">${h === 7 ? "≤07" : h === 18 ? "18+" : h}</div>`).join("") + tb.map((r, g) => `<div class="g">${GUN[g]}</div>` + r.map((v, i) => { const o = v / tm; return `<div class="c" style="background:rgba(61,102,192,${(.06 + o * .9).toFixed(2)});color:${o > .45 ? "#fff" : "#2B3440"}" data-ip="${esc(`<b>${GUN[g]} ${saatler[i]}:00</b><br>${v} talep`)}">${v || ""}</div>`; }).join("")).join("");
+  // aylara göre medyan (açık panelde mavi çubuk)
+  const ay = aylar(D.bas, D.son).slice(-8);
+  karma($("#h-ay"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => medyan(Mkova.filter(m => m.t.startsWith(a)).map(m => m.yd)) ?? 0), null,
+    {renk: "#4A86B8", yazi: "#2B3440", ust: 30, alt: 28, sol: 10, sag: 10, bw: 30, f1: v => Math.round(v) + " dk", ad1: "Medyan ilk yanıt", secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#h-ay-secim", D.f.ay ? ayAd(D.f.ay) : "", "ay");
+}
+
+/* ---------- ARAÇ VE YAKIT ---------- */
+const ONKOVA = [["2 saatten az", 2], ["2–12 saat", 12], ["12–24 saat", 24], ["1–3 gün", 72], ["3–7 gün", 168], ["7 gün+", 1e9]];
+function arac() {
+  const tanim = [{k: "vdurum", ad: "Durum", f: r => r.du}, {k: "vamac", ad: "Gidiş Amacı", f: r => r.am}, {k: "venstitu", ad: "Enstitü", f: r => r.en, gor: bas},
+    {k: "vbirim", ad: "Birim", f: r => r.bi, gor: bas}, {k: "vvaris", ad: "Varış", f: r => r.varis}, {k: "vplaka", ad: "Plaka (yakıt)", f: () => null}];
+  const taban = REZ.filter(tarihte).filter(r => r.on != null), Rall = dilimler($("#v-dilim"), tanim.slice(0, 5), taban);
+  const onNo = r => ONKOVA.findIndex(([, ust]) => r.on < ust), kv = D.f.onkova === "" || D.f.onkova == null ? -1 : +D.f.onkova;
+  const R = kv >= 0 ? Rall.filter(r => onNo(r) === kv) : Rall;
+  // plaka dilimleyicisi yakıt paneline uygulanır
+  const plakaSel = document.createElement("div"); plakaSel.className = "dilim";
+  const yk = YAKIT.filter(x => x[1] >= D.bas.slice(0, 7) && x[1] <= D.son.slice(0, 7));
+  const plakalar = [...new Map(yk.map(x => [x[0], 0])).keys()].sort();
+  plakaSel.innerHTML = `<label>Plaka</label><select><option value="">Tümü</option>${plakalar.map(p => `<option${p === D.f.vplaka ? " selected" : ""}>${esc(p)}</option>`).join("")}</select>`;
+  plakaSel.querySelector("select").onchange = e => { D.f.vplaka = e.target.value; ciz(); }; $("#v-dilim").appendChild(plakaSel);
+  const son = Rall.filter(r => r.on < 24).length;
+  $("#v-son").textContent = Rall.length ? "%" + Math.round(son / Rall.length * 100) : "–";
+  const Y = yk.filter(x => !D.f.vplaka || x[0] === D.f.vplaka), Ysec = D.f.yay ? Y.filter(x => x[1] === D.f.yay) : Y, tl = Ysec.reduce((a, x) => a + x[3], 0), lt = Ysec.reduce((a, x) => a + x[2], 0);
+  $("#v-tl").innerHTML = tl >= 1e6 ? ond(tl / 1e6, 2) + "<small>mn</small>" : sayi(tl);
+  $("#v-litre").textContent = sayi(lt) + " litre · TL" + (D.f.yay ? " · " + ayAd(D.f.yay) : "");
+  const k = ONKOVA.map((_, i) => Rall.filter(r => onNo(r) === i).length);
+  let kum = 0;
+  karma($("#v-grafik"), ONKOVA.map(x => x[0]), k, k.map(v => (kum += v, Rall.length ? kum / Rall.length * 100 : 0)), {ad1: "Rezervasyon", ad2: "Kümülatif", f2: v => "%" + Math.round(v), bw: 70, secili: kv, tik: i => { D.f.onkova = kv === i ? "" : String(i); ciz(); }});
+  secimNot("#v-secim", kv >= 0 ? "Seçili: " + ONKOVA[kv][0] : "", "onkova");
+  const kovada = d => kv >= 0 ? d.filter(r => onNo(r) === kv) : d;
+  hliste($("#v-amac"), say(kovada(suz(taban, tanim.slice(0, 5), "vamac")), r => r.am).map(([ad, v]) => ({ad, v, tik: () => degistir("vamac", ad)})), {renk: "#3D66C0", secili: D.f.vamac});
+  hliste($("#v-birim"), say(kovada(suz(taban, tanim.slice(0, 5), "vbirim")), r => r.bi).slice(0, 12).map(([ad, v]) => ({k: ad, ad: bas(ad), v, tik: () => degistir("vbirim", ad)})), {renk: "#4A86B8", secili: D.f.vbirim});
+  const ay = [...new Set(Y.map(x => x[1]))].sort().slice(-8);
+  const tlAy = ay.map(a => Y.filter(x => x[1] === a).reduce((s, x) => s + x[3], 0)), ltAy = ay.map(a => Y.filter(x => x[1] === a).reduce((s, x) => s + x[2], 0));
+  karma($("#v-yakit"), ay.map(a => AY[+a.slice(5, 7) - 1]), tlAy, tlAy.map((v, i) => ltAy[i] ? v / ltAy[i] : 0),
+    {renk: "#4A86B8", yazi: "#2B3440", cz: "#2F9E5F", cUst: 22, cH: 30, ust: 86, alt: 28, sol: 10, sag: 10, bw: 28, f1: v => ond(v / 1e6, 2) + " mn", f2: v => ond(v, 1) + " TL", ad1: "Yakıt alımı (TL)", ad2: "TL/litre", secili: ay.indexOf(D.f.yay), tik: i => degistir("yay", ay[i])});
+  secimNot("#v-yakit-secim", D.f.yay ? ayAd(D.f.yay) : "", "yay");
+}
+
+/* ---------- MAİL ARAMA ---------- */
+const HARF = {c: "[cçÇC]", g: "[gğĞG]", i: "[iıİI]", o: "[oöÖO]", s: "[sşŞS]", u: "[uüÜU]"};
+const sorgu = q => { const o = [], re = /(-?)"([^"]+)"|(-?)(\S+)/g; let m; while ((m = re.exec(q))) { const t = norm(m[2] || m[4]).trim(); if (t && t !== "-") o.push({t, neg: (m[1] || m[3]) === "-"}); } return o; };
+const vRe = p => { const x = p.filter(y => !y.neg && y.t.length > 1); if (!x.length) return null; try { return new RegExp(x.map(y => [...y.t].map(c => HARF[c] || c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("")).join("|"), "giu"); } catch (e) { return null; } };
+const vurgula = (t, re) => { t = String(t || ""); if (!re) return esc(t); let o = "", s = 0, m; re.lastIndex = 0; while ((m = re.exec(t))) { if (!m[0]) { re.lastIndex++; continue; } o += esc(t.slice(s, m.index)) + "<mark>" + esc(m[0]) + "</mark>"; s = m.index + m[0].length; } return o + esc(t.slice(s)); };
+const MAIL_ARAMA_DILIM = [{k: "kutu", ad: "Kutu", f: m => m.kutu[0]}, {k: "mdurum", ad: "Durum", f: m => m.d.replace(/ \(.*\)$/, "")}, BOLUM_DILIM, {k: "tur", ad: "Talep Türü", f: m => m.y}, {k: "enstitu", ad: "Enstitü", f: m => m.en, gor: bas}, {k: "birim", ad: "Birim", f: m => m.bi, gor: bas}];
+let SONUC = [];
+function mail() {
+  const p = sorgu(D.q), re = vRe(p);
+  const aday = MAIL.filter(m => tarihte(m) && (!D.ek || m.ek.length) && p.every(x => m.idx.includes(x.t) !== x.neg));
+  const tumS = dilimler($("#m-dilim"), MAIL_ARAMA_DILIM, aday);
+  SONUC = ayda(tumS, D.f.ay).sort((a, b) => (b.t + b.s).localeCompare(a.t + a.s));
+  $("#m-k").textContent = sayi(SONUC.length); $("#m-t").textContent = sayi(SONUC.filter(m => m.d === "Talep").length);
+  const ay = aylar(D.bas, D.son).slice(-10);
+  karma($("#m-grafik"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => tumS.filter(m => m.t.startsWith(a)).length), null, {ad1: "Konuşma", ust: 44, bw: 30, secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#m-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  const ozet = m => { if (re) for (const x of m.i) { re.lastIndex = 0; const k = re.exec(x.m || ""); if (k) { const b = Math.max(0, k.index - 40); return (b ? "…" : "") + x.m.slice(b, b + 120).replace(/\s+/g, " "); } } return (m.i[0].m || "").slice(0, 120).replace(/\s+/g, " "); };
+  const g = SONUC.slice(0, 400);
+  $("#m-tablo").innerHTML = `<table><colgroup><col style="width:122px"><col style="width:92px"><col><col style="width:160px"><col style="width:190px"><col style="width:130px"><col style="width:130px"><col style="width:52px"><col style="width:70px"></colgroup><thead><tr><th>Tarih</th><th>Kutu</th><th>Konu ve eşleşen metin</th><th>Başlatan</th><th>E-posta</th><th>Birim</th><th>Talep Türü</th><th class="s">İleti</th><th class="s">İlk Yanıt</th></tr></thead><tbody>` +
+    g.map((m, i) => `<tr data-i="${i}"><td class="num">${m.t.split("-").reverse().join(".")} ${m.s}</td><td>${esc(m.kutu.join(", "))}</td><td title="${esc(m.u)}"><div class="ust-metin">${vurgula(m.u || "(konu yok)", re)}</div><div class="alt-metin">${vurgula(ozet(m), re)}</div></td><td title="${esc(m.a)}">${vurgula(m.a, re)}</td><td title="${esc(m.e)}">${vurgula(m.e, re)}</td><td title="${esc(bas(m.bi))}">${vurgula(bas(m.bi), re)}</td><td title="${esc(m.y)}">${esc(m.d === "Talep" ? m.y : m.d.replace(/ \(.*\)$/, ""))}</td><td class="s">${m.i.length}${m.ek.length ? " 📎" : ""}</td><td class="s">${sure(m.yd)}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>Toplam</td><td></td><td>${sayi(SONUC.length)} konuşma${SONUC.length > 400 ? " · ilk 400 satır" : ""}</td><td></td><td></td><td></td><td></td><td class="s">${sayi(SONUC.reduce((a, m) => a + m.i.length, 0))}</td><td></td></tr></tfoot></table>`;
+  $("#m-tablo").querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => ac(g[+tr.dataset.i]));
+}
+
+/* ---------- konuşma ayrıntısı ---------- */
+function ac(m) {
+  if (!m) return; const re = vRe(sorgu(D.q));
+  $("#d-etiket").innerHTML = `<span class="etiket-cip">${esc(m.b !== "00" ? m.b + " " + (BOL[m.b] || "") : "Talep sayılmaz")}</span><span class="etiket-cip">${esc(m.d === "Talep" ? m.y : m.d)}</span>`;
+  $("#d-konu").innerHTML = vurgula(m.u || "(konu yok)", re);
+  $("#d-bilgi").innerHTML = `${esc(m.kutu.join(", "))} · başlatan ${esc(m.a)} &lt;${esc(m.e)}&gt;${m.bi ? " · " + esc(bas(m.bi)) : ""}<br>${m.i.length} ileti · ilk yanıt ${sure(m.yd)} · son hareket ${esc(m.son)}`;
+  $("#d-gov").innerHTML = m.i.map(x => `<div class="ileti"><div class="u"><b>${vurgula(x.a || x.e, re)}</b><span>${esc(x.z.slice(8, 10) + "." + x.z.slice(5, 7) + "." + x.z.slice(0, 4) + " " + x.z.slice(11))}</span></div>
+    <div class="a">${vurgula(x.e, re)}${x.kime ? " → " + vurgula(x.kime, re) : ""}${x.bilgi ? "<br>Bilgi: " + vurgula(x.bilgi, re) : ""}</div><div class="m">${vurgula(x.m || "(metin yok)", re)}</div>${x.ek && x.ek.length ? `<div class="ek">📎 ${x.ek.map(e => vurgula(e, re)).join(" · ")}</div>` : ""}</div>`).join("");
+  $("#detay").classList.add("acik"); $("#d-gov").scrollTop = 0; const k = $("#d-gov mark"); if (k) k.scrollIntoView({block: "center"});
+}
+$("#d-kapat").onclick = () => $("#detay").classList.remove("acik");
+
+/* ---------- gezinme ---------- */
+function aralik(k) { if (k === "30") return [gEkle(BUGUN, -29), BUGUN]; if (k === "ay") return [BUGUN.slice(0, 8) + "01", BUGUN]; if (k === "nisan") return [V.meta.donem_baslangic, BUGUN]; return [MAIL.reduce((a, m) => m.t < a ? m.t : a, BUGUN), BUGUN]; }
+function ciz() {
+  $$(".mdug[data-sayfa]").forEach(b => b.classList.toggle("secili", b.dataset.sayfa === D.sayfa));
+  $$(".sayfa").forEach(s => s.classList.toggle("gizli", s.id !== "s-" + D.sayfa));
+  $$(".t-bas").forEach(i => i.value = D.bas); $$(".t-son").forEach(i => i.value = D.son);
+  $$(".hizli button").forEach(b => b.classList.toggle("secili", aralik(b.dataset.a).join() === [D.bas, D.son].join()));
+  $("#m-ek").checked = !!D.ek;
+  ({ana, hiz, arac, mail})[D.sayfa]();
+  kaydet();
+}
+$$(".mdug[data-sayfa]").forEach(b => b.onclick = () => { D.sayfa = b.dataset.sayfa; $("#detay").classList.remove("acik"); ciz(); });
+$("#temizle").onclick = () => { D.f = {}; D.q = ""; D.ek = false; $("#q").value = ""; ciz(); };
+$$(".t-bas").forEach(i => i.onchange = () => { if (i.value) { D.bas = i.value; if (D.bas > D.son) D.son = D.bas; ciz(); } });
+$$(".t-son").forEach(i => i.onchange = () => { if (i.value) { D.son = i.value; if (D.son < D.bas) D.bas = D.son; ciz(); } });
+$$(".hizli button").forEach(b => b.onclick = () => { [D.bas, D.son] = aralik(b.dataset.a); ciz(); });
+let zam; $("#q").value = D.q; $("#q").oninput = e => { clearTimeout(zam); zam = setTimeout(() => { D.q = e.target.value.trim(); ciz(); }, 180); };
+$("#m-ek").onchange = e => { D.ek = e.target.checked; ciz(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#detay").classList.remove("acik"); if (e.key === "/" && document.activeElement !== $("#q")) { e.preventDefault(); D.sayfa = "mail"; ciz(); $("#q").focus(); } });
+
+/* kendiliğinden yenileme: 15 dakikada bir, kullanıcı boştayken */
+const acilis = Date.now(); let hareket = Date.now();
+["mousemove", "keydown", "wheel"].forEach(t => addEventListener(t, () => hareket = Date.now(), {passive: true}));
+if (!YAYIN) setInterval(() => { if (Date.now() - acilis > 9e5 && Date.now() - hareket > 12e4 && !$("#detay").classList.contains("acik")) location.reload(); }, 6e4);
+
+ciz();
+}
+
+/* Şifreli yayın: veri AES-256-GCM ile şifrelidir (anahtar: PBKDF2-SHA256), tarayıcıda şifreyle çözülür. */
+async function coz(sifre) {
+  const s = window.CANLI_SIFRELI, b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  const ham = await crypto.subtle.importKey("raw", new TextEncoder().encode(sifre), "PBKDF2", false, ["deriveKey"]);
+  const anahtar = await crypto.subtle.deriveKey({name: "PBKDF2", salt: b64(s.salt), iterations: s.it, hash: "SHA-256"}, ham, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64(s.iv)}, anahtar, b64(s.veri));
+  return JSON.parse(await new Response(new Blob([acik]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+}
+if (window.CANLI) baslat();
+else if (window.CANLI_SIFRELI) {
+  const k = document.getElementById("kilit"), f = document.getElementById("kilit-form"), g = document.getElementById("kilit-sifre"), h = document.getElementById("kilit-hata");
+  k.hidden = false; g.focus();
+  f.onsubmit = async e => { e.preventDefault(); h.textContent = "Açılıyor…";
+    try { window.CANLI = await coz(g.value); g.value = ""; k.hidden = true; baslat(); }
+    catch (x) { h.textContent = "Şifre hatalı. Tekrar deneyin."; g.select(); } };
+}
+</script>
+</body>
+</html>
