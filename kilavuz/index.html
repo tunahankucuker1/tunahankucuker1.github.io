@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BİLGEM Rapor Kılavuzu</title>
+<style>
+/* Rapor Kılavuzu (kullanıcı isteği 29.09.2026): raporların kullanım videosu ve bölümleri. Aynı aile (Your Own KPI yazı ve
+   renk dili). Yayında video da veri de şifrelidir; şifre girilince tarayıcıda çözülür. */
+:root{--bant1:#5D80C6;--bant2:#5D8ABF;--bant3:#599CAB;--mavi:#3F68BD;--metin:#5B5B78;--gri:#9090AD}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#C9D2EA;color:#5B5B78;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif}
+button,input{font-family:inherit}
+#sahne{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;background:linear-gradient(135deg,#D9DFF1 0%,#C1CCE2 55%,#B4C4E1 100%)}
+.menu{position:absolute;z-index:10;left:24px;top:28px;width:96px;height:664px;border-radius:12px;background:linear-gradient(180deg,#EEF1F4 0%,#D7DFE6 100%);box-shadow:0 6px 16px rgba(80,95,140,.25),inset 0 1px 0 rgba(255,255,255,.8);display:flex;flex-direction:column;align-items:center;padding-top:12px}
+.menu .logo{width:66px;height:auto;margin-bottom:2px}
+.mdug{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;margin-top:9px;color:#9090AD;font-size:13px}
+.mdug .kut{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#F5F7FA,#E3E8EE);box-shadow:0 2px 6px rgba(80,95,140,.2),inset 0 1px 0 #fff;color:#9090AD}
+.mdug .kut svg{width:28px;height:28px}
+.mdug.secili{color:#5B5B78}.mdug.secili .kut{background:linear-gradient(135deg,#5D80C6 0%,#599CAB 100%);color:#F2F2FF;box-shadow:0 4px 10px rgba(80,110,190,.4)}
+.menu .alt-not{margin-top:auto;margin-bottom:12px;font-size:10.5px;color:#9090AD;text-align:center;line-height:1.4;padding:0 6px}
+.bant{position:absolute;left:134px;top:28px;width:1122px;height:96px;border-radius:14px;background:linear-gradient(115deg,var(--bant1) 0%,var(--bant2) 55%,var(--bant3) 100%);box-shadow:0 8px 20px rgba(70,95,160,.3);display:flex;align-items:center;gap:22px;padding:0 20px;color:#F2F2FF}
+.bant h1{margin:0;font-size:24px;font-weight:400;color:#F2F2FF}
+.bant .alt-bas{font-size:12.5px;color:#D9DFF1;margin-top:2px;max-width:560px}
+.kpi{display:flex;gap:10px;margin-left:auto}
+.kpi div{min-width:118px;border-radius:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);box-shadow:0 3px 10px rgba(30,50,110,.14);padding:8px 14px;text-align:center}
+.kpi b{display:block;font-size:28px;font-weight:400;color:#F2F2FF;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12.5px;color:#D9DFF1}
+.alt{position:absolute;left:134px;top:136px;width:1122px;height:556px;border-radius:14px;background:rgba(217,223,241,.55);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 20px rgba(70,95,160,.18)}
+.oynatici{position:absolute;left:12px;top:12px;width:824px;height:515px;border-radius:12px;overflow:hidden;background:#1C2436;box-shadow:0 6px 18px rgba(30,40,80,.3)}
+.oynatici video{width:100%;height:100%;display:block;background:#1C2436}
+.oynatici .durum{position:absolute;inset:0;display:grid;place-items:center;color:#D9DFF1;font-size:15px;text-align:center;padding:30px;line-height:1.6}
+.oynatici .durum[hidden]{display:none}
+.oynatici .cubuk{width:260px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden;margin:12px auto 0}
+.oynatici .cubuk i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5D80C6,#7CF5AE)}
+.ipucu{position:absolute;left:16px;top:532px;font-size:11.5px;color:#9090AD}
+.bolumler{position:absolute;left:848px;top:12px;right:12px;bottom:12px;border-radius:12px;background:linear-gradient(160deg,rgba(236,240,248,.9),rgba(214,223,238,.8));border:1px solid rgba(255,255,255,.6);display:flex;flex-direction:column}
+.bolumler h2{margin:0;padding:12px 14px 8px;font-size:16px;font-weight:400;color:#5B5B78}
+.liste{flex:1;overflow:auto;padding:0 6px 8px}
+.grup{font-size:11.5px;color:#9090AD;padding:8px 8px 3px;letter-spacing:.02em}
+.bl{display:flex;gap:8px;align-items:baseline;width:100%;border:0;background:transparent;text-align:left;padding:6px 8px;border-radius:7px;cursor:pointer;color:#5B5B78;font-size:13px;line-height:1.35}
+.bl:hover{background:rgba(255,255,255,.6)}
+.bl .z{flex:none;width:38px;font-size:11.5px;color:#9090AD;font-variant-numeric:tabular-nums}
+.bl.simdi{background:#fff;color:#3F68BD;box-shadow:0 1px 4px rgba(60,80,140,.15)}.bl.simdi .z{color:#3F68BD}
+.liste::-webkit-scrollbar{width:8px}.liste::-webkit-scrollbar-thumb{background:rgba(90,105,140,.35);border-radius:8px}
+/* alt sayfa şeridi: Power BI sayfa sekmeleri gibi (bütün raporlarda aynı) */
+#serit{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:30;display:flex;align-items:stretch;background:#F3F4F7;border-top:1px solid #D3D8E2;box-shadow:0 -2px 8px rgba(46,64,120,.08);padding-left:14px}
+#serit .ok{display:flex;align-items:center;gap:2px;padding-right:10px;color:#8A93A3;font-size:15px}
+#serit .ok a{color:inherit;text-decoration:none;padding:0 5px;border-radius:3px}#serit .ok a:hover{background:#E4E8EF;color:#3D66C0}#serit .ok a.pasif{opacity:.35;pointer-events:none}
+#serit .sek{display:flex;align-items:center;padding:0 22px;font-size:13px;color:#5B5B78;text-decoration:none;border-left:1px solid #DDE1E8;position:relative;white-space:nowrap}
+#serit .sek:last-of-type{border-right:1px solid #DDE1E8}
+#serit .sek:hover{background:#E9ECF2}
+#serit .sek.secili{background:#fff;font-weight:600;color:#3F68BD}
+#serit .sek.secili::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#5D80C6,#599CAB)}
+#serit .sek svg{width:15px;height:15px;margin-right:7px;color:#5F6B78}#serit .sek.secili svg{color:#3D66C0}
+#serit .sayi{margin-left:7px;background:#D9822B;color:#fff;border-radius:999px;font-size:10.5px;font-weight:600;padding:0 6px;line-height:16px}#serit .sayi:empty{display:none}
+#serit .sag{margin-left:auto;display:flex;align-items:center;padding-right:16px;font-size:11.5px;color:#605E5C}
+/* şifre ekranı (yalnız şifreli yayında) */
+#kilit{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(135deg,#D9DFF1 0%,#C1CCE2 55%,#B4C4E1 100%)}
+#kilit[hidden]{display:none}
+.kilit-kart{width:380px;max-width:calc(100vw - 32px);border-radius:16px;background:linear-gradient(180deg,#FBFCFE,#E9EDF4);box-shadow:0 18px 50px rgba(46,64,120,.35);padding:26px 28px 22px;text-align:center}
+.kilit-kart img{width:92px}
+.kilit-bant{margin:14px -28px 14px;padding:12px;color:#fff;font-size:17px;background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-kart p{font-size:13px;color:#5B5B78;margin:0 0 14px;line-height:1.45}
+.kilit-kart input{width:100%;height:40px;border:1px solid #CBD3E1;border-radius:8px;padding:0 12px;font-size:15px}
+.kilit-kart button{margin-top:12px;width:100%;height:40px;border:0;border-radius:8px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-hata{min-height:18px;margin-top:10px;font-size:12.5px;color:#B42318}
+.sifre-kut{position:relative}
+.kilit-kart .sifre-kut input{padding-right:46px}
+.kilit-kart .goz{position:absolute;right:5px;top:5px;width:30px;height:30px;margin:0;padding:0;border-radius:6px;background:transparent;color:#9090AD;display:grid;place-items:center}
+.kilit-kart .goz:hover{background:#EEF1F7;color:#3F68BD}
+.kilit-kart .goz svg{width:20px;height:20px}
+/* telefon ve dar ekran: alt alta */
+@media (max-width:900px){
+  html,body{height:auto;overflow:auto;overflow-x:hidden}
+  body{padding-bottom:40px;background:linear-gradient(135deg,#D9DFF1 0%,#C1CCE2 55%,#B4C4E1 100%)}
+  #sahne{position:static;width:auto;height:auto;transform:none!important;overflow:visible;background:none}
+  .menu{position:sticky;top:0;left:auto;width:auto;height:auto;border-radius:0 0 12px 12px;flex-direction:row;align-items:center;gap:6px;padding:6px 8px;z-index:25}
+  .menu .logo{width:36px;margin:0 4px 0 0}
+  .mdug{margin-top:0;flex-direction:row;gap:6px;white-space:nowrap}
+  .mdug .kut{width:34px;height:34px;border-radius:9px}.mdug .kut svg{width:18px;height:18px}
+  .menu .alt-not{display:none}
+  .bant,.alt{position:relative;left:auto;top:auto;width:auto;height:auto;margin:10px}
+  .bant{flex-wrap:wrap;padding:14px;gap:12px}
+  .kpi{margin-left:0;flex-basis:100%}.kpi div{flex:1;min-width:0}
+  .alt{padding:10px}
+  .oynatici{position:relative;left:auto;top:auto;width:100%;height:auto;aspect-ratio:16/10}
+  .ipucu{position:static;margin:6px 4px 10px}
+  .bolumler{position:relative;left:auto;top:auto;right:auto;bottom:auto;max-height:none}
+  .liste{overflow:visible}
+  #serit{overflow-x:auto;padding-left:4px}#serit .sag{display:none}#serit .sek{padding:0 12px;font-size:12.5px}#serit .ok{display:none}
+}
+</style>
+</head>
+<body>
+<div id="sahne">
+  <nav class="menu">
+    <img class="logo" src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <button class="mdug secili" title="Rapor kılavuzu"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg></span>Kılavuz</button>
+    <div class="alt-not" id="kaynak"></div>
+  </nav>
+  <header class="bant">
+    <div><h1>Rapor kılavuzu</h1><div class="alt-bas" id="alt-bas">İdari Destek, Dönülmemiş Mailler, Mail Arama, Filo, Tanıtım ve Kurumsal Rehber'in kullanımı adım adım</div></div>
+    <div class="kpi"><div><b id="k-bolum">–</b><span>bölüm</span></div><div><b id="k-sure">–</b><span>dakika</span></div></div>
+  </header>
+  <section class="alt">
+    <div class="oynatici"><video id="video" controls playsinline preload="metadata"></video><div class="durum" id="durum">Video yükleniyor…</div></div>
+    <div class="ipucu">Sağdaki bölümlere tıklayın, video oradan başlar · Tam ekran için videonun köşesindeki düğmeyi kullanın</div>
+    <aside class="bolumler"><h2>Bölümler</h2><div class="liste" id="liste"></div></aside>
+  </section>
+</div>
+<nav id="serit" aria-label="Raporlar">
+  <span class="ok"><a data-yon="-1" title="Önceki sayfa">‹</a><a data-yon="1" title="Sonraki sayfa">›</a></span>
+  <a class="sek" data-hedef="idari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>İdari Destek</a>
+  <a class="sek" data-hedef="donus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Dönülmemiş Mailler<span class="sayi" id="serit-sayi"></span></a>
+  <a class="sek" data-hedef="filo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg>Filo</a>
+  <a class="sek" data-hedef="tanitim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/></svg>Tanıtım</a>
+  <a class="sek" data-hedef="rehber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h3M3 12h3M3 17h3"/><circle cx="12.5" cy="10" r="2.6"/><path d="M8.5 16.5c.8-2 2.3-3 4-3s3.2 1 4 3"/></svg>Kurumsal Rehber</a>
+  <a class="sek" data-hedef="kilavuz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>Rapor Kılavuzu</a>
+  <span class="sag" id="serit-sayfa"></span>
+</nav>
+<script>
+/* Alt sayfa şeridi (Power BI sayfa sekmeleri gibi). Yayında site yolları; bu bilgisayarda (file://) yan klasörler. */
+(() => { const SIRA = ["idari", "donus", "filo", "tanitim", "rehber", "kilavuz"], yerel = location.protocol === "file:", idari = yerel ? "../canli_rapor/index.html" : "/idari-destek/";
+  const yol = {idari, donus: yerel ? idari + "#donus" : idari, filo: yerel ? "../filo_rapor/index.html" : "/filo/", tanitim: yerel ? "../tanitim/index.html" : "/idari-destek/tanitim/", rehber: yerel ? "../rehber_rapor/index.html" : "/rehber/", kilavuz: yerel ? "../kilavuz_rapor/index.html" : "/kilavuz/"};
+  document.querySelectorAll("#serit .sek").forEach(a => a.href = yol[a.dataset.hedef]);
+  document.querySelectorAll("#serit a").forEach(a => a.addEventListener("click", () => { try { if (a.dataset.hedef) sessionStorage.setItem("bilgem_acilis", a.dataset.hedef); } catch (e) {} }));
+  window.seritGuncelle = (secili, sayi) => { const i = SIRA.indexOf(secili);
+    document.querySelectorAll("#serit .sek").forEach(a => a.classList.toggle("secili", a.dataset.hedef === secili));
+    document.querySelectorAll("#serit [data-yon]").forEach(a => { const h = SIRA[i + +a.dataset.yon]; a.classList.toggle("pasif", !h); if (h) { a.href = yol[h]; a.dataset.hedef = h; } else { a.removeAttribute("href"); delete a.dataset.hedef; } });
+    document.getElementById("serit-sayfa").textContent = "Sayfa " + (i + 1) + " / " + SIRA.length;
+    if (sayi != null) document.getElementById("serit-sayi").textContent = sayi || ""; };
+  seritGuncelle("kilavuz"); })();
+</script>
+<div id="kilit" hidden>
+  <form id="kilit-form" class="kilit-kart" autocomplete="off">
+    <img src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <div class="kilit-bant">Rapor Kılavuzu</div>
+    <p>Bu sayfa kuruma özel bilgiler içerir ve şifrelidir. Size iletilen şifreyi girin.</p>
+    <div class="sifre-kut"><input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre"><button type="button" class="goz" id="kilit-goz" title="Şifreyi göster" aria-label="Şifreyi göster" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <script>(() => { const g = document.getElementById("kilit-sifre"), b = document.getElementById("kilit-goz");
+      const ac = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', kapa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+      b.onclick = () => { const goster = g.type === "password"; g.type = goster ? "text" : "password"; b.innerHTML = goster ? kapa : ac;
+        b.title = goster ? "Şifreyi gizle" : "Şifreyi göster"; b.setAttribute("aria-label", b.title); b.setAttribute("aria-pressed", goster); g.focus(); }; })();</script>
+    <button type="submit">Kılavuzu aç</button>
+    <div id="kilit-hata" class="kilit-hata"></div>
+  </form>
+</div>
+<script src="veri.enc.js"></script>
+<script>
+function baslat() {
+"use strict";
+const V = window.KILAVUZ, $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const dk = t => Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+const AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+/* ölçekleme: masaüstünde 16:9 sayfa ekrana sığar, telefonda alt alta akar */
+const MQ = matchMedia("(max-width: 900px)");
+function olcekle() {
+  if (MQ.matches) { $("#sahne").style.transform = "none"; return; }
+  const h = innerHeight - 34, s = Math.min(innerWidth / 1280, h / 720);
+  $("#sahne").style.transform = `translate(${(innerWidth - 1280 * s) / 2}px,${(h - 720 * s) / 2}px) scale(${s})`;
+}
+addEventListener("resize", olcekle); olcekle();
+
+const B = V.bolumler || [], v = $("#video");
+$("#k-bolum").textContent = B.length || "–";
+$("#k-sure").textContent = V.sure ? Math.round(V.sure / 60) : "–";
+if (V.tarih) $("#kaynak").innerHTML = `Video<br>${+V.tarih.slice(8, 10)} ${AY[+V.tarih.slice(5, 7) - 1]} ${V.tarih.slice(0, 4)}`;
+// Bölüm listesi: raporlara göre gruplanır; tıklanınca video o saniyeden başlar.
+let grup = "";
+$("#liste").innerHTML = B.map((b, i) => { const g = b.grup !== grup ? `<div class="grup">${esc(b.grup)}</div>` : ""; grup = b.grup;
+  return g + `<button class="bl" data-i="${i}"><span class="z">${dk(b.t)}</span><span>${esc(b.ad)}</span></button>`; }).join("");
+document.querySelectorAll(".bl").forEach(d => d.onclick = () => { v.currentTime = B[+d.dataset.i].t + 0.05; v.play().catch(() => {}); });
+const simdiki = () => { let k = -1; B.forEach((b, i) => { if (v.currentTime + 0.1 >= b.t) k = i; });
+  document.querySelectorAll(".bl").forEach(d => d.classList.toggle("simdi", +d.dataset.i === k));
+  const e = document.querySelector(".bl.simdi"); if (e && !v.paused) e.scrollIntoView({block: "nearest"}); };
+v.addEventListener("timeupdate", simdiki); v.addEventListener("seeked", simdiki);
+v.addEventListener("loadedmetadata", () => { $("#durum").hidden = true; simdiki(); });
+v.addEventListener("error", () => { if (!v.getAttribute("src")) return; $("#durum").hidden = false; $("#durum").textContent = "Video açılamadı. Sayfayı yenileyin."; });
+}
+// Video adresi: bu bilgisayarda doğrudan dosya; yayında şifresi çözülmüş videonun geçici (blob) adresi.
+function videoKoy(adres) {
+  const d = document.getElementById("durum");
+  if (!adres) { d.hidden = false; d.textContent = "Kılavuz videosu hazırlanıyor. Kısa süre sonra burada olacak."; return; }
+  document.getElementById("video").src = adres;
+}
+
+/* Şifreli yayın: bölüm listesi veri.enc.js'te, video kilavuz.enc'te (AES-256-GCM; anahtar şifreden PBKDF2-SHA256).
+   Video dosyası: 4 bayt "BLG1" + 16 bayt tuz + 12 bayt IV + şifreli MP4. Aynı sitedeki raporlar aynı şifreyi kullanır. */
+async function anahtar(sifre, tuz, tur) {
+  const ham = await crypto.subtle.importKey("raw", new TextEncoder().encode(sifre), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({name: "PBKDF2", salt: tuz, iterations: tur, hash: "SHA-256"}, ham, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+}
+async function coz(sifre) {
+  const s = window.KILAVUZ_SIFRELI, b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64(s.iv)}, await anahtar(sifre, b64(s.salt), s.it), b64(s.veri));
+  return JSON.parse(await new Response(new Blob([acik]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+}
+async function videoCoz(sifre, dosya, tur) {
+  const d = document.getElementById("durum");
+  d.innerHTML = `Video hazırlanıyor… <b id="yuzde">%0</b><div class="cubuk"><i id="ilerle"></i></div>`;
+  const y = await fetch(dosya, {cache: "no-cache"}); if (!y.ok) throw new Error("video yok");
+  const boy = +y.headers.get("content-length") || 0, okuyucu = y.body.getReader(), parca = []; let gelen = 0;
+  for (;;) { const {done, value} = await okuyucu.read(); if (done) break; parca.push(value); gelen += value.length;
+    if (boy) { const p = Math.min(99, Math.round(gelen / boy * 100)); document.getElementById("yuzde").textContent = "%" + p; document.getElementById("ilerle").style.width = p + "%"; } }
+  const tum = new Uint8Array(gelen); let o = 0; for (const p of parca) { tum.set(p, o); o += p.length; }
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: tum.slice(20, 32)}, await anahtar(sifre, tum.slice(4, 20), tur), tum.slice(32));
+  return URL.createObjectURL(new Blob([acik], {type: "video/mp4"}));
+}
+if (window.KILAVUZ) { baslat(); videoKoy(window.KILAVUZ.video || null); }
+else if (window.KILAVUZ_SIFRELI) {
+  const k = document.getElementById("kilit"), f = document.getElementById("kilit-form"), g = document.getElementById("kilit-sifre"), h = document.getElementById("kilit-hata");
+  const dene = async s => { window.KILAVUZ = await coz(s); try { sessionStorage.setItem("bilgem_rapor", s); } catch (e) {} k.hidden = true;
+    baslat();
+    const dosya = window.KILAVUZ.video_sifreli; if (!dosya) { videoKoy(null); return; }
+    videoCoz(s, dosya, window.KILAVUZ_SIFRELI.it).then(videoKoy).catch(() => { document.getElementById("durum").textContent = "Video açılamadı. Sayfayı yenileyin."; }); };
+  let hatir = null; try { hatir = sessionStorage.getItem("bilgem_rapor"); } catch (e) {}
+  (hatir ? dene(hatir) : Promise.reject()).catch(() => { k.hidden = false; g.focus(); });
+  f.onsubmit = async e => { e.preventDefault(); h.textContent = "Açılıyor…";
+    try { await dene(g.value); g.value = ""; } catch (x) { h.textContent = "Şifre hatalı. Tekrar deneyin."; g.select(); } };
+}
+</script>
+</body>
+</html>
