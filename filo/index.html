@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BİLGEM Filo Raporu</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+/* İdari Destek canlı raporuyla aynı BİLGEM Power BI şablonu: lavanta zemin, beyaz dikey menü, mavi-turkuaz bant */
+:root{--bant1:#3D66C0;--bant2:#4A86B8;--bant3:#50A0A8;--yesil:#9BE3A9;--koyu:#1F2A37;--metin:#2B3440;--gri:#5F6B78;--cizgi:rgba(255,255,255,.75);--mavi:#3D66C0}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#C9D2EA;font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,system-ui,sans-serif;color:var(--metin)}
+button,input,select{font-family:inherit}
+.num{font-variant-numeric:tabular-nums}
+#sahne{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+.menu{position:absolute;z-index:10;left:24px;top:28px;width:96px;height:664px;border-radius:12px;background:linear-gradient(90deg,#FBFCFE 0%,#E3E7EF 100%);box-shadow:0 6px 18px rgba(46,64,120,.28),inset 0 1px 0 #fff;display:flex;flex-direction:column;align-items:center;padding-top:12px}
+.menu .logo{width:66px;height:auto;margin-bottom:2px}
+.mdug{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;margin-top:9px;color:#40495A;font-size:12.5px;text-decoration:none}
+.mdug .kut{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#FFFFFF,#EDF0F5);box-shadow:0 3px 8px rgba(46,64,120,.22),inset 0 1px 0 #fff;color:#6B7688;transition:.15s}
+.mdug:hover .kut{transform:translateY(-1px);box-shadow:0 6px 12px rgba(46,64,120,.28)}
+.mdug .kut svg{width:28px;height:28px}
+.mdug.secili .kut{background:linear-gradient(135deg,#3F68C1 0%,#4F9DAA 100%);color:#fff;box-shadow:0 4px 12px rgba(61,102,192,.45)}
+.mdug.secili{color:#1F2A37;font-weight:600}
+/* alt sayfa şeridi: Power BI sayfa sekmeleri gibi; raporlar arası geçiş rapor gövdesinde değil burada */
+#serit{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:30;display:flex;align-items:stretch;background:#F3F4F7;border-top:1px solid #D3D8E2;box-shadow:0 -2px 8px rgba(46,64,120,.08);padding-left:14px;font-family:"Segoe UI",system-ui,sans-serif}
+#serit .ok{display:flex;align-items:center;gap:2px;padding-right:10px;color:#8A93A3;font-size:15px}
+#serit .ok a{color:inherit;text-decoration:none;padding:0 5px;border-radius:3px}#serit .ok a:hover{background:#E4E8EF;color:#3D66C0}#serit .ok a.pasif{opacity:.35;pointer-events:none}
+#serit .sek{display:flex;align-items:center;padding:0 22px;font-size:13px;color:#323130;text-decoration:none;border-left:1px solid #DDE1E8;position:relative;white-space:nowrap}
+#serit .sek:last-of-type{border-right:1px solid #DDE1E8}
+#serit .sek:hover{background:#E9ECF2}
+#serit .sek.secili{background:#fff;font-weight:600;color:#1F2A37}
+#serit .sek.secili::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#3D66C0,#50A0A8)}
+#serit .sek svg{width:15px;height:15px;margin-right:7px;color:#5F6B78}#serit .sek.secili svg{color:#3D66C0}
+#serit .sayi{margin-left:7px;background:#D9822B;color:#fff;border-radius:999px;font-size:10.5px;font-weight:600;padding:0 6px;line-height:16px}#serit .sayi:empty{display:none}
+@media (max-width:900px){#serit{overflow-x:auto;padding-left:4px}#serit .sag{display:none}#serit .sek{padding:0 12px;font-size:12.5px}#serit .ok{display:none}}
+#serit .sag{margin-left:auto;display:flex;align-items:center;padding-right:16px;font-size:11.5px;color:#605E5C}
+.menu .alt-not{margin-top:auto;margin-bottom:12px;font-size:10.5px;color:#6B7688;text-align:center;line-height:1.35;padding:0 6px;cursor:default}
+.menu .alt-not b{display:block;color:#2F9E5F;font-size:10.5px}
+.menu .alt-not b.eski{color:#C77700}
+.sayfa{position:absolute;inset:0;pointer-events:none}
+.sayfa>*{pointer-events:auto}
+.sayfa.gizli{display:none}
+svg [data-i]{cursor:pointer}
+.secim-not{position:absolute;right:12px;top:10px;font-size:11.5px;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px;cursor:pointer;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.secim-not:empty{display:none}
+.panel .secim-not{color:#2B3440;background:rgba(255,255,255,.6);border-color:rgba(61,102,192,.35);top:8px}
+.hl-var .hs:not(.secili){opacity:.42}
+.hs.secili .ad{font-weight:700;color:#1F2A37}
+.bant{position:absolute;left:134px;top:28px;width:1122px;height:258px;border-radius:14px;background:linear-gradient(115deg,var(--bant1) 0%,var(--bant2) 55%,var(--bant3) 100%);box-shadow:0 10px 26px rgba(46,72,150,.38)}
+.cam{position:absolute;border-radius:10px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 2px 6px rgba(20,40,90,.12);color:#fff}
+.cam .bs{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:15px;font-weight:400;letter-spacing:.2px;color:#F3F7FF;line-height:1.2}
+.cam .dg{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-size:29px;font-weight:300;color:#fff;white-space:nowrap}
+.cam .dg small{font-size:14px;opacity:.85;margin-left:3px}
+.cam .ek{position:absolute;left:4px;right:4px;bottom:6px;text-align:center;font-size:10.5px;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tarihler{position:absolute;left:0;right:0;top:38px;display:flex;justify-content:center;gap:8px}
+.tarihler input{width:104px;height:30px;border:1px solid rgba(255,255,255,.85);border-radius:3px;background:rgba(255,255,255,.15);color:#fff;font-size:12.5px;padding:0 6px;color-scheme:dark}
+.hizli{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:4px}
+.hizli button{appearance:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font-size:10.5px;border-radius:999px;padding:2px 8px;cursor:pointer}
+.hizli button.secili,.hizli button:hover{background:rgba(255,255,255,.25)}
+.grf-bas{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:17px;color:#F3F7FF}
+.lej{position:absolute;left:12px;top:10px;display:flex;gap:14px;font-size:12.5px;color:#fff;align-items:center}
+.lej i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#fff;margin-right:5px;vertical-align:-1px}
+.lej i.cz{width:18px;height:3px;border-radius:2px;background:var(--yesil)}
+.alt{position:absolute;left:134px;top:302px;width:1122px;height:390px;border-radius:14px;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.55);box-shadow:0 10px 24px rgba(46,72,150,.22)}
+.dilim-seridi{position:absolute;left:10px;top:10px;right:10px;height:58px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(244,246,250,.88));box-shadow:0 3px 10px rgba(46,64,120,.18);display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:9px 10px}
+.dilim{border-radius:7px;background:linear-gradient(180deg,#F1F3F7,#E4E8EF);box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(46,64,120,.18);display:flex;align-items:center;gap:6px;padding:0 8px;min-width:0}
+.dilim label{font-size:12px;color:#3B4452;white-space:nowrap}
+.dilim select{flex:1;min-width:0;height:26px;border:1px solid #D3D9E3;border-radius:4px;background:#fff;font-size:11.5px;color:#333;padding:0 4px}
+.panel{position:absolute;border-radius:10px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);overflow:hidden}
+.panel .pbas{font-size:14.5px;color:#243044;text-align:center;margin-top:8px}
+.tablo{position:absolute;overflow:auto}
+.tablo table{width:100%;border-collapse:collapse;font-size:12.5px;color:#26303C;table-layout:fixed}
+.tablo th{position:sticky;top:0;text-align:left;font-weight:600;font-size:12.5px;color:#1C2530;padding:8px 8px 6px;background:rgba(214,222,241,.96);z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tablo td{padding:6px 8px;border-bottom:1px solid var(--cizgi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tablo td.s,.tablo th.s{text-align:right}
+.tablo td .alt-metin{font-size:11px;color:#5F6B78;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.tablo tbody tr{cursor:pointer}
+.tablo tbody tr:hover td{background:rgba(255,255,255,.45)}
+.tablo tfoot td{font-weight:700;border-bottom:0;position:sticky;bottom:0;background:rgba(214,222,241,.96)}
+.tablo::-webkit-scrollbar,.hlist::-webkit-scrollbar,.dgov::-webkit-scrollbar{width:8px;height:8px}
+.tablo::-webkit-scrollbar-thumb,.hlist::-webkit-scrollbar-thumb,.dgov::-webkit-scrollbar-thumb{background:rgba(90,105,140,.35);border-radius:8px}
+.hlist{position:absolute;overflow:auto;padding:4px 14px}
+.hs{display:grid;grid-template-columns:150px 1fr 64px;align-items:center;gap:8px;font-size:12px;height:24px;cursor:default}
+.hs.tik{cursor:pointer}.hs.tik:hover .ad{color:var(--mavi);text-decoration:underline}
+.hs .ad{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#2B3440;text-align:right}
+.hs .y{height:14px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden;display:flex}
+.hs .y span{display:block;height:100%}
+.hs .s{font-size:12px;color:#1F2A37;white-space:nowrap}
+/* kurum ağacı: alt düzeye inme (drill down) */
+.hs .ad.ok{display:flex;justify-content:flex-end;min-width:0}.hs .ad.ok span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.hs .alt-ok{margin-left:4px;flex-shrink:0;color:#3F68BD;font-weight:600}
+#a-birim .hs{grid-template-columns:190px 1fr 56px}
+.kirinti{position:absolute;left:14px;right:12px;top:30px;height:20px;display:flex;align-items:center;gap:5px;font-size:11.5px;color:#9090AD;white-space:nowrap;overflow:hidden}
+.kirinti a{cursor:pointer;color:#3F68BD;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}.kirinti a:hover{text-decoration:underline}
+.kirinti a.son{color:#5B5B78;font-weight:600;cursor:default;text-decoration:none}
+.kirinti i{font-style:normal;opacity:.85}
+.kirinti .yukari{margin-left:6px;flex-shrink:0;border:1px solid #CBD3E1;background:#fff;border-radius:6px;padding:0 7px;color:#3F68BD;cursor:pointer;font:inherit;line-height:17px}
+/* iki ölçülü satır: üst çubuk km, alt çubuk yakıt L */
+#a-birim .hs.iki{grid-template-columns:168px 1fr 58px;height:32px}
+.hs.iki .y2{display:flex;flex-direction:column;gap:3px}
+.hs.iki .y2 i{display:block;height:8px;background:rgba(90,105,140,.12);border-radius:2px;overflow:hidden}
+.hs.iki .y2 span{display:block;height:100%}
+.y2 .km,.agac-lej .km{background:#3F68BD}.y2 .lt,.agac-lej .lt{background:#599CAB}
+.hs.iki .s2{display:flex;flex-direction:column;align-items:flex-end;font-size:11.5px;line-height:14px}
+.hs.iki .s2 .km{color:#3F68BD}.hs.iki .s2 .lt{color:#3E8791}
+.hs.soluk{opacity:.8}.hs.soluk .ad{font-style:italic}
+.agac-lej{margin-left:auto;display:flex;gap:2px;flex-shrink:0}
+.agac-not{position:absolute;left:14px;right:12px;bottom:5px;font-size:10.5px;font-style:italic;color:#9090AD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agac-lej button{border:0;background:transparent;color:#9090AD;font:inherit;font-size:11px;padding:0 4px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.agac-lej button i{display:inline-block;width:9px;height:9px;border-radius:2px}
+.agac-lej button.secili{color:#3F68BD;font-weight:600;background:#EEF3FC}
+#sag-menu{position:fixed;z-index:3000;background:#fff;border:1px solid #CBD3E1;border-radius:8px;box-shadow:0 8px 22px rgba(20,40,90,.22);padding:4px;min-width:170px}
+#sag-menu[hidden]{display:none}
+#sag-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:6px 10px;border-radius:5px;font:12.5px "Segoe UI",sans-serif;color:#5B5B78;cursor:pointer}
+#sag-menu button:hover{background:#EEF3FC;color:#3F68BD}
+.rozet{display:inline-block;font-size:10.5px;border-radius:999px;padding:0 7px;line-height:17px;background:rgba(61,102,192,.12);color:#2F4E8F}
+.rozet.y{background:rgba(47,158,95,.14);color:#23784A}.rozet.t{background:rgba(199,119,0,.14);color:#8A5300}.rozet.k{background:rgba(180,35,24,.1);color:#9A2A1F}.rozet.g{background:rgba(95,107,120,.12);color:#4A5565}
+.ara{position:absolute;left:12px;top:14px;width:600px;height:46px}
+.ara input{width:100%;height:46px;border-radius:8px;border:1px solid rgba(255,255,255,.85);background:#fff;padding:0 14px 0 42px;font-size:16px;color:#1F2A37;outline:none;box-shadow:0 3px 10px rgba(20,40,90,.2)}
+.ara svg{position:absolute;left:13px;top:13px;width:20px;height:20px;color:#6B7688}
+.ara-not{position:absolute;left:14px;top:66px;width:600px;font-size:11px;color:rgba(255,255,255,.9)}
+mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
+/* ayrıntı paneli */
+.detay{position:absolute;right:24px;top:28px;width:580px;height:664px;border-radius:14px;background:rgba(250,251,254,.98);box-shadow:-10px 0 40px rgba(20,40,90,.35);z-index:20;display:flex;flex-direction:column;transform:translateX(640px);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.detay.acik{transform:none}
+.dbas{padding:14px 18px 12px;background:linear-gradient(115deg,var(--bant1),var(--bant3));color:#fff;border-radius:14px 14px 0 0}
+.dbas h2{margin:6px 0 4px;font-size:18px;font-weight:600;line-height:1.3}
+.dbas .b{font-size:12px;opacity:.95;line-height:1.55}
+.dbas .ust{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dbas button{appearance:none;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.15);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
+.etiket-cip{display:inline-block;font-size:10.5px;background:rgba(255,255,255,.2);border-radius:999px;padding:1px 8px;margin-right:4px}
+.dgov{overflow:auto;padding:6px 18px 16px;flex:1}
+.dgov h3{font-size:13px;color:#1F2A37;margin:14px 0 6px;font-weight:600}
+.kart4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.kart4 div{background:#EEF2F9;border-radius:8px;padding:8px 10px;font-size:11px;color:#5F6B78}
+.kart4 b{display:block;font-size:17px;font-weight:600;color:#1F2A37;margin-top:2px}
+.dt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.dt th{text-align:left;font-weight:600;color:#4A5565;padding:5px 6px;border-bottom:1px solid #DDE3EE;white-space:nowrap}
+.dt td{padding:5px 6px;border-bottom:1px solid #E8ECF3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt td.s,.dt th.s{text-align:right}
+.dt tr.tik{cursor:pointer}.dt tr.tik:hover td{background:#EEF2F9}
+.kisi-sat{display:grid;grid-template-columns:1fr 150px;gap:4px 10px;padding:7px 0;border-bottom:1px solid #E8ECF3;font-size:12.5px}
+.kisi-sat .k{font-weight:600;color:#1F2A37}.kisi-sat .a{font-size:11.5px;color:#5F6B78}.kisi-sat .t{text-align:right;font-size:12px}
+.kisi-sat a{color:var(--mavi);text-decoration:none}
+.not{font-size:11.5px;color:#5F6B78;line-height:1.5;margin-top:8px}
+.ipucu{position:fixed;z-index:50;pointer-events:none;background:rgba(31,42,55,.95);color:#fff;font-size:12px;padding:6px 9px;border-radius:4px;opacity:0;transition:opacity .1s;max-width:300px;line-height:1.4}
+.ipucu.acik{opacity:1}
+.bilgi{font-size:11px;color:#4A5565}
+#kilit{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+#kilit[hidden]{display:none}
+.kilit-kart{width:380px;border-radius:16px;background:linear-gradient(180deg,#FBFCFE,#E9EDF4);box-shadow:0 18px 50px rgba(46,64,120,.35);padding:26px 28px 22px;text-align:center}
+.kilit-kart img{width:92px}
+.kilit-bant{margin:14px -28px 14px;padding:12px;color:#fff;font-size:17px;background:linear-gradient(115deg,#3D66C0,#50A0A8)}
+.kilit-kart p{font-size:13px;color:#4A5565;margin:0 0 14px;line-height:1.45}
+.kilit-kart input{width:100%;height:40px;border:1px solid #CBD3E1;border-radius:8px;padding:0 12px;font-size:15px}
+.kilit-kart button{margin-top:12px;width:100%;height:40px;border:0;border-radius:8px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(115deg,#3D66C0,#4F9DAA)}
+.kilit-hata{min-height:18px;margin-top:10px;font-size:12.5px;color:#B42318}
+/* ---------- Canlı Takip: harita ölçeklenen sayfanın dışında, rapor alanının üstüne oturur (Leaflet ölçeklenmiş kapta şaşar) ---------- */
+#canli-kap{position:fixed;z-index:5;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(46,72,150,.38);background:#DDE4F2;font-family:"Segoe UI",system-ui,sans-serif}
+#canli-kap[hidden]{display:none}
+#harita{position:absolute;inset:0}
+#harita .leaflet-top.leaflet-left{top:auto;bottom:48px}
+#harita .leaflet-tile-pane{filter:saturate(.85)}
+.cn-uyari{position:absolute;inset:0;display:grid;place-items:center;color:#4A5565;font-size:14px;z-index:400;pointer-events:none}
+.cn-ust{position:absolute;z-index:500;left:12px;top:12px;max-width:calc(100% - 340px);border-radius:12px;background:linear-gradient(115deg,rgba(61,102,192,.95),rgba(74,134,184,.95) 55%,rgba(80,160,168,.95));color:#fff;padding:10px 12px 12px;box-shadow:0 6px 18px rgba(20,40,90,.3)}
+.cn-baslik{display:flex;align-items:baseline;gap:10px;font-size:18px;flex-wrap:wrap}
+.cn-baslik small{font-size:11.5px;opacity:.88}
+.cn-kpi{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.cn-kpi button{appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.13);color:#fff;border-radius:10px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:7px;font:12px "Segoe UI",sans-serif}
+.cn-kpi button b{font-size:19px;font-weight:600}
+.cn-kpi button i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px rgba(255,255,255,.7)}
+.cn-kpi button:hover{background:rgba(255,255,255,.22)}.cn-kpi button.secili{background:rgba(255,255,255,.32);border-color:#fff}
+.cn-liste{position:absolute;z-index:500;right:12px;top:12px;bottom:12px;width:310px;border-radius:12px;background:rgba(250,251,254,.97);box-shadow:0 6px 18px rgba(20,40,90,.25);display:flex;flex-direction:column;overflow:hidden}
+.cn-liste .ara-k{padding:10px;border-bottom:1px solid #E1E6EF;background:linear-gradient(180deg,#FBFCFE,#EEF2F8)}
+.cn-liste input{width:100%;height:34px;border:1px solid #CBD3E1;border-radius:8px;padding:0 10px;font:13px "Segoe UI",sans-serif}
+#cn-araclar{overflow:auto;flex:1}
+.cn-a{display:grid;grid-template-columns:12px 1fr auto;gap:1px 8px;align-items:center;padding:8px 12px;border-bottom:1px solid #EDF0F5;cursor:pointer;font-size:12.5px}
+.cn-a:hover,.cn-a.secili{background:#EAF0FA}
+.cn-a i{width:10px;height:10px;border-radius:50%}
+.cn-a b{color:#1F2A37;font-weight:600}.cn-a .h{font-size:11.5px;color:#1F2A37;text-align:right;white-space:nowrap}
+.cn-a .d{font-size:11.5px;color:#5F6B78;grid-column:2/4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cn-alt{position:absolute;z-index:500;left:12px;bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:11px;color:#2B3440;background:rgba(255,255,255,.9);border-radius:8px;padding:5px 10px;box-shadow:0 2px 8px rgba(20,40,90,.15);max-width:calc(100% - 350px)}
+.cn-alt i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:-1px}
+.cn-isaret .n{width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);display:grid;place-items:center;box-sizing:border-box}
+.cn-isaret .n svg{width:10px;height:10px}
+.cn-isaret .e{position:absolute;left:19px;top:-1px;white-space:nowrap;font:600 11px "Segoe UI",sans-serif;color:#1F2A37;background:rgba(255,255,255,.92);border-radius:4px;padding:0 4px;box-shadow:0 1px 3px rgba(0,0,0,.2);display:none}
+#harita.etiketli .cn-isaret .e{display:block}
+.cn-pop{font:12.5px "Segoe UI",sans-serif;min-width:240px;line-height:1.5;color:#26303C}
+.cn-pop h4{margin:0 0 5px;font-size:15px;color:#1F2A37}
+.cn-pop .dur{display:inline-block;border-radius:999px;padding:0 9px;color:#fff;font-size:11px;line-height:19px}
+.cn-pop .sat{color:#4A5565}.cn-pop .rz{margin-top:7px;padding:6px 8px;background:#EEF2F9;border-radius:6px}
+.cn-pop .dug{display:flex;gap:6px;margin-top:9px}
+.cn-pop .dug button{appearance:none;border:1px solid #CBD3E1;background:#fff;border-radius:6px;padding:3px 9px;cursor:pointer;font:12px "Segoe UI",sans-serif}
+.cn-pop .dug button:hover{border-color:#3D66C0;color:#3D66C0}
+@media (max-width:900px){
+  #canli-kap{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:10px;border-radius:12px;display:flex;flex-direction:column}
+  #harita{position:relative;height:62vh;order:1}
+  .cn-ust{position:relative;left:auto;top:auto;max-width:none;border-radius:0;order:0}
+  .cn-liste{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:380px;border-radius:0;order:3}
+  .cn-alt{position:relative;left:auto;bottom:auto;max-width:none;border-radius:0;order:2}
+}
+/* ---------- yazı ve renk dili: kullanıcının örnek aldığı "Your Own KPI" (Zsolt Szabo) Power BI tasarımı (27.09.2026) ----------
+   Dashboard Final.pbix'ten: her yerde Segoe UI normal (yalnız seçili sekme Semibold); başlık 16 pt, bölüm 14 pt, büyük sayı 24 pt;
+   koyu metin #5B5B78, ikincil #9090AD, vurgu #3F68BD; bant üstünde yazı #D9DFF1, sayı #F2F2FF. Büyük harf, kalın etiket yok. */
+:root{--bant1:#5D80C6;--bant2:#5D8ABF;--bant3:#599CAB;--mavi:#3F68BD;--metin:#5B5B78;--gri:#9090AD;--koyu:#5B5B78}
+html,body,button,input,select,textarea{font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif}
+body{color:#5B5B78}
+.num{font-variant-numeric:tabular-nums}
+#sahne,#kilit{background:linear-gradient(135deg,#D9DFF1 0%,#C1CCE2 55%,#B4C4E1 100%)}
+.menu{background:linear-gradient(180deg,#EEF1F4 0%,#D7DFE6 100%);box-shadow:0 6px 16px rgba(80,95,140,.25),inset 0 1px 0 rgba(255,255,255,.8)}
+.mdug{font-size:13px;font-weight:400;color:#9090AD;letter-spacing:0}
+.mdug.secili{font-weight:400;color:#5B5B78}
+.mdug .kut{color:#9090AD;background:linear-gradient(180deg,#F5F7FA,#E3E8EE);box-shadow:0 2px 6px rgba(80,95,140,.2),inset 0 1px 0 #fff}
+.mdug.secili .kut{background:linear-gradient(135deg,#5D80C6 0%,#599CAB 100%);color:#F2F2FF;box-shadow:0 4px 10px rgba(80,110,190,.4)}
+.menu .alt-not{color:#9090AD;font-size:10.5px}
+.bant{box-shadow:0 8px 20px rgba(70,95,160,.3)}
+.cam{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);box-shadow:0 3px 10px rgba(30,50,110,.14);color:#F2F2FF}
+.cam .bs{font-size:15px!important;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.3;color:#D9DFF1}
+.cam .dg{font-weight:400;font-size:32px;letter-spacing:0;color:#F2F2FF}
+.cam .dg small{font-weight:400;font-size:15px;letter-spacing:0;opacity:.85}
+.cam .ek{font-size:11px;letter-spacing:0;color:#D9DFF1}
+.grf-bas{font-size:17px;font-weight:400;letter-spacing:0;color:#D9DFF1}
+.grf-not{position:absolute;left:0;right:0;top:32px;text-align:center;font-size:11px;font-style:italic;color:#D9DFF1;opacity:.85;pointer-events:none}
+.lej{font-size:12px;letter-spacing:0;color:#D9DFF1}
+.tarihler input{font-size:12.5px}
+.hizli button,.donem-sec button{font-weight:400;letter-spacing:0;color:#F2F2FF;font-size:11px}
+.alt{background:rgba(217,223,241,.55);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 20px rgba(70,95,160,.18)}
+.dilim-seridi{background:linear-gradient(180deg,#F1F3F6,#E6EAEF);box-shadow:0 2px 8px rgba(80,95,140,.14)}
+.dilim{background:linear-gradient(180deg,#DCE2E8,#D1D8E0);box-shadow:inset 0 1px 2px rgba(80,95,140,.18)}
+.dilim label{font-size:13px;font-weight:400;color:#9090AD;letter-spacing:0}
+.dilim select{border:0;background:transparent;font-size:13px;color:#5B5B78}
+.panel{background:linear-gradient(160deg,rgba(226,231,243,.8),rgba(205,215,233,.7));border:1px solid rgba(255,255,255,.55);box-shadow:0 2px 8px rgba(80,95,140,.12)}
+.panel .pbas{font-size:17px;font-weight:400;color:#5B5B78;letter-spacing:0}
+.tablo table{font-size:12.5px;color:#5B5B78}
+.tablo th{font-size:12.5px;font-weight:400;letter-spacing:0;text-transform:none;color:#5B5B78;background:rgba(214,221,238,.97)}
+.tablo td .alt-metin{color:#9090AD}
+.tablo tfoot td{font-size:12.5px;font-weight:600;background:rgba(214,221,238,.97)}
+.hs{font-size:12.5px}.hs .ad{color:#5B5B78}.hs .s{font-weight:400;color:#5B5B78}
+.hs.secili .ad{font-weight:600;color:#3F68BD}
+.isi .h,.isi .g{color:#9090AD}
+.secim-not{font-weight:400;letter-spacing:0}
+.panel .secim-not{color:#5B5B78}
+.bilgi{color:#9090AD}
+.dbas{background:linear-gradient(115deg,var(--bant1),var(--bant3))}
+.dbas h2{font-weight:400;font-size:19px;letter-spacing:0}
+.dgov h3{font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:#5B5B78}
+.ileti .u b{color:#5B5B78;font-weight:600}.ileti .m{color:#5B5B78}.ileti .u span,.ileti .a{color:#9090AD}
+.kart4 b{font-weight:400;letter-spacing:0}
+.kilit-bant{font-weight:400;letter-spacing:0;background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-kart button{background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-kart p{color:#5B5B78}
+#serit .sek{font-family:inherit;font-weight:400;color:#5B5B78}
+#serit .sek.secili{font-weight:600;color:#3F68BD}
+#serit .sek.secili::after{background:linear-gradient(90deg,#5D80C6,#599CAB)}
+/* Canlı Takip: harita üstündeki katmanlar raporun geri kalanıyla aynı oranda küçülür (--s, olcekle() yazar) */
+.cn-ust,.cn-liste,.cn-alt,.cn-rota,#harita .leaflet-control-container,#harita .leaflet-popup-content-wrapper,#harita .leaflet-popup-tip-container{zoom:var(--s,1)}
+/* Rota ve km paneli: seçilen araç için istenen zaman aralığında gittiği yol ve gerçek km (28.09.2026) */
+.cn-rota{position:absolute;z-index:520;left:12px;bottom:48px;width:320px;border-radius:12px;background:rgba(250,251,254,.97);box-shadow:0 6px 18px rgba(20,40,90,.25);padding:10px 12px 12px;color:#5B5B78;font-size:12.5px}
+.cn-rota[hidden]{display:none}
+@media (min-width:901px){#canli-kap.rota-acik #harita .leaflet-top.leaflet-left{left:344px}}
+.cr-bas{display:flex;align-items:center;gap:8px;margin-bottom:8px}.cr-bas b{font-size:15px;font-weight:600;color:#3F68BD}.cr-bas span{flex:1;color:#9090AD}
+.cr-bas button{border:0;background:transparent;color:#9090AD;font-size:15px;cursor:pointer;border-radius:6px;padding:0 6px}.cr-bas button:hover{background:#EEF1F7;color:#3F68BD}
+.cr-hizli{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.cr-hizli button{border:1px solid #CBD3E1;background:#fff;border-radius:999px;padding:2px 9px;font:inherit;font-size:11.5px;color:#5B5B78;cursor:pointer}
+.cr-hizli button:hover,.cr-hizli button.secili{border-color:#3F68BD;color:#3F68BD;background:#EEF3FC}.cr-hizli button[hidden]{display:none}
+.cr-alan{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cr-alan label{display:flex;flex-direction:column;gap:2px;font-size:11px;color:#9090AD;min-width:0}
+.cr-alan input{height:28px;border:1px solid #CBD3E1;border-radius:6px;padding:0 4px;font:inherit;font-size:11.5px;color:#5B5B78;min-width:0}
+.cr-goster{margin-top:8px;width:100%;height:30px;border:0;border-radius:7px;color:#fff;background:linear-gradient(115deg,#5D80C6,#599CAB);font:inherit;font-weight:600;cursor:pointer}
+.cr-sonuc{margin-top:8px;line-height:1.45}.cr-sonuc:empty{display:none}
+.cr-km{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.cr-km b{font-size:24px;font-weight:400;color:#3F68BD}.cr-km span{color:#9090AD;font-size:11.5px}
+.cr-sonuc .uyari-y{color:#B45309}
+/* Telefonda rota paneli haritanın üstünde, sayfa akışında durur (tarih seçimi ve km özeti önce görünür). */
+@media (max-width:900px){.cn-rota{position:relative;left:auto;bottom:auto;width:auto;border-radius:0;order:0;box-shadow:none;border-top:1px solid #E1E6EF}}
+.cn-pop .dug{flex-wrap:wrap}
+.harita-sat{display:flex;align-items:center;gap:10px;margin:10px 0 2px}
+.harita-dug{appearance:none;border:0;border-radius:8px;padding:6px 14px;color:#fff;background:linear-gradient(115deg,#5D80C6,#599CAB);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.harita-dug.kucuk{padding:3px 9px;font-size:11.5px;border-radius:6px}
+.cn-pop .dug button.acik{border-color:#2F9E5F;color:#2F9E5F}
+.cn-ust{background:linear-gradient(115deg,rgba(93,128,198,.96),rgba(93,138,191,.96) 55%,rgba(89,156,171,.96))}
+.cn-baslik{font-size:21px;font-weight:400;letter-spacing:0;color:#F2F2FF}.cn-baslik small{font-size:12px;font-weight:400;letter-spacing:0;color:#D9DFF1;opacity:1}
+.cn-nabiz{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7CF5AE;margin:0 6px 1px 0;vertical-align:middle;animation:cnNabiz 2s infinite}
+.cn-nabiz.kesik{background:#F5B97C;animation:none}
+@keyframes cnNabiz{0%{box-shadow:0 0 0 0 rgba(124,245,174,.75)}70%{box-shadow:0 0 0 7px rgba(124,245,174,0)}100%{box-shadow:0 0 0 0 rgba(124,245,174,0)}}
+.cn-kpi button{font-family:inherit;font-weight:400;letter-spacing:0;color:#D9DFF1}.cn-kpi button b{font-size:19px;font-weight:400;color:#F2F2FF}
+.cn-a{font-size:12.5px;color:#5B5B78}.cn-a b{font-weight:600;color:#5B5B78}.cn-a .h{color:#5B5B78}.cn-a .d{color:#9090AD}
+.cn-pop,.cn-isaret .e{font-family:inherit}
+.cn-pop{color:#5B5B78}.cn-pop h4{font-weight:600;color:#5B5B78}.cn-pop .sat{color:#9090AD}
+.cn-alt{color:#5B5B78}
+/* ---------- telefon ve dar ekran: sabit 16:9 sayfa yerine alt alta akan düzen ---------- */
+@media (max-width:900px){
+  html,body{height:auto;overflow:auto}
+  body{padding-bottom:40px;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+  #sahne{position:static;width:auto;height:auto;transform:none!important;overflow:visible;background:none}
+  .menu{position:sticky;top:0;left:auto;width:auto;height:auto;border-radius:0 0 12px 12px;flex-direction:row;align-items:center;gap:4px;padding:6px 8px;overflow-x:auto;z-index:25}
+  .menu .logo{width:36px;margin:0 4px 0 0;flex:none}
+  .mdug{margin-top:0;flex-direction:row;gap:6px;font-size:12px;white-space:nowrap;padding:2px 4px;flex:none}
+  .mdug .kut{width:34px;height:34px;border-radius:9px}.mdug .kut svg{width:18px;height:18px}
+  .menu .alt-not{display:none}
+  .sayfa{position:static}
+  .bant,.alt{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:10px;padding:10px;display:flex;flex-wrap:wrap;gap:10px}
+  .cam,.panel,.ara,.ara-not,.dilim-seridi{position:relative!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;width:auto!important}
+  html,body,#sahne{overflow-x:hidden;max-width:100vw}
+  .bant>*,.alt>*,.cam,.panel{min-width:0;max-width:100%}
+  .cam>svg,.panel>svg{max-width:100%}
+  .dilim-seridi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hs{grid-template-columns:minmax(0,120px) minmax(0,1fr) auto}
+  .cam{flex:1 1 140px}
+  .cam:has(.tarihler){flex-basis:100%}
+  .cam:has(>svg){display:flex;flex-direction:column}
+  .cam>.grf-bas{position:relative!important;top:auto;order:-3;padding:8px 10px 0;font-size:15px}
+  .cam>.grf-not{position:relative;top:auto;order:9;padding:0 10px 8px}
+  .cam>.lej{position:relative!important;left:auto;top:auto;order:-2;padding:4px 12px 0;flex-wrap:wrap;gap:10px}
+  .cam>.uyari{position:relative!important;right:auto;top:auto;order:-1;align-self:center;margin-top:6px}
+  .cam:has(>svg){flex-basis:100%;height:auto!important;min-height:0}
+  .cam>svg,.panel>svg{position:relative!important;left:auto!important;top:auto!important;display:block;width:100%!important}
+  .panel{flex:1 1 100%;height:auto!important}
+  .panel .hlist{position:relative!important;inset:auto!important;max-height:340px}
+  .panel .kirinti{position:relative;left:auto;right:auto;top:auto;padding:0 14px 6px;flex-wrap:wrap;white-space:normal}
+  .panel .agac-not{position:relative;left:auto;right:auto;bottom:auto;padding:4px 14px 8px;white-space:normal}
+  #a-birim .hs,#a-birim .hs.iki{grid-template-columns:minmax(0,150px) minmax(0,1fr) auto}
+  .panel .tablo{position:relative!important;inset:auto!important;max-height:480px}
+  .tablo table{min-width:760px}
+  .dilim-seridi{flex:1 1 100%;height:auto;grid-template-columns:1fr 1fr}
+  .dilim{height:34px}
+  .isi{position:relative!important;inset:auto!important;height:230px;margin:40px 10px 12px}
+  .ara{flex:1 1 100%;height:46px}.ara-not{flex:1 1 100%}
+  .detay{position:fixed;left:0;right:0;top:0;bottom:34px;width:auto;height:auto;border-radius:0;transform:translateX(105%)}
+  .detay.acik{transform:none}
+  .kilit-kart{width:min(380px,92vw)}
+}
+/* şifre kutusundaki göz: yazılan şifreyi gösterir ya da gizler */
+.sifre-kut{position:relative}
+.kilit-kart .sifre-kut input{padding-right:46px}
+.kilit-kart .goz{position:absolute;right:5px;top:5px;width:30px;height:30px;margin:0;padding:0;border-radius:6px;background:transparent;color:#9090AD;display:grid;place-items:center}
+.kilit-kart .goz:hover{background:#EEF1F7;color:#3F68BD}
+.kilit-kart .goz svg{width:20px;height:20px}
+/* aranabilir süzgeç (28.09.2026): açılır listede arama kutusu; asıl <select> gizli kalır */
+.dilim select.ds-gizli{display:none}
+.ds-dug{flex:1;min-width:0;height:28px;border:0;background:transparent;font:inherit;font-size:13px;color:#5B5B78;display:flex;align-items:center;gap:6px;cursor:pointer;padding:0 2px;text-align:left}
+.ds-dug span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-dug svg{width:14px;height:14px;flex:none}
+.ds-pano{position:fixed;z-index:90;background:#fff;border-radius:10px;box-shadow:0 12px 32px rgba(40,50,90,.28);border:1px solid #DDE2EC;display:flex;flex-direction:column;overflow:hidden;font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,sans-serif;font-size:13px;color:#5B5B78}
+.ds-pano input{margin:8px;height:34px;border:1px solid #CBD3E1;border-radius:7px;padding:0 10px;font:inherit;font-size:13.5px;color:#5B5B78;outline:none}
+.ds-pano input:focus{border-color:#3F68BD;box-shadow:0 0 0 3px rgba(63,104,189,.12)}
+.ds-liste{overflow:auto;padding:0 4px 6px}
+.ds-sec{padding:6px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-sec:hover,.ds-sec.etkin{background:#EEF1F8}
+.ds-sec.secili{color:#3F68BD;font-weight:600}
+.ds-sec mark{background:#FFE58A;color:inherit;border-radius:2px}
+.ds-bos{padding:8px 10px;color:#9090AD}
+</style>
+</head>
+<body>
+<div id="sahne">
+  <nav class="menu">
+    <img class="logo" src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <button class="mdug" id="temizle" title="Bütün filtreleri temizle"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></span></button>
+    <button class="mdug" data-sayfa="ana"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Genel Bakış</button>
+    <button class="mdug" data-sayfa="canli"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>Canlı Takip</button>
+    <button class="mdug" data-sayfa="rez"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg></span>Yolculuklar</button>
+    <button class="mdug" data-sayfa="kisi"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>Kişiler</button>
+    <button class="mdug" data-sayfa="yakit"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M4 10h11M15 8l3 2v8a1.5 1.5 0 0 0 3 0V9l-3-3"/></svg></span>Yakıt</button>
+    <div class="alt-not" id="guncel"></div>
+  </nav>
+
+  <!-- ================= GENEL BAKIŞ ================= -->
+  <section class="sayfa" id="s-ana">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs" style="font-size:17px">Tarih aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs">Araç<br>sayısı</div><div class="dg num" id="a-arac"></div><div class="ek" id="a-arac-ek"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs">GPS<br>mesafe</div><div class="dg num" id="a-km"></div><div class="ek" id="a-km-ek"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>GPS mesafe (km)</span><span><i class="cz"></i>Yakıt alımı L/100 km</span></div>
+        <div class="grf-bas">Aylara göre mesafe ve yakıt</div><svg id="a-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="a-secim"></div>
+        <div class="grf-not">Mart gösterilmiyor: GPS cihazları Mart'ta takıldı. Mart km'si toplamlara dahil.</div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="a-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas" id="a-birim-bas">Aracı kullanan birimler (km)</div><div class="kirinti" id="a-birim-yol"></div><div class="hlist" id="a-birim" style="left:0;top:54px;right:0;bottom:24px"></div><div class="agac-not" id="a-birim-not"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:732px;height:302px"><div class="tablo" id="a-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= YOLCULUKLAR ================= -->
+  <section class="sayfa gizli" id="s-rez">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs" style="font-size:17px">Tarih aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs">Yolculuk</div><div class="dg num" id="r-yol" style="bottom:30px"></div><div class="ek" id="r-yol-ek"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs">Havuz<br>doluluğu</div><div class="dg num" id="r-dol"></div><div class="ek" id="r-dol-ek"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Yolculuk</span><span><i class="cz"></i>Havuz doluluğu (iş günü)</span></div>
+        <div class="grf-bas">Aylara göre yolculuk ve havuz doluluğu</div><svg id="r-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="r-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="r-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Aracı kullanan birimler (yolculuk)</div><div class="hlist" id="r-birim" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:732px;height:302px"><div class="tablo" id="r-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= KİŞİLER ================= -->
+  <section class="sayfa gizli" id="s-kisi">
+    <div class="bant">
+      <div class="ara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Kişi, birim, plaka, e-posta ya da telefon ara…" autocomplete="off" spellcheck="false"></div>
+      <div class="ara-not" id="k-not"></div>
+      <div class="cam" style="left:12px;top:96px;width:230px;height:150px"><div class="bs" style="font-size:17px">Tarih aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli" style="bottom:48px"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div>
+        <div class="ek" style="bottom:12px;font-size:11px">Kullanan: yolcu; yolcu yoksa talep eden</div></div>
+      <div class="cam" style="left:254px;top:96px;width:175px;height:150px"><div class="bs" style="font-size:17px">Aracı kullanan</div><div class="dg num" id="k-kisi" style="bottom:36px;font-size:36px"></div><div class="ek" id="k-kisi-ek">kişi</div></div>
+      <div class="cam" style="left:441px;top:96px;width:175px;height:150px"><div class="bs" style="font-size:17px">Kişi-yolculuk</div><div class="dg num" id="k-yol" style="bottom:36px;font-size:36px"></div><div class="ek" id="k-yol-ek"></div></div>
+      <div class="cam" style="left:628px;top:14px;width:482px;height:232px"><div class="grf-bas">Aylara göre kişi-yolculuk</div><svg id="k-grafik" width="482" height="232" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="k-secim" style="top:40px"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="k-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:1102px;height:302px"><div class="tablo" id="k-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= YAKIT ================= -->
+  <section class="sayfa gizli" id="s-yakit">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs" style="font-size:17px">Tarih aralığı</div>
+        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs">Yakıt<br>alımı</div><div class="dg num" id="y-tl"></div><div class="ek" id="y-lt"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs">Ortalama<br>TL / litre</div><div class="dg num" id="y-tll"></div><div class="ek" id="y-is"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Yakıt alımı (TL)</span><span><i class="cz"></i>TL / litre</span></div>
+        <div class="grf-bas">Aylara göre yakıt alımı</div><svg id="y-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="y-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="y-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Alım bazlı L/100 km (GPS'li araçlar)</div><div class="hlist" id="y-l100" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:732px;height:302px"><div class="tablo" id="y-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <aside class="detay" id="detay">
+    <div class="dbas"><div class="ust"><div id="d-etiket"></div><button id="d-kapat">Kapat ✕</button></div><h2 id="d-bas"></h2><div class="b" id="d-bilgi"></div></div>
+    <div class="dgov" id="d-gov"></div>
+  </aside>
+</div>
+<div id="canli-kap" hidden>
+  <div id="harita"></div>
+  <div class="cn-uyari" id="cn-uyari">Harita yükleniyor…</div>
+  <div class="cn-ust"><div class="cn-baslik">Canlı Takip <small id="cn-zaman"></small></div><div class="cn-kpi" id="cn-kpi"></div></div>
+  <div class="cn-liste"><div class="ara-k"><input id="cn-ara" type="search" placeholder="Plaka, konum ya da kullanan ara…" autocomplete="off" spellcheck="false"></div><div id="cn-araclar"></div></div>
+  <div class="cn-alt" id="cn-alt"></div>
+  <div class="cn-rota" id="cn-rota" hidden>
+    <div class="cr-bas"><b id="cr-plaka"></b><span>Rota ve km</span><button id="cr-kapat" title="Rotayı kapat" aria-label="Rotayı kapat">✕</button></div>
+    <div class="cr-hizli"><button data-h="24">Son 24 saat</button><button data-h="bugun">Bugün</button><button data-h="dun">Dün</button><button data-h="7">Son 7 gün</button><button data-h="rez" hidden>Rezervasyon</button></div>
+    <div class="cr-alan"><label>Başlangıç<input type="datetime-local" id="cr-bas"></label><label>Bitiş<input type="datetime-local" id="cr-bit"></label></div>
+    <button class="cr-goster" id="cr-goster">Rotayı ve km'yi göster</button>
+    <div class="cr-sonuc" id="cr-sonuc"></div>
+  </div>
+</div>
+<nav id="serit" aria-label="Raporlar">
+  <span class="ok"><a data-yon="-1" title="Önceki sayfa">‹</a><a data-yon="1" title="Sonraki sayfa">›</a></span>
+  <a class="sek" data-hedef="idari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>İdari Destek</a>
+  <a class="sek" data-hedef="donus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Dönülmemiş Mailler<span class="sayi" id="serit-sayi"></span></a>
+  <a class="sek" data-hedef="filo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg>Filo</a>
+  <a class="sek" data-hedef="tanitim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/></svg>Tanıtım</a>
+  <a class="sek" data-hedef="rehber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h3M3 12h3M3 17h3"/><circle cx="12.5" cy="10" r="2.6"/><path d="M8.5 16.5c.8-2 2.3-3 4-3s3.2 1 4 3"/></svg>Kurumsal Rehber</a>
+  <a class="sek" data-hedef="kilavuz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>Rapor Kılavuzu</a>
+  <span class="sag" id="serit-sayfa"></span>
+</nav>
+<script>
+/* Alt sayfa şeridi (Power BI sayfa sekmeleri gibi). Yayında site yolları; bu bilgisayarda (file://) yan klasörler.
+   Şifre sekme açıkken hatırlandığı için geçişte yeniden sorulmaz. "Dönülmemiş Mailler" İdari Destek raporunun bir sayfasıdır. */
+(() => { const SIRA = ["idari", "donus", "filo", "tanitim", "rehber", "kilavuz"], yerel = location.protocol === "file:", idari = yerel ? "../canli_rapor/index.html" : "/idari-destek/";
+  // Adres sade kalır: hangi sayfanın açılacağı (ör. Dönülmemiş Mailler) sekme belleğiyle geçer.
+  const yol = {idari, donus: yerel ? idari + "#donus" : idari, filo: yerel ? "../filo_rapor/index.html" : "/filo/", tanitim: yerel ? "../tanitim/index.html" : "/idari-destek/tanitim/", rehber: yerel ? "../rehber_rapor/index.html" : "/rehber/", kilavuz: yerel ? "../kilavuz_rapor/index.html" : "/kilavuz/"};
+  document.querySelectorAll("#serit .sek").forEach(a => a.href = yol[a.dataset.hedef]);
+  document.querySelectorAll("#serit a").forEach(a => a.addEventListener("click", () => { try { if (a.dataset.hedef) sessionStorage.setItem("bilgem_acilis", a.dataset.hedef); } catch (e) {} }));
+  window.seritGuncelle = (secili, sayi) => { const i = SIRA.indexOf(secili);
+    document.querySelectorAll("#serit .sek").forEach(a => a.classList.toggle("secili", a.dataset.hedef === secili));
+    document.querySelectorAll("#serit [data-yon]").forEach(a => { const h = SIRA[i + +a.dataset.yon]; a.classList.toggle("pasif", !h); if (h) { a.href = yol[h]; a.dataset.hedef = h; } else { a.removeAttribute("href"); delete a.dataset.hedef; } });
+    document.getElementById("serit-sayfa").textContent = "Sayfa " + (i + 1) + " / " + SIRA.length;
+    if (sayi != null) document.getElementById("serit-sayi").textContent = sayi || ""; };
+  seritGuncelle("filo"); })();
+</script>
+<div class="ipucu" id="ipucu"></div>
+<div id="kilit" hidden>
+  <form id="kilit-form" class="kilit-kart" autocomplete="off">
+    <img src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <div class="kilit-bant">BİLGEM Filo Raporu</div>
+    <p>Bu rapor kuruma özel kişi ve araç bilgileri içerir ve şifrelidir. Size iletilen şifreyi girin.</p>
+    <div class="sifre-kut"><input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre"><button type="button" class="goz" id="kilit-goz" title="Şifreyi göster" aria-label="Şifreyi göster" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <script>(() => { const g = document.getElementById("kilit-sifre"), b = document.getElementById("kilit-goz");
+      const ac = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', kapa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+      b.onclick = () => { const goster = g.type === "password"; g.type = goster ? "text" : "password"; b.innerHTML = goster ? kapa : ac;
+        b.title = goster ? "Şifreyi gizle" : "Şifreyi göster"; b.setAttribute("aria-label", b.title); b.setAttribute("aria-pressed", goster); g.focus(); }; })();</script>
+    <button type="submit">Raporu aç</button>
+    <div id="kilit-hata" class="kilit-hata"></div>
+  </form>
+</div>
+
+<script>
+/* Aranabilir süzgeç (kullanıcı isteği 28.09.2026): sayfadaki her .dilim <select>'i, içinde arama kutusu olan açılır
+   listeye dönüşür. Asıl <select> gizli kalır; değeri ve change olayı sayfa kodunda aynen kullanılır. Süzgeçler
+   yeniden çizildikçe yenileri de dönüştürülür. Türkçe harf ve büyük/küçük harf farkı gözetilmez. */
+(() => {
+  const OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+  const nk = c => c.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i").charAt(0) || c;
+  const norm = s => [...String(s || "")].map(nk).join("");
+  let pano = null;
+  const kapat = () => { if (pano) { pano.remove(); pano = null; } };
+  document.addEventListener("mousedown", e => { if (pano && !pano.contains(e.target) && !e.target.closest(".ds-dug")) kapat(); }, true);
+  addEventListener("resize", kapat);
+  document.addEventListener("scroll", e => { if (pano && !pano.contains(e.target)) kapat(); }, true);
+  function isaretle(t, q) {
+    if (!q) return esc(t);
+    const n = norm(t), i = n.indexOf(q);
+    return i < 0 ? esc(t) : esc(t.slice(0, i)) + "<mark>" + esc(t.slice(i, i + q.length)) + "</mark>" + esc(t.slice(i + q.length));
+  }
+  function ac(sel, dug) {
+    if (pano && pano.sel === sel) { kapat(); return; }
+    kapat();
+    const r = dug.closest(".dilim").getBoundingClientRect(), en = Math.min(Math.max(r.width, 260), innerWidth - 16);
+    const altBos = innerHeight - r.bottom - 44, ustBos = r.top - 12, yukari = altBos < 220 && ustBos > altBos;
+    pano = document.createElement("div"); pano.className = "ds-pano"; pano.sel = sel;
+    Object.assign(pano.style, {left: Math.max(8, Math.min(r.left, innerWidth - en - 8)) + "px", width: en + "px"},
+      yukari ? {bottom: innerHeight - r.top + 4 + "px"} : {top: r.bottom + 4 + "px"});
+    pano.innerHTML = `<input type="search" placeholder="Ara…" aria-label="Seçeneklerde ara" autocomplete="off"><div class="ds-liste" role="listbox"></div>`;
+    document.body.appendChild(pano);
+    const girdi = pano.querySelector("input"), liste = pano.querySelector(".ds-liste");
+    liste.style.maxHeight = Math.max(140, Math.min(320, (yukari ? ustBos : altBos) - 56)) + "px";
+    const secenek = [...sel.options].map(o => ({v: o.value, t: o.textContent, n: norm(o.textContent)}));
+    let gor = [], etkin = 0;
+    const ciz = () => {
+      const q = norm(girdi.value.trim());
+      gor = secenek.filter((o, i) => (i === 0 && o.v === "") || !q || o.n.includes(q));
+      etkin = Math.max(0, Math.min(etkin, gor.length - 1));
+      liste.innerHTML = gor.map((o, i) => `<div class="ds-sec${o.v === sel.value ? " secili" : ""}${i === etkin ? " etkin" : ""}" data-i="${i}" role="option">${isaretle(o.t, o.v === "" ? "" : q)}</div>`).join("")
+        + (q && gor.filter(o => o.v !== "").length === 0 ? `<div class="ds-bos">Eşleşen yok</div>` : "");
+      const e = liste.querySelector(".etkin"); if (e) e.scrollIntoView({block: "nearest"});
+    };
+    const sec = o => { kapat(); if (o && sel.value !== o.v) { sel.value = o.v; sel.dispatchEvent(new Event("change", {bubbles: true})); } };
+    liste.addEventListener("mousedown", e => { const d = e.target.closest(".ds-sec"); if (d) { e.preventDefault(); sec(gor[+d.dataset.i]); } });
+    girdi.addEventListener("input", () => { etkin = girdi.value.trim() ? gor.length && secenek[0].v === "" ? 1 : 0 : 0; ciz(); });
+    girdi.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { etkin++; ciz(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { etkin--; ciz(); e.preventDefault(); }
+      else if (e.key === "Enter") { e.preventDefault(); sec(gor[etkin]); }
+      else if (e.key === "Escape") { e.preventDefault(); kapat(); dug.focus(); }
+    });
+    etkin = Math.max(0, secenek.findIndex(o => o.v === sel.value));
+    ciz();
+    setTimeout(() => girdi.focus(), 0);
+  }
+  function donustur(sel) {
+    sel.dataset.ds = "1"; sel.classList.add("ds-gizli");
+    const dug = document.createElement("button"); dug.type = "button"; dug.className = "ds-dug";
+    const yaz = () => { const o = sel.options[sel.selectedIndex]; dug.innerHTML = `<span>${esc(o ? o.textContent : "")}</span>${OK}`; dug.title = o ? o.textContent : ""; };
+    yaz(); sel.addEventListener("change", yaz);
+    dug.addEventListener("click", e => { e.preventDefault(); ac(sel, dug); });
+    dug.addEventListener("keydown", e => { if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); ac(sel, dug); } });
+    sel.after(dug);
+  }
+  const tara = () => document.querySelectorAll(".dilim select:not([data-ds])").forEach(donustur);
+  new MutationObserver(tara).observe(document.body, {childList: true, subtree: true});
+  tara();
+})();
+</script>
+<script src="veri.enc.js"></script>
+<script>
+function baslat(){
+"use strict";
+const V = window.FILO, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const YAYIN = !!window.FILO_SIFRELI;
+const AY = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"], AYU = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const KIS = new Set(["BİLGEM","BÜİT","HİSAR","AGENA","TÜBİTAK","UEKAE","BTE","YTE","İLTAREN","MMU","GİS","KAMUSM","SGE","YZE","İK","AR-GE","ARGE","GSY","EMY","BT","SAGE","MİLGEM","KAAN","TSK","SSB","MUBY","İGMİ","TDD","TÜTEL","DST","RUTE","SAKA","KU","DVT","EMI/EMC","COMSEC","GEBZE"]);
+const sayi = n => Math.round(n ?? 0).toLocaleString("tr-TR"), ond = (n, b = 1) => (n ?? 0).toLocaleString("tr-TR", {minimumFractionDigits: b, maximumFractionDigits: b});
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const norm = s => String(s || "").toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ı/g, "i");
+const bas = s => String(s || "").split(/(\s+)/).map(w => { const h = w.replace(/[.,()]/g, "").toLocaleUpperCase("tr-TR"); if (KIS.has(h)) return w.toLocaleUpperCase("tr-TR"); const k = w.toLocaleLowerCase("tr-TR"); return ["ve", "ile", "için"].includes(k) ? k : k.replace(/^(\(?)(\S)/, (m, a, b) => a + b.toLocaleUpperCase("tr-TR")); }).join("");
+const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const tOku = s => { const [y, m, g] = s.split("-").map(Number); return new Date(y, m - 1, g); };
+const gEkle = (s, n) => { const d = tOku(s); d.setDate(d.getDate() + n); return iso(d); };
+const aylar = (a, b) => { const o = []; let y = +a.slice(0, 4), m = +a.slice(5, 7); while (y < +b.slice(0, 4) || (y === +b.slice(0, 4) && m <= +b.slice(5, 7))) { o.push(y + "-" + String(m).padStart(2, "0")); if (++m > 12) { m = 1; y++; } } return o; };
+const ayAd = a => AYU[+a.slice(5, 7) - 1] + " " + a.slice(0, 4);
+const tr = s => s ? s.slice(8, 10) + "." + s.slice(5, 7) + "." + s.slice(0, 4) + (s.length > 10 ? " " + s.slice(11, 16) : "") : "–";
+const kisaT = s => s ? s.slice(8, 10) + "." + s.slice(5, 7) + (s.length > 10 ? " " + s.slice(11, 16) : "") : "–";
+const say = (d, f) => { const m = new Map(); for (const r of d) { const k = f(r); if (k) m.set(k, (m.get(k) || 0) + 1); } return [...m].sort((a, b) => b[1] - a[1]); };
+const topla = (d, f) => d.reduce((a, r) => a + (f(r) || 0), 0);
+const medyan = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), h = s.length >> 1; return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2; };
+const BUGUN = V.meta.uretim.slice(0, 10), GSON = V.meta.gps_son || BUGUN, GILK = V.meta.gps_ilk || "", KUL = new Set(["Tamamlandı", "Kullanımda"]);
+const telGor = t => t ? t.replace(/^\+?90/, "0").replace(/^(\d{4})(\d{3})(\d{2})(\d{2})$/, "$1 $2 $3 $4") : "";
+
+/* ---------- veri ---------- */
+const BIRIM_AD = new Map(), birimKanon = u => { if (!u) return ""; const k = norm(u).replace(/yonetimi/g, "yonetim"); if (!BIRIM_AD.has(k)) BIRIM_AD.set(k, u); return BIRIM_AD.get(k); };
+const K = V.kisiler.map((k, i) => ({i, ad: k[0], bi: birimKanon(k[1]), en: k[2], ep: k[3], tel: k[4], h: k[5]}));
+/* Kurum ağacı (Kurumsal Rehber, kullanıcı isteği 28.09.2026): enstitü / başkan yardımcılığı → EMY (varsa) → birim.
+   Yol düğüm adı düzeyleri " › " ile birleştirir; EMY'si olmayan birim doğrudan enstitünün altındadır. */
+const BILINMIYOR = "Birimi bilinmiyor", AYRAC = " › ";
+const HIY = (V.hiyerarsi || []).map(y => y.filter(Boolean));
+const kisiYol = k => (k && HIY[k.h]) || [BILINMIYOR];
+const dugumde = (y, d) => { if (!d) return true; const s = y.join(AYRAC); return s === d || s.startsWith(d + AYRAC); };
+const kurumAd = s => (V.kurum_ad || {})[s] || "";
+const A = V.araclar.map((a, i) => Object.assign(a, {ix: i, gps: [], yak: [], rez: [], kisi: a.k === "" ? null : K[a.k]}));
+// Sabit kullanım dönemleri (filo_rapor.py, kullanıcı kararı 28.09.2026): bu günlerde aracın km'si ve yakıtı tahsisli kişinindir.
+// Havuzdan kişiye verilen araçta dönem, son rezervasyonun dönüşünün ertesi günü başlar; öncesi yolculuklardaki yolculara kalır.
+for (const a of A) a.SD = (a.sd || []).map(([k, s, e, n, h]) => ({a, k: K[k], s: s || "0000", e: e || "9999", n, h}));
+for (const [ai, t, km] of V.gps) A[ai].gps.push([t, km]);
+const Y = V.yakit.map(y => ({a: A[y[0]], t: y[1], l: y[2], tl: y[3], sh: V.sehirler[y[4]]}));
+for (const y of Y) y.a.yak.push(y);
+const R = V.rez.map(r => { const o = Object.assign({}, r); o.t = r.c.slice(0, 10); o.a = typeof r.p === "number" && r.p >= 0 ? A[r.p] : null; o.pl = o.a ? o.a.p : (typeof r.p === "string" ? r.p : "");
+  o.U = r.u.map(i => K[i]); o.TE = K[r.te]; o.b = birimKanon(r.b); o.vs = bas((r.na.split(/[\s(,/-]+/)[0] || "").trim()) || "—"; o.kul = KUL.has(r.d); if (o.a) o.a.rez.push(o); return o; });
+const ILK = [...Y.map(y => y.t), ...R.map(r => r.t)].reduce((a, t) => t < a ? t : a, BUGUN);
+const RILK = R.reduce((a, r) => r.t < a ? r.t : a, BUGUN);  // rezervasyon sisteminin ilk kaydı (doluluk bundan önce hesaplanmaz)
+const havuzAdi = a => a.t && norm(a.t) !== "havuz" ? a.t : a.l + " havuzu";
+const kullanimAdi = a => a.a === "Sabit" ? (a.kisi ? a.kisi.ad : a.t || "Sabit") : havuzAdi(a);
+const aracBirimi = a => a.kisi && a.kisi.bi ? a.kisi.bi : (a.t ? "Tahsis: " + a.t : "");
+
+/* ---------- durum: sekme açıkken tarayıcıda hatırlanır; adres çubuğu hep sade kalır (kullanıcı isteği 27.09.2026) ---------- */
+const D = {sayfa: "ana", bas: BUGUN.slice(0, 4) + "-01-01", son: BUGUN, q: "", f: {}};
+try { Object.assign(D, JSON.parse(sessionStorage.getItem("filo_durum") || "{}")); } catch (e) {}
+try { sessionStorage.removeItem("bilgem_acilis"); } catch (e) {}
+if (location.hash.length > 3) { try { Object.assign(D, JSON.parse(decodeURIComponent(location.hash.slice(1)))); } catch (e) {} }  // eski bağlantılar
+if (location.hash) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+D.f = D.f || {};
+const kaydet = () => { try { sessionStorage.setItem("filo_durum", JSON.stringify(D)); } catch (e) {} };
+$$('.hizli [data-a="yil"]').forEach(b => b.textContent = BUGUN.slice(0, 4));
+const aralikta = t => t >= D.bas && t <= D.son;
+const ayda = (t) => !D.f.ay || t.startsWith(D.f.ay);
+
+/* Canlı Takip durumu (olcekle haritayı da konumladığı için önce tanımlanır) */
+const CN = {f: "", q: "", secili: "", veri: null, harita: null, katman: null, iz: null, izP: "", isaret: {}, anahtar: {}, ilk: true};
+const MQ = matchMedia("(max-width: 900px)"), MOBIL = () => MQ.matches;
+let OLCEK = 1;  // masaüstünde sahnenin ölçeği (sağ tık menüsü aynı boyda görünsün)
+function olcekle() {
+  const kap = $("#canli-kap");
+  if (MOBIL()) { $("#sahne").style.transform = "none"; kap.style.cssText = ""; kap.style.setProperty("--s", 1); if (CN.harita) CN.harita.invalidateSize(); return; }
+  const h = innerHeight - 34, s = Math.min(innerWidth / 1280, h / 720), x = (innerWidth - 1280 * s) / 2, y = (h - 720 * s) / 2;
+  OLCEK = s;
+  $("#sahne").style.transform = `translate(${x}px,${y}px) scale(${s})`;
+  Object.assign(kap.style, {left: x + 134 * s + "px", top: y + 28 * s + "px", width: 1122 * s + "px", height: 664 * s + "px"}); kap.style.setProperty("--s", s);
+  if (CN.harita) CN.harita.invalidateSize();
+}
+addEventListener("resize", olcekle); olcekle();
+MQ.addEventListener("change", () => { olcekle(); ciz(); });
+
+/* üst bilgi ve kaynak tarihleri */
+(() => { const d = new Date(V.meta.uretim.replace(" ", "T") + ":00"), m = V.meta;
+  const kay = `<b>Kaynak tarihleri</b><br>Rezervasyon: ${tr(m.rezervasyon)}<br>KAMUTOS yakıt: ${tr(m.yakit)}<br>GPS (Mobiliz): ${tr(m.gps_son)} gününe kadar<br>Araç envanteri: ${tr(m.envanter)}<br>İK: ${tr(m.ik)}${m.son_durum ? `<br>Araç son durumu: ${tr(m.son_durum)}` : ""}<br>Yolcu–İK eşleşmesi: ${m.yolcu_eslesen}/${m.yolcu}`;
+  $("#guncel").setAttribute("data-ip", esc(kay));
+  $("#guncel").innerHTML = (YAYIN ? `<b style="color:#3D66C0">● Yayın kopyası</b>` : `<b>● Güncel</b>`) + `Veri tarihi<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}`; })();
+
+const IP = $("#ipucu");
+document.addEventListener("mousemove", e => { const h = e.target.closest && e.target.closest("[data-ip]"); if (!h) { IP.classList.remove("acik"); return; }
+  IP.innerHTML = h.getAttribute("data-ip"); IP.classList.add("acik"); IP.style.left = Math.min(e.clientX + 12, innerWidth - IP.offsetWidth - 8) + "px"; IP.style.top = (e.clientY + 14 + IP.offsetHeight > innerHeight ? e.clientY - IP.offsetHeight - 10 : e.clientY + 14) + "px"; });
+
+/* ---------- grafik, liste, dilimleyici (İdari Destek raporuyla aynı bileşenler) ---------- */
+function karma(svg, etiket, cubuk, cizgi, sec = {}) {
+  // Telefonda grafik kapsayıcının genişliğinde çizilir; çok sütunlu grafikte son 6 sütun gösterilir.
+  svg.dataset.w = svg.dataset.w || svg.getAttribute("width");
+  svg.setAttribute("width", MOBIL() ? Math.max(260, (svg.parentElement.clientWidth || 300) - 2) : svg.dataset.w);
+  // Dar sütunda uzun etiketler eğik ve küçük yazılır (ör. yanıt süresi dilimleri telefonda).
+  if (MOBIL() && +svg.getAttribute("width") / etiket.length < 62 && etiket.some(e => String(e).length > 4)) sec = Object.assign({}, sec, {dar: true, alt: Math.max(sec.alt ?? 30, 50)});
+  if (MOBIL() && etiket.length > 7) { const k = etiket.length - 6, t = sec.tik, e = sec.ek; etiket = etiket.slice(k); cubuk = cubuk.slice(k); if (cizgi) cizgi = cizgi.slice(k);
+    sec = Object.assign({}, sec, {secili: (sec.secili ?? -1) >= k ? sec.secili - k : -1, soluk: sec.soluk && sec.soluk.slice(k), tik: t && (i => t(i + k)), ek: e && (i => e(i + k))}); }
+  const W = +svg.getAttribute("width"), H = +svg.getAttribute("height"), sol = sec.sol ?? 26, sag = sec.sag ?? 26, alt = sec.alt ?? 30;
+  const cUst = sec.cUst ?? 60, cH = sec.cH ?? 30, ust = sec.ust ?? (cizgi ? cUst + cH + 30 : 56);
+  const n = etiket.length, g = (W - sol - sag) / Math.max(n, 1), bw = Math.min(sec.bw ?? 54, g * .66), ih = H - ust - alt;
+  const cm = Math.max(1, ...cubuk), yazi = sec.yazi || "#fff", renk = sec.renk || "#fff";
+  const secili = sec.secili ?? -1, di = i => sec.tik ? ` data-i="${i}"` : "", f1 = v => sec.f1 ? sec.f1(v) : sayi(v), f2 = v => sec.f2 ? sec.f2(v) : sayi(v);
+  let s = "";
+  etiket.forEach((e, i) => { const v = cubuk[i] || 0, h = v / cm * (ih - 18), x = sol + g * i + (g - bw) / 2, y = ust + ih - h;
+    const op = secili >= 0 && i !== secili ? .32 : sec.soluk && sec.soluk[i] ? .55 : .96;
+    const ip = esc(`<b>${e}</b><br>${sec.ad1 || ""}: ${f1(v)}${cizgi && cizgi[i] != null ? `<br>${sec.ad2 || ""}: ${f2(cizgi[i])}` : ""}${sec.ek ? sec.ek(i) : ""}${sec.tik ? `<br><i>${i === secili ? "Seçimi kaldırmak" : "Filtrelemek"} için tıklayın</i>` : ""}`);
+    if (sec.tik) s += `<rect x="${sol + g * i}" y="${ust - 8}" width="${g}" height="${ih + 8}" fill="transparent"${di(i)} data-ip="${ip}"/>`;
+    s += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h, v ? 1.5 : 0)}" fill="${renk}" opacity="${op}"${di(i)} data-ip="${ip}"/>`;
+    if (v) s += `<text x="${x + bw / 2}" y="${y - 6}" fill="${yazi}" font-size="12.5" text-anchor="middle" opacity="${secili >= 0 && i !== secili ? .55 : 1}">${f1(v)}</text>`;
+    s += sec.dar ? `<text x="${sol + g * i + g / 2 + 4}" y="${H - alt + 14}" fill="${yazi}" font-size="10" text-anchor="end" transform="rotate(-32 ${sol + g * i + g / 2 + 4} ${H - alt + 14})" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`
+      : `<text x="${sol + g * i + g / 2}" y="${H - 12}" fill="${yazi}" font-size="12" text-anchor="middle" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`; });
+  if (cizgi) { const d = cizgi.map((v, i) => [v, i]).filter(([v]) => v != null && isFinite(v));
+    if (d.length) { const lm = Math.max(...d.map(x => x[0])), cmin = Math.min(...d.map(x => x[0])), yy = v => cUst + (lm > cmin ? (1 - (v - cmin) / (lm - cmin)) : .5) * cH, p = d.map(([v, i]) => [sol + g * i + g / 2, yy(v), i, v]);
+      s += `<polyline points="${p.map(q => q[0] + "," + q[1]).join(" ")}" fill="none" stroke="${sec.cz || "#9BE3A9"}" stroke-width="2.4"/>`;
+      p.forEach(([x, y, i, v]) => { s += `<circle cx="${x}" cy="${y}" r="${i === secili ? 5.5 : 4}" fill="${sec.cz || "#9BE3A9"}" stroke="#fff" stroke-width="1.2"${di(i)} data-ip="${esc(`<b>${etiket[i]}</b><br>${sec.ad2 || ""}: ${f2(v)}`)}"/><text x="${x}" y="${y - 9}" fill="${yazi}" font-size="12" text-anchor="middle">${f2(v)}</text>`; }); } }
+  svg.innerHTML = s;
+  if (sec.tik) svg.querySelectorAll("[data-i]").forEach(el => el.addEventListener("click", () => sec.tik(+el.dataset.i)));
+}
+function hliste(el, satirlar, sec = {}) {
+  const m = Math.max(1, ...satirlar.map(r => r.v)), secili = sec.secili || "", f = v => sec.f ? sec.f(v) : sayi(v);
+  el.classList.toggle("hl-var", !!secili && satirlar.some(r => (r.k ?? r.ad) === secili));
+  el.innerHTML = satirlar.length ? satirlar.map((r, i) => `<div class="hs${r.tik ? " tik" : ""}${secili && (r.k ?? r.ad) === secili ? " secili" : ""}" data-i="${i}" data-ip="${esc((r.ip || `<b>${esc(r.ad)}</b><br>${f(r.v)}`) + (r.tik && !r.menu ? "<br><i>Filtrelemek için tıklayın</i>" : ""))}">${r.alt ? `<div class="ad ok"><span>${esc(r.ad)}</span><b class="alt-ok">›</b></div>` : `<div class="ad">${esc(r.ad)}</div>`}<div class="y"><span style="width:${r.v / m * 100}%;background:${r.renk || sec.renk || "#3D66C0"}"></span></div><div class="s num">${f(r.v)}</div></div>`).join("")
+    : `<div class="bilgi" style="text-align:center;padding-top:40px">Bu seçimde kayıt yok</div>`;
+  el.querySelectorAll(".tik").forEach(d => d.onclick = () => satirlar[+d.dataset.i].tik());
+  // Sağ tık menüsü (Power BI'daki alt/üst düzeye inme gibi): satırın menu öğeleri [ad, işlev]
+  el.querySelectorAll(".hs").forEach(d => { const mn = satirlar[+d.dataset.i].menu; if (mn && mn.length) d.oncontextmenu = e => { e.preventDefault(); sagMenu(e.clientX, e.clientY, mn); }; });
+}
+const degistir = (k, v) => { D.f[k] = D.f[k] === v ? "" : v; ciz(); };
+function sagMenu(x, y, ogeler) {
+  let mn = $("#sag-menu"); if (!mn) { mn = document.createElement("div"); mn.id = "sag-menu"; document.body.appendChild(mn);
+    addEventListener("click", () => mn.hidden = true); addEventListener("scroll", () => mn.hidden = true, true); addEventListener("keydown", e => { if (e.key === "Escape") mn.hidden = true; }); }
+  mn.innerHTML = ogeler.map(([ad], i) => `<button data-i="${i}">${esc(ad)}</button>`).join("");
+  mn.querySelectorAll("button").forEach(b => b.onclick = e => { e.stopPropagation(); mn.hidden = true; ogeler[+b.dataset.i][1](); });
+  // CSS zoom konumu da ölçekler: konum ölçeğe bölünür
+  const z = MOBIL() ? 1 : Math.max(OLCEK, .75); mn.style.zoom = z; mn.hidden = false;
+  mn.style.left = Math.min(x, innerWidth - mn.offsetWidth * z - 6) / z + "px"; mn.style.top = Math.min(y, innerHeight - mn.offsetHeight * z - 6) / z + "px";
+}
+function secimNot(id, metin, k) { const el = $(id); el.textContent = metin ? metin + "  ✕" : ""; el.title = "Seçimi kaldır"; el.onclick = () => { D.f[k] = ""; ciz(); }; }
+function dilimler(kok, tanim, kayitlar, ekler = []) {
+  kok.innerHTML = tanim.map(t => `<div class="dilim"><label>${t.ad}</label><select data-k="${t.k}"></select></div>`).join("");
+  for (const t of tanim) {
+    const diger = kayitlar.filter(r => tanim.every(u => u.k === t.k || !D.f[u.k] || u.f(r) === D.f[u.k]));
+    const liste = say(diger, t.f); if (D.f[t.k] && !liste.some(x => x[0] === D.f[t.k])) liste.push([D.f[t.k], 0]);
+    if (t.sirali) liste.sort((a, b) => String(a[0]).localeCompare(String(b[0]), "tr"));
+    const sel = kok.querySelector(`[data-k="${t.k}"]`);
+    sel.innerHTML = `<option value="">Tümü</option>` + liste.map(([v, n]) => `<option value="${esc(v)}"${v === D.f[t.k] ? " selected" : ""}>${esc(t.gor ? t.gor(v) : v)} (${sayi(n)})</option>`).join("");
+    sel.onchange = () => { D.f[t.k] = sel.value; ciz(); };
+  }
+  return kayitlar.filter(r => tanim.every(u => !D.f[u.k] || u.f(r) === D.f[u.k]));
+}
+const suz = (kayitlar, tanim, haric) => kayitlar.filter(r => tanim.every(u => u.k === haric || !D.f[u.k] || u.f(r) === D.f[u.k]));
+const ayGrafik = () => aylar(D.bas, D.son < BUGUN ? D.son : BUGUN).slice(-12);
+
+/* ---------- ölçüler ---------- */
+const kmAraligi = (a, b, c) => topla(a.gps, ([t, km]) => t >= b && t <= c ? km : 0);
+const yakitAraligi = (a, b, c) => a.yak.filter(y => y.t >= b && y.t <= c);
+const sabitGun = (d, b, c) => [d.s > b ? d.s : b, d.e < c ? d.e : c];
+const sabitMi = (d, b, c) => { const [x, y] = sabitGun(d, b, c); return x <= y; };
+const sabitKm = (d, b, c) => { const [x, y] = sabitGun(d, b, c); return x > y ? 0 : kmAraligi(d.a, x, y); };
+const sabitYakit = (d, b, c) => { const [x, y] = sabitGun(d, b, c); return x > y ? [] : yakitAraligi(d.a, x, y); };
+const sdSon = a => a.a === "Sabit" && a.SD.length ? a.SD[a.SD.length - 1] : null;  // bugünkü tahsisin dönemi
+// Kurum ağacında yolculuğun ve sabit kullanımın yeri. Kişi İK'da yoksa: aracın birimi bilinen öbür tahsislisinin yeri (d.h,
+// makam aracı göreve bağlı); o da yoksa tahsis bölümü "Birimi bilinmiyor"un altında yaprak olur.
+const rezYol = r => HIY[r.h] || [BILINMIYOR];
+const sabitYol = d => { if (d.h != null && HIY[d.h]) return HIY[d.h]; const y = kisiYol(d.k); return y[0] === BILINMIYOR && d.a.t ? [BILINMIYOR, "Tahsis: " + d.a.t] : y; };
+const sabitDonem = d => `${d.s === "0000" ? "baştan" : tr(d.s)} – ${d.e === "9999" ? "bugün" : tr(d.e)}`;
+// Dönemin neden o gün başladığı: son rezervasyonun dönüşü, tahsis değişikliği ya da hiç rezervasyon olmaması.
+function sabitNeden(d) {
+  const r = d.n && R.find(x => x.n === d.n), ertesi = r ? gEkle(r.v.slice(0, 10), 1) : "";
+  return d.s === "0000" ? "hiç rezervasyonu yok" : r && ertesi === d.s ? `son rezervasyon #${d.n} sonrası` : "tahsis değişikliği sonrası";
+}
+// Alım bazlı L/100 km: aynı dönemde alınan yakıt / GPS mesafesi. Depo seviyesi bilinmediği için fiziksel tüketim değil; kısa dönemde oynar.
+// GPS 1 Nisan 2026'dan başlar (cihazlar Mart'ta takıldı): oran yakıtı da GPS'in başladığı günden sayar.
+function l100(a, b, c) { const son = c < GSON ? c : GSON; if (b < GILK) b = GILK; if (!a.gps.length || b > son) return null; const km = kmAraligi(a, b, son); if (km < 300) return null; return {v: topla(yakitAraligi(a, b, son), y => y.l) / km * 100, km, l: topla(yakitAraligi(a, b, son), y => y.l)}; }
+const ayBas = a => a + "-01", aySon = a => iso(new Date(+a.slice(0, 4), +a.slice(5, 7), 0));
+const donem = () => D.f.ay ? [ayBas(D.f.ay) > D.bas ? ayBas(D.f.ay) : D.bas, aySon(D.f.ay) < D.son ? aySon(D.f.ay) : D.son] : [D.bas, D.son];
+
+/* araç dilimleyicisi (Genel Bakış ve Yakıt) */
+const ARAC_TANIM = [{k: "lok", ad: "Lokasyon", f: a => a.l}, {k: "atama", ad: "Atama", f: a => a.a}, {k: "tahsis", ad: "Tahsis", f: a => a.t, sirali: true},
+  {k: "marka", ad: "Marka", f: a => a.m}, {k: "gps", ad: "GPS", f: a => a.g ? "Var" : "Yok"}, {k: "plaka", ad: "Plaka", f: a => a.p, sirali: true}];
+// Kurum ağacında bir düğüm seçiliyse o düğümün kullandığı araçlar: sabit kullanım döneminde tahsisli kişinin yeri, yolculuklarda kullananların yeri.
+const enCokBirim = (a, b, c) => (say(a.rez.filter(r => r.kul && r.t >= b && r.t <= c), r => r.b)[0] || [""])[0];
+function birimAraclari(dugum, b, c) { const s = new Set(); for (const a of A) { if (a.SD.some(d => sabitMi(d, b, c) && dugumde(sabitYol(d), dugum))) s.add(a.ix); if (a.rez.some(r => r.kul && r.t >= b && r.t <= c && dugumde(rezYol(r), dugum))) s.add(a.ix); } return s; }
+/* Aracı kullanan birimler: Power BI'daki gibi alt düzeye inme (drill down).
+   Tıklama: alt düzeye iner ve sayfayı o düğüme süzer; en alttaki birimde tıklama seçimi açar/kapatır.
+   Sağ tık: Alt düzeye in / Üst düzeye çık / En üste dön. Üstteki yol (Tümü › …) ile de çıkılır. */
+/* İki ölçü (kullanıcı isteği 28.09.2026): her satırda GPS km çubuğu ve yakıt (litre) çubuğu. Yakıt GPS'i olmayan araçları da
+   kapsar. Hiçbir birime yazılamayan (havuz aracının yolculuk dışı km'si ve dolumu) en üst düzeyde ayrı satırdır; böylece
+   toplamlar filo toplamına eşit olur. Sıralama başlıktaki "km / yakıt L" düğmesiyle değişir (varsayılan km, kullanıcı isteği). */
+const ATANAMAYAN = "Birime yazılamayan (havuz)";
+function birimAgaci(katki) {
+  let secili = D.f.org || "", ust = secili ? secili.split(AYRAC) : [];
+  const BELIRSIZ = "(Doğrudan bu düzey)";  // düğümün kendisine yazılan: yönetici ya da alt birimi bilinmeyen kişi
+  const altlar = u => { const m = new Map(), d = u.join(AYRAC);
+    for (const k of katki) { if (!dugumde(k.y, d)) continue; const ad = k.y.length > u.length ? k.y[u.length] : BELIRSIZ, yol = [...u, ad].join(AYRAC);
+      const o = m.get(ad) || {ad, yol, km: 0, skm: 0, l: 0, sl: 0, tl: 0, yolc: 0, arac: new Set(), alt: false};
+      o.km += k.km; o.l += k.l; o.tl += k.tl || 0; if (k.yol) o.yolc++; else { o.skm += k.km; o.sl += k.l; } o.arac.add(k.a.p); if (k.y.length > u.length + 1) o.alt = true; m.set(ad, o); }
+    return m; };
+  let m = altlar(ust), yaprak = "";
+  if (ust.length && [...m.keys()].every(k => k === BELIRSIZ)) {
+    if (!m.size) { D.f.org = ""; return birimAgaci(katki); }  // seçili düğümün bu dönemde kaydı yok
+    yaprak = secili; ust = ust.slice(0, -1); m = altlar(ust);  // en alttaki birim seçili: kardeşleriyle, vurgulu gösterilir
+  }
+  const git = d => { D.f.org = d; ciz(); }, yukari = ust.length ? [["Üst düzeye çık", () => git(ust.slice(0, -1).join(AYRAC))], ["En üste dön", () => git("")]] : [];
+  const sira = D.f.agacSira === "l" ? "l" : "km", olcu = o => `${sayi(o.km)} km · ${sayi(o.l)} L yakıt${o.tl ? " (" + sayi(o.tl) + " TL)" : ""} · ${o.arac.size} araç`;
+  const satirlar = [...m.values()].sort((x, y) => (x.ad === ATANAMAYAN) - (y.ad === ATANAMAYAN) || y[sira] - x[sira] || y.km - x.km).map(o =>
+    o.ad === ATANAMAYAN ? {k: o.yol, ad: o.ad, km: o.km, l: o.l, soluk: true, ip: `<b>${esc(o.ad)}</b><br>${olcu(o)}<br>Havuz aracının rezervasyon dışındaki km'si ve yakıt dolumu (ör. filo görevlisinin dolumu); kişiye ya da birime yazılamaz. Toplamın filoya eşit olması için gösterilir.`}
+    : o.ad === BELIRSIZ ? {k: o.yol, ad: o.ad, km: o.km, l: o.l, ip: `<b>${esc(o.ad)}</b><br>${olcu(o)}<br>Alt birimi olmayan kayıtlar: yönetici ya da birimi rehberde bulunmayan kişi`, menu: yukari}
+    : {k: o.yol, ad: o.ad, km: o.km, l: o.l, alt: o.alt,
+      ip: `<b>${esc(o.ad)}</b>${kurumAd(o.ad) ? "<br>" + esc(kurumAd(o.ad)) : ""}<br>${olcu(o)}${o.yolc ? `<br>${o.yolc} yolculuk · ${sayi(o.km - o.skm)} km · ${sayi(o.l - o.sl)} L` : ""}${o.skm || o.sl ? `<br>Sabit araç kullanımı · ${sayi(o.skm)} km · ${sayi(o.sl)} L` : ""}${o.alt ? "<br><i>Tıklayın: alt düzeye inin · sağ tık: menü</i>" : ""}`,
+      tik: () => git(o.alt ? o.yol : yaprak === o.yol ? ust.join(AYRAC) : o.yol),
+      menu: [o.alt ? ["Alt düzeye in", () => git(o.yol)] : [yaprak === o.yol ? "Seçimi kaldır" : "Yalnız bunu seç", () => git(yaprak === o.yol ? ust.join(AYRAC) : o.yol)], ...yukari]});
+  agacListe($("#a-birim"), satirlar, yaprak);
+  // Yol: Tümü › enstitü › EMY › birim; her parça tıklanınca o düzeye çıkılır. Sağda ölçü düğmeleri (tıklanan sıralar).
+  const parca = secili ? secili.split(AYRAC) : [];
+  $("#a-birim-yol").innerHTML = [`<a data-d="">Tümü</a>`, ...parca.map((p, i) => `<a data-d="${esc(parca.slice(0, i + 1).join(AYRAC))}"${i === parca.length - 1 ? ' class="son"' : ""} title="${esc(kurumAd(p) || p)}">${esc(p)}</a>`)].join(`<span>›</span>`)
+    + `<span class="agac-lej"><button data-s="km" class="${sira === "km" ? "secili" : ""}" title="km'ye göre sırala"><i class="km"></i>km</button><button data-s="l" class="${sira === "l" ? "secili" : ""}" title="Yakıta göre sırala"><i class="lt"></i>yakıt L</button></span>`
+    + (parca.length ? `<button class="yukari" title="Üst düzeye çık">↑</button>` : "");
+  $$("#a-birim-yol a").forEach(a => a.onclick = () => git(a.dataset.d));
+  $$("#a-birim-yol [data-s]").forEach(b => b.onclick = () => { D.f.agacSira = b.dataset.s; ciz(); });
+  const ustDug = $("#a-birim-yol .yukari"); if (ustDug) ustDug.onclick = () => git(parca.slice(0, -1).join(AYRAC));
+  $("#a-birim-bas").textContent = !ust.length ? "Aracı kullanan enstitü ve başkan yrd." : "Aracı kullanan birimler";
+  $("#a-birim-bas").title = "Tıklayın: alt düzeye inin · sağ tık: menü";
+  // km yalnız GPS cihazı takılı araçlardan gelir; yakıt bütün araçlardan (kullanıcı isteği 28.09.2026)
+  const gpsli = A.filter(a => a.g).length;
+  $("#a-birim-not").textContent = `km yalnız GPS'li ${gpsli} araçtan · yakıt ${A.length} aracın hepsinden`;
+  $("#a-birim-not").title = `km: Mobiliz GPS. Yakıt: KAMUTOS. GPS cihazı olmayan ${A.length - gpsli} aracın km'si bilinmez; bu araçlar yalnız yakıtla sayılır.`;
+}
+// Kurum ağacı listesi: her satırda iki çubuk (üst km, alt yakıt L); değerler sağda alt alta.
+function agacListe(el, satirlar, secili) {
+  const mk = Math.max(1, ...satirlar.map(r => r.km)), ml = Math.max(1, ...satirlar.map(r => r.l));
+  el.classList.toggle("hl-var", !!secili && satirlar.some(r => r.k === secili));
+  el.innerHTML = satirlar.length ? satirlar.map((r, i) => `<div class="hs iki${r.tik ? " tik" : ""}${secili && r.k === secili ? " secili" : ""}${r.soluk ? " soluk" : ""}" data-i="${i}" data-ip="${esc(r.ip)}">`
+    + (r.alt ? `<div class="ad ok"><span>${esc(r.ad)}</span><b class="alt-ok">›</b></div>` : `<div class="ad">${esc(r.ad)}</div>`)
+    + `<div class="y2"><i><span class="km" style="width:${r.km / mk * 100}%"></span></i><i><span class="lt" style="width:${r.l / ml * 100}%"></span></i></div>`
+    + `<div class="s2 num"><span class="km">${sayi(r.km)}</span><span class="lt">${sayi(r.l)}</span></div></div>`).join("")
+    : `<div class="bilgi" style="text-align:center;padding-top:40px">Bu seçimde kayıt yok</div>`;
+  el.querySelectorAll(".tik").forEach(d => d.onclick = () => satirlar[+d.dataset.i].tik());
+  el.querySelectorAll(".hs").forEach(d => { const mn = satirlar[+d.dataset.i].menu; if (mn && mn.length) d.oncontextmenu = e => { e.preventDefault(); sagMenu(e.clientX, e.clientY, mn); }; });
+}
+
+/* ---------- GENEL BAKIŞ ---------- */
+function ana() {
+  const VSd = dilimler($("#a-dilim"), ARAC_TANIM, A), [b, c] = donem();
+  const VS = D.f.org ? (s => VSd.filter(a => s.has(a.ix)))(birimAraclari(D.f.org, b, c)) : VSd;
+  const km = topla(VS, a => kmAraligi(a, b, c)), gpsli = VS.filter(a => a.g).length;
+  $("#a-arac").textContent = sayi(VS.length); $("#a-arac-ek").textContent = `${VS.filter(a => a.a === "Sabit").length} sabit · ${VS.filter(a => a.a !== "Sabit").length} havuz`;
+  $("#a-km").innerHTML = km >= 1e6 ? ond(km / 1e6, 2) + "<small>mn</small>" : km >= 1e4 ? sayi(km / 1e3) + "<small>bin</small>" : sayi(km);
+  $("#a-km-ek").textContent = `${gpsli} GPS'li araç`; $("#a-km-ek").parentElement.setAttribute("data-ip", esc(`<b>GPS mesafe</b><br>Mobiliz araç-gün özetleri, ${tr(GSON)} gününe kadar (GPS 6 Mart 2026'da başlıyor).`));
+  // Grafik GPS'in ilk tam ayından (Nisan) başlar: cihazlar Mart'ta takıldı; Mart km'si toplamlarda kalır (altta not).
+  const GAY = V.gps.length ? V.gps[0][1].slice(0, 7) : "", ay = ayGrafik().filter(m => m >= GAY && m >= (V.meta.grafik_ilk_ay || "")).slice(MOBIL() ? -6 : -12), kmAy = ay.map(m => topla(VS, a => kmAraligi(a, ayBas(m), aySon(m))));
+  const lAy = ay.map((m, i) => { const son = aySon(m) < GSON ? aySon(m) : GSON; if (ayBas(m) > GSON || kmAy[i] < 500) return null; const g = VS.filter(a => a.gps.some(([t]) => t >= ayBas(m) && t <= son)); const k = topla(g, a => kmAraligi(a, ayBas(m), son)); return k ? topla(g, a => topla(yakitAraligi(a, ayBas(m), son), y => y.l)) / k * 100 : null; });
+  karma($("#a-grafik"), ay.map(m => AY[+m.slice(5, 7) - 1]), kmAy, lAy, {ad1: "GPS mesafe", ad2: "Yakıt alımı", f1: v => v >= 1e4 ? sayi(v / 1e3) + " bin" : sayi(v), f2: v => ond(v, 1) + " L", soluk: ay.map(m => m >= GSON.slice(0, 7)),
+    ek: i => ay[i] >= GSON.slice(0, 7) ? `<br>GPS ${kisaT(GSON)}'e kadar` : "", secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#a-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  // kullanan birimler (kurum ağacı): yolculuklarda kullananların yeri (o yolculuğun km'si ve yolculuk sırasındaki yakıt),
+  // sabit kullanım döneminde tahsisli kişinin yeri (dönemin km'si ve yakıtı); aracın kalan km'si ve yakıtı "birime yazılamayan"
+  const katki = [];
+  for (const a of VSd) { let km0 = 0, l0 = 0;
+    for (const r of a.rez) if (r.kul && r.t >= b && r.t <= c) { const km = r.kg || r.gg ? r.km : 0, l = r.yl || 0;
+      if (km || l) { katki.push({y: rezYol(r), km, l, tl: r.ytl || 0, yol: 1, a}); km0 += km; l0 += l; } }
+    for (const d of a.SD) if (sabitMi(d, b, c)) { const km = sabitKm(d, b, c), yk = sabitYakit(d, b, c), l = topla(yk, y => y.l);
+      if (km || l) { katki.push({y: sabitYol(d), km, l, tl: topla(yk, y => y.tl), yol: 0, a}); km0 += km; l0 += l; } }
+    const yk = yakitAraligi(a, b, c), kKm = Math.max(0, kmAraligi(a, b, c) - km0), kL = Math.max(0, topla(yk, y => y.l) - l0);
+    if (kKm >= 1 || kL >= 1) katki.push({y: [ATANAMAYAN], km: kKm, l: kL, tl: Math.max(0, topla(yk, y => y.tl) * kL / (topla(yk, y => y.l) || 1)), yol: 0, a}); }
+  birimAgaci(katki);
+  const satir = VS.map(a => ({a, km: kmAraligi(a, b, c), lt: topla(yakitAraligi(a, b, c), y => y.l), l: l100(a, b, c), yol: a.rez.filter(r => r.kul && r.t >= b && r.t <= c).length})).sort((x, y) => y.km - x.km || y.lt - x.lt);
+  $("#a-tablo").innerHTML = `<table><colgroup><col style="width:90px"><col style="width:104px"><col><col style="width:74px"><col style="width:66px"><col style="width:52px"><col style="width:66px"><col style="width:110px"></colgroup><thead><tr><th>Plaka</th><th>Araç</th><th>Kullanım</th><th class="s">GPS km</th><th class="s">Yakıt L</th><th class="s" title="Alım bazlı L/100 km">L/100</th><th class="s">Yolculuk</th><th>Son Durum</th></tr></thead><tbody>` +
+    satir.map((s, i) => `<tr data-i="${i}" title="Araç ayrıntısı için tıklayın"><td class="num"><b>${esc(s.a.p)}</b><div class="alt-metin">${esc(s.a.l)}</div></td><td title="${esc(s.a.m + " " + s.a.mo)}">${esc(s.a.m)}<div class="alt-metin">${esc(s.a.mo)}</div></td><td title="${esc(kullanimAdi(s.a) + (s.a.kisi && s.a.kisi.bi ? " · " + bas(s.a.kisi.bi) : ""))}"><span class="rozet ${s.a.a === "Sabit" ? "" : "y"}">${s.a.a}</span>${s.a.iade ? ' <span class="rozet g" title="Araç iade edildi">İade</span>' : ""} ${esc(kullanimAdi(s.a))}<div class="alt-metin">${esc(s.a.a === "Sabit" ? bas(s.a.kisi && s.a.kisi.bi || "Tahsis: " + s.a.t) + (sdSon(s.a) && sdSon(s.a).s !== "0000" ? " · " + tr(sdSon(s.a).s) + " itibarıyla" : "") : s.yol ? "En çok: " + bas(enCokBirim(s.a, b, c)) : "Dönemde yolculuk yok")}</div></td><td class="s num">${s.a.g ? sayi(s.km) : '<span class="bilgi">GPS yok</span>'}</td><td class="s num">${sayi(s.lt)}</td><td class="s num">${s.l ? ond(s.l.v, 1) : "–"}</td><td class="s num">${s.a.a === "Sabit" && !s.yol ? "–" : s.yol}</td><td title="${esc(s.a.ss ? "Son sinyal " + tr(s.a.ss) : "")}">${s.a.sy ? esc((s.a.sh === "moving" ? "Hareketli · " : "") + s.a.sy) : '<span class="bilgi">–</span>'}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>Toplam</td><td>${sayi(VS.length)} araç</td><td></td><td class="s num">${sayi(km)}</td><td class="s num">${sayi(topla(satir, s => s.lt))}</td><td></td><td class="s num">${sayi(topla(satir, s => s.yol))}</td><td></td></tr></tfoot></table>`;
+  $("#a-tablo").querySelectorAll("tbody tr").forEach(t => t.onclick = () => aracAc(satir[+t.dataset.i].a));
+}
+
+/* ---------- YOLCULUKLAR ---------- */
+const REZ_TANIM = [{k: "rdurum", ad: "Durum", f: r => r.d}, {k: "ren", ad: "Enstitü", f: r => r.e, gor: bas}, {k: "rbirim", ad: "Birim", f: r => r.b, gor: bas},
+  {k: "rplaka", ad: "Plaka", f: r => r.pl, sirali: true}, {k: "ramac", ad: "Gidiş Amacı", f: r => r.ak}, {k: "rvaris", ad: "Varış", f: r => r.vs}];
+const HAVUZ = A.filter(a => a.a !== "Sabit");
+function doluluk(rezler, araclar, b, c) {  // iş günlerinde havuz aracının en az bir yolculukta olduğu gün oranı
+  const son = c < BUGUN ? c : BUGUN; if (b < RILK) b = RILK; if (b > son) return null; let gun = 0; for (let t = b; t <= son; t = gEkle(t, 1)) { const w = tOku(t).getDay(); if (w && w < 6) gun++; } if (!gun || !araclar.length) return null;
+  const set = new Set(araclar.map(a => a.ix)), dolu = new Set();
+  for (const r of rezler) if (r.kul && r.a && set.has(r.a.ix)) { const s = r.c.slice(0, 10) > b ? r.c.slice(0, 10) : b, e = r.v.slice(0, 10) < son ? r.v.slice(0, 10) : son; for (let t = s; t <= e; t = gEkle(t, 1)) { const w = tOku(t).getDay(); if (w && w < 6) dolu.add(r.a.ix + "|" + t); } }
+  return dolu.size / (gun * araclar.length) * 100;
+}
+let REZ_LISTE = [];
+function rez() {
+  const taban = R.filter(r => aralikta(r.t)), RS = dilimler($("#r-dilim"), REZ_TANIM, taban), [b, c] = donem();
+  const M = RS.filter(r => ayda(r.t)), kul = M.filter(r => r.kul);
+  $("#r-yol").textContent = sayi(kul.length); $("#r-yol-ek").textContent = `${M.filter(r => r.d === "İptal Edildi").length} iptal · ${M.filter(r => r.d === "Onay Bekliyor").length} bekleyen`;
+  const havuz = D.f.rplaka ? HAVUZ.filter(a => a.p === D.f.rplaka) : HAVUZ, dol = doluluk(RS, havuz, b, c);
+  $("#r-dol").textContent = dol == null ? "–" : "%" + Math.round(dol); $("#r-dol-ek").textContent = `${havuz.length} havuz aracı`;
+  $("#r-dol-ek").parentElement.setAttribute("data-ip", esc(`<b>Havuz doluluğu</b><br>İş günlerinde havuz araçlarının en az bir yolculukta olduğu gün oranı. Birim/amaç seçiliyse o seçimin kullandığı pay.`));
+  const ay = ayGrafik().filter(m => m >= "2026-04"), yAy = ay.map(m => RS.filter(r => r.kul && r.t.startsWith(m)).length), dAy = ay.map(m => doluluk(RS, havuz, ayBas(m) > D.bas ? ayBas(m) : D.bas, aySon(m) < D.son ? aySon(m) : D.son));
+  karma($("#r-grafik"), ay.map(m => AY[+m.slice(5, 7) - 1]), yAy, dAy, {ad1: "Yolculuk", ad2: "Havuz doluluğu", f2: v => "%" + Math.round(v), soluk: ay.map(m => m === BUGUN.slice(0, 7)), secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#r-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  const bt = suz(taban, REZ_TANIM, "rbirim").filter(r => r.kul && ayda(r.t));
+  hliste($("#r-birim"), say(bt, r => r.b || "Birimi bilinmiyor").map(([k, v]) => ({k, ad: bas(k), v, ip: `<b>${esc(bas(k))}</b><br>${v} yolculuk · ${sayi(topla(bt.filter(r => (r.b || "Birimi bilinmiyor") === k), r => r.km))} km`, tik: () => degistir("rbirim", k)})).slice(0, 40), {secili: D.f.rbirim, renk: "#4A86B8"});
+  REZ_LISTE = [...M].sort((x, y) => y.c.localeCompare(x.c));
+  const rozet = d => `<span class="rozet ${d === "Tamamlandı" ? "y" : d === "Kullanımda" ? "" : d === "İptal Edildi" ? "k" : "t"}">${esc(d)}</span>`;
+  const g = REZ_LISTE.slice(0, 400);
+  $("#r-tablo").innerHTML = `<table><colgroup><col style="width:92px"><col style="width:140px"><col><col style="width:80px"><col style="width:132px"><col style="width:58px"><col style="width:88px"></colgroup><thead><tr><th>Çıkış – Dönüş</th><th>Kullanan</th><th>Kullanan Birim</th><th>Plaka</th><th>Güzergah</th><th class="s">GPS km</th><th>Durum</th></tr></thead><tbody>` +
+    g.map((r, i) => `<tr data-i="${i}" title="Ayrıntı için tıklayın"><td class="num">${kisaT(r.c)}<div class="alt-metin">${kisaT(r.v)}</div></td><td title="${esc(r.U.map(u => u.ad).join(", "))}">${esc(r.U[0] ? r.U[0].ad : "")}${r.U.length > 1 ? ` <span class="bilgi">+${r.U.length - 1}</span>` : ""}<div class="alt-metin">talep: ${esc(r.TE.ad)}</div></td><td title="${esc(bas(r.b))}">${esc(bas(r.b) || "–")}${r.bk !== "kullanan" ? ` <span class="rozet ${r.bk === "karma" ? "g" : "t"}">${r.bk}</span>` : ""}<div class="alt-metin">${esc(bas(r.e))}</div></td><td class="num">${esc(r.pl || "–")}</td><td title="${esc(r.ne + " → " + r.na)}">${esc(r.ne)}<div class="alt-metin">→ ${esc(r.na)}</div></td><td class="s num" title="${esc(kmIp(r))}">${kmGor(r)}</td><td>${rozet(r.d)}<div class="alt-metin">talep #${esc(r.n)}</div></td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>${sayi(M.length)} kayıt</td><td>${REZ_LISTE.length > 400 ? "ilk 400 satır" : ""}</td><td></td><td></td><td></td><td class="s num">${sayi(topla(kul, r => r.km))}</td><td></td></tr></tfoot></table>`;
+  $("#r-tablo").querySelectorAll("tbody tr").forEach(t => t.onclick = () => rezAc(g[+t.dataset.i]));
+}
+
+/* ---------- KİŞİLER ---------- */
+const HARF = {c: "[cçÇC]", g: "[gğĞG]", i: "[iıİI]", o: "[oöÖO]", s: "[sşŞS]", u: "[uüÜU]"};
+const sorgu = q => { const o = [], re = /(-?)"([^"]+)"|(-?)(\S+)/g; let m; while ((m = re.exec(q))) { const t = norm(m[2] || m[4]).trim(); if (t && t !== "-") o.push({t, neg: (m[1] || m[3]) === "-"}); } return o; };
+const vRe = p => { const x = p.filter(y => !y.neg && y.t.length > 1); if (!x.length) return null; try { return new RegExp(x.map(y => [...y.t].map(c => HARF[c] || c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("")).join("|"), "giu"); } catch (e) { return null; } };
+const vurgula = (t, re) => { t = String(t || ""); if (!re) return esc(t); let o = "", s = 0, m; re.lastIndex = 0; while ((m = re.exec(t))) { if (!m[0]) { re.lastIndex++; continue; } o += esc(t.slice(s, m.index)) + "<mark>" + esc(m[0]) + "</mark>"; s = m.index + m[0].length; } return o + esc(t.slice(s)); };
+const SABIT = new Map(); for (const a of A) for (const d of a.SD) SABIT.set(d.k.i, (SABIT.get(d.k.i) || []).concat(d));  // kişi → sabit kullanım dönemleri
+const KISI_TANIM = [{k: "ken", ad: "Enstitü", f: p => p.k.en, gor: bas}, {k: "kbirim", ad: "Birim", f: p => p.k.bi, gor: bas}, {k: "krol", ad: "Rol", f: p => p.rol},
+  {k: "kplaka", ad: "En Çok Plaka", f: p => p.plaka, sirali: true}, {k: "ksabit", ad: "Sabit Araç", f: p => p.sab.length ? "Var" : "Yok"}, {k: "ktel", ad: "Telefon", f: p => p.k.tel ? "Var" : "Yok"}];
+let KISI_LISTE = [];
+function kisiOzet(rezler, b, c) {
+  // km: kişinin kullandığı yolculukların GPS km'si (aynı yolculuktaki herkes o yolculuğun km'sini yapmıştır; bölünmez).
+  // yl/ytl: yolculuk sırasında o araca alınan yakıt. skm/syl/stl: sabit aracının dönemdeki km'si ve yakıtı (sabit kullanım döneminde).
+  const m = new Map(), al = k => { if (!m.has(k.i)) m.set(k.i, {k, yol: 0, gun: 0, talep: 0, km: 0, kmYol: 0, yl: 0, ytl: 0, skm: 0, syl: 0, stl: 0, sab: [], son: "", pl: new Map(), R: []}); return m.get(k.i); };
+  for (const r of rezler) { if (r.d !== "İptal Edildi") { const t = al(r.TE); t.talep++; if (!t.R.includes(r)) t.R.push(r); }
+    if (!r.kul) continue; for (const u of r.U) { const o = al(u); o.yol++; o.gun += r.gn; if (r.kg || r.gg) { o.km += r.km; o.kmYol++; } o.yl += r.yl || 0; o.ytl += r.ytl || 0; if (r.c > o.son) o.son = r.c; if (r.pl) o.pl.set(r.pl, (o.pl.get(r.pl) || 0) + 1); if (!o.R.includes(r)) o.R.push(r); } }
+  for (const [ki, L] of SABIT) for (const d of L) if (sabitMi(d, b, c)) {
+    const o = al(K[ki]), yk = sabitYakit(d, b, c), s = {d, km: sabitKm(d, b, c), l: topla(yk, y => y.l), tl: topla(yk, y => y.tl), n: yk.length};
+    o.sab.push(s); o.skm += s.km; o.syl += s.l; o.stl += s.tl; }
+  for (const o of m.values()) { o.tkm = o.km + o.skm; o.tyl = o.yl + o.syl; o.ttl = o.ytl + o.stl;
+    o.plaka = [...o.pl].sort((a, b) => b[1] - a[1])[0]?.[0] || (o.sab[0] ? o.sab[0].d.a.p : "");
+    o.rol = o.yol && o.sab.length ? "Sabit araç + yolculuk" : o.sab.length ? "Sabit araç kullanıcısı" : o.yol ? "Aracı kullanan" : "Yalnız talep eden";
+    o.idx = norm([o.k.ad, o.k.bi, o.k.en, o.k.ep, o.k.tel, ...o.sab.map(s => s.d.a.p), ...o.pl.keys()].join(" ")); }
+  return [...m.values()];
+}
+function kisi() {
+  const p = sorgu(D.q), re = vRe(p), rezler = R.filter(r => aralikta(r.t) && ayda(r.t)), [db, dc] = donem();
+  const aday = kisiOzet(rezler, db, dc).filter(o => p.every(x => o.idx.includes(x.t) !== x.neg)), KS = dilimler($("#k-dilim"), KISI_TANIM, aday);
+  const kullanan = KS.filter(o => o.yol || o.sab.length);
+  $("#k-kisi").textContent = sayi(kullanan.length); $("#k-kisi-ek").textContent = `kişi · ${sayi(KS.filter(o => o.sab.length).length)} sabit araçlı`;
+  $("#k-yol").textContent = sayi(topla(KS, o => o.yol)); $("#k-yol-ek").textContent = `${sayi(topla(KS, o => o.gun))} kişi-gün`;
+  $("#k-not").innerHTML = V.meta.telefon ? `Büyük/küçük harf ve Türkçe karakter fark etmez · birden çok kelime: hepsi aranır · hariç: <code>-iptal</code>` : `Telefon: İK telefon listesi <b>girdiler/Ortak/Personel</b> klasörüne konunca kendiliğinden eklenir.`;
+  const secK = new Set(KS.map(o => o.k.i)), tumR = R.filter(r => aralikta(r.t) && r.kul), ay = ayGrafik().filter(m => m >= "2026-04");
+  karma($("#k-grafik"), ay.map(m => AY[+m.slice(5, 7) - 1]), ay.map(m => topla(tumR.filter(r => r.t.startsWith(m)), r => r.U.filter(u => secK.has(u.i)).length)), null, {ad1: "Kişi-yolculuk", ust: 44, bw: 30, secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#k-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  // Sıra: toplam km (yolculuk + sabit araç), sonra yolculuk ve talep sayısı.
+  KISI_LISTE = [...KS].sort((x, y) => y.tkm - x.tkm || y.yol - x.yol || y.talep - x.talep || x.k.ad.localeCompare(y.k.ad, "tr"));
+  const g = KISI_LISTE.slice(0, 500);
+  // Alt toplamdaki yolculuk km'si ve yakıtı, listelenen kişilerin yolculuklarının tekil toplamıdır (aynı yolculuk iki kişide iki kez sayılmaz).
+  // Sabit araç dönemi tek kişiye aittir; toplamı doğrudan toplanır.
+  const tekil = new Set(); for (const o of KS) for (const r of o.R) if (r.kul && r.U.some(u => u.i === o.k.i)) tekil.add(r);
+  const yakitIp = o => esc(`Yakıt alımı ${sayi(o.tyl)} L · ${sayi(o.ttl)} TL` + (o.yl ? `\nYolculuklarda ${sayi(o.yl)} L` : "") + (o.syl ? `\nSabit araçta ${sayi(o.syl)} L` : ""));
+  $("#k-tablo").innerHTML = `<table><colgroup><col style="width:158px"><col style="width:76px"><col><col style="width:102px"><col style="width:150px"><col style="width:56px"><col style="width:68px"><col style="width:66px"><col style="width:62px"><col style="width:46px"><col style="width:80px"><col style="width:92px"></colgroup><thead><tr><th>Kişi</th><th>Enstitü</th><th>Birim</th><th>Telefon</th><th>E-posta</th><th class="s">Yolculuk</th><th class="s" title="Kişinin kullandığı yolculukların GPS km'si (Mobiliz km sayacı)">Yolculuk km</th><th class="s" title="Tahsisli (sabit) aracın, sabit kullanım dönemindeki GPS km'si">Sabit km</th><th class="s" title="Yolculuk sırasında ve sabit araçta alınan yakıt (KAMUTOS)">Yakıt L</th><th class="s" title="Kendi adına ya da başkası için açtığı talep">Talep</th><th>Son Yolculuk</th><th>Sabit Araç</th></tr></thead><tbody>` +
+    g.map((o, i) => `<tr data-i="${i}" title="Kişinin yolculukları ve sabit aracı için tıklayın"><td>${vurgula(o.k.ad, re)}</td><td title="${esc(bas(o.k.en))}">${vurgula(bas(o.k.en) || "–", re)}</td><td title="${esc(bas(o.k.bi))}">${vurgula(bas(o.k.bi) || "–", re)}</td><td class="num">${o.k.tel ? vurgula(telGor(o.k.tel), re) : '<span class="bilgi">–</span>'}</td><td title="${esc(o.k.ep)}">${vurgula(o.k.ep.toLocaleLowerCase("tr-TR") || "–", re)}</td><td class="s num">${o.yol || "–"}</td><td class="s num">${o.kmYol ? sayi(o.km) : "–"}</td><td class="s num" title="${esc(o.sab.map(s => s.d.a.p + " · " + sabitDonem(s.d)).join("\n"))}">${o.sab.length ? (o.sab.some(s => s.d.a.g) ? sayi(o.skm) : '<span class="bilgi">GPS yok</span>') : "–"}</td><td class="s num" title="${yakitIp(o)}">${o.tyl ? sayi(o.tyl) : "–"}</td><td class="s num">${o.talep || "–"}</td><td class="num">${o.son ? kisaT(o.son).slice(0, 5) + "." + o.son.slice(0, 4) : "–"}</td><td class="num" title="${esc(o.sab.map(s => s.d.a.p + " · " + sabitDonem(s.d)).join("\n"))}">${vurgula(o.sab.map(s => s.d.a.p).join(", ") || "–", re)}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>${sayi(KS.length)} kişi${KISI_LISTE.length > 500 ? " · ilk 500" : ""}</td><td></td><td></td><td></td><td></td><td class="s num">${sayi(topla(KS, o => o.yol))}</td><td class="s num" title="Yolculukların tekil toplamı">${sayi(topla([...tekil], r => r.kg || r.gg ? r.km : 0))}</td><td class="s num">${sayi(topla(KS, o => o.skm))}</td><td class="s num" title="Yolculuklarda (tekil) ve sabit araçlarda alınan yakıt">${sayi(topla([...tekil], r => r.yl || 0) + topla(KS, o => o.syl))}</td><td class="s num">${sayi(topla(KS, o => o.talep))}</td><td></td><td></td></tr></tfoot></table>`;
+  $("#k-tablo").querySelectorAll("tbody tr").forEach(t => t.onclick = () => kisiAc(g[+t.dataset.i]));
+}
+
+/* ---------- YAKIT ---------- */
+const YAKIT_TANIM = ARAC_TANIM.filter(t => t.k !== "gps");
+function yakit() {
+  const VS = dilimler($("#y-dilim"), YAKIT_TANIM, A), set = new Set(VS.map(a => a.ix)), [b, c] = donem();
+  const taban = Y.filter(y => set.has(y.a.ix) && aralikta(y.t));
+  const sehirSel = document.createElement("div"); sehirSel.className = "dilim";
+  const sehirler = say(taban, y => y.sh);
+  sehirSel.innerHTML = `<label>Alım Şehri</label><select><option value="">Tümü</option>${sehirler.map(([s, n]) => `<option value="${esc(s)}"${s === D.f.ysehir ? " selected" : ""}>${esc(s)} (${sayi(n)})</option>`).join("")}</select>`;
+  sehirSel.querySelector("select").onchange = e => { D.f.ysehir = e.target.value; ciz(); }; $("#y-dilim").appendChild(sehirSel);
+  const FY = taban.filter(y => !D.f.ysehir || y.sh === D.f.ysehir), M = FY.filter(y => ayda(y.t)), tl = topla(M, y => y.tl), lt = topla(M, y => y.l);
+  $("#y-tl").innerHTML = tl >= 1e6 ? ond(tl / 1e6, 2) + "<small>mn TL</small>" : sayi(tl) + "<small>TL</small>";
+  $("#y-lt").textContent = sayi(lt) + " litre" + (D.f.ay ? " · " + ayAd(D.f.ay) : "");
+  $("#y-tll").innerHTML = lt ? ond(tl / lt, 2) : "–"; $("#y-is").textContent = sayi(M.length) + " alım işlemi";
+  const ay = ayGrafik(), tlAy = ay.map(m => topla(FY.filter(y => y.t.startsWith(m)), y => y.tl)), ltAy = ay.map(m => topla(FY.filter(y => y.t.startsWith(m)), y => y.l));
+  karma($("#y-grafik"), ay.map(m => AY[+m.slice(5, 7) - 1]), tlAy, tlAy.map((v, i) => ltAy[i] ? v / ltAy[i] : null), {ad1: "Yakıt alımı", ad2: "TL/litre", f1: v => v >= 1e6 ? ond(v / 1e6, 2) + " mn" : sayi(v / 1e3) + " bin", f2: v => ond(v, 2),
+    ek: i => `<br>${sayi(ltAy[i])} litre`, soluk: ay.map(m => m === BUGUN.slice(0, 7)), secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  secimNot("#y-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  // L/100 listesi: plaka dışındaki filtrelerle; filonun medyanının %25 üstü turuncu
+  const lset = suz(A, YAKIT_TANIM, "plaka").map(a => ({a, l: l100(a, b, c)})).filter(x => x.l), md = medyan(lset.map(x => x.l.v)) || 0;
+  hliste($("#y-l100"), lset.sort((x, y) => y.l.v - x.l.v).map(x => ({k: x.a.p, ad: x.a.p + " · " + x.a.m, v: x.l.v, renk: x.l.v > md * 1.25 ? "#D9822B" : "#3D66C0",
+    ip: `<b>${esc(x.a.p)}</b> ${esc(x.a.m + " " + x.a.mo)}<br>${ond(x.l.v, 1)} L/100 km · filo medyanı ${ond(md, 1)}<br>${sayi(x.l.l)} L alım / ${sayi(x.l.km)} GPS km<br><i>Alım bazlı; depo seviyesi bilinmediği için fiziksel tüketim değildir.</i>`, tik: () => degistir("plaka", x.a.p)})), {secili: D.f.plaka, f: v => ond(v, 1)});
+  const pm = new Map(); for (const y of M) { const o = pm.get(y.a) || {a: y.a, n: 0, l: 0, tl: 0, son: ""}; o.n++; o.l += y.l; o.tl += y.tl; if (y.t > o.son) o.son = y.t; pm.set(y.a, o); }
+  const satir = [...pm.values()].map(o => Object.assign(o, {km: kmAraligi(o.a, b, c), l1: l100(o.a, b, c)})).sort((x, y) => y.tl - x.tl);
+  $("#y-tablo").innerHTML = `<table><colgroup><col style="width:90px"><col style="width:104px"><col><col style="width:56px"><col style="width:74px"><col style="width:92px"><col style="width:78px"><col style="width:60px"><col style="width:84px"></colgroup><thead><tr><th>Plaka</th><th>Araç</th><th>Kullanım</th><th class="s">İşlem</th><th class="s">Litre</th><th class="s">Tutar TL</th><th class="s">GPS km</th><th class="s">L/100</th><th>Son Alım</th></tr></thead><tbody>` +
+    satir.map((o, i) => `<tr data-i="${i}" title="Araç ayrıntısı için tıklayın"><td class="num"><b>${esc(o.a.p)}</b></td><td title="${esc(o.a.m + " " + o.a.mo)}">${esc(o.a.m)} <span class="bilgi">${esc(o.a.mo.split(" ")[0])}</span></td><td title="${esc(kullanimAdi(o.a))}"><span class="rozet ${o.a.a === "Sabit" ? "" : "y"}">${o.a.a}</span> ${esc(kullanimAdi(o.a))}</td><td class="s num">${o.n}</td><td class="s num">${sayi(o.l)}</td><td class="s num">${sayi(o.tl)}</td><td class="s num">${o.a.g ? sayi(o.km) : '<span class="bilgi">–</span>'}</td><td class="s num">${o.l1 ? ond(o.l1.v, 1) : "–"}</td><td class="num">${tr(o.son)}</td></tr>`).join("") +
+    `</tbody><tfoot><tr><td>Toplam</td><td>${satir.length} araç</td><td></td><td class="s num">${sayi(M.length)}</td><td class="s num">${sayi(lt)}</td><td class="s num">${sayi(tl)}</td><td></td><td></td><td></td></tr></tfoot></table>`;
+  $("#y-tablo").querySelectorAll("tbody tr").forEach(t => t.onclick = () => aracAc(satir[+t.dataset.i].a));
+}
+
+/* ---------- ayrıntı panelleri ---------- */
+const panelAc = (etiket, baslik, bilgi, govde) => { $("#d-etiket").innerHTML = etiket; $("#d-bas").innerHTML = baslik; $("#d-bilgi").innerHTML = bilgi; $("#d-gov").innerHTML = govde; $("#detay").classList.add("acik"); $("#d-gov").scrollTop = 0; };
+const kisiSatir = (k, not) => `<div class="kisi-sat"><div><span class="k">${esc(k.ad)}</span>${not ? ` <span class="rozet g">${esc(not)}</span>` : ""}<div class="a">${esc([bas(k.bi), bas(k.en)].filter(Boolean).join(" · ") || "İK'da bulunamadı")}</div></div><div class="t">${k.tel ? `<a href="tel:${esc(k.tel)}">${esc(telGor(k.tel))}</a>` : '<span class="bilgi">telefon yok</span>'}<div class="a">${k.ep ? `<a href="mailto:${esc(k.ep)}">${esc(k.ep.toLocaleLowerCase("tr-TR"))}</a>` : ""}</div></div></div>`;
+// Yolculuk km'si: kg=1 Mobiliz km sayacı farkı (gerçek), kg=2 süren yolculuk (şimdiye kadar, "+"),
+// yoksa günlük GPS km'sinin saate göre payı ("≈", aynı gün başka yolculuk varsa) — 28.09.2026.
+const kmGor = r => r.kg ? sayi(r.km) + (r.kg === 2 ? "+" : "") : r.gg ? (r.ck ? "≈" : "") + sayi(r.km) : "–";
+const kmIp = r => r.kg === 1 ? "Mobiliz km sayacı: çıkış ile dönüş arasındaki gerçek km" : r.kg === 2 ? "Yolculuk sürüyor: çıkıştan bu yana km" : r.gg ? "Günlük GPS km'sinden hesaplandı (yaklaşık)" : "GPS verisi yok";
+const yolTablo = (rl, kisiSutun = true) => rl.length ? `<table class="dt"><colgroup><col style="width:48px"><col style="width:92px"><col style="width:${kisiSutun ? 130 : 84}px"><col><col style="width:62px"></colgroup><thead><tr><th>No</th><th>Çıkış</th><th>${kisiSutun ? "Kullanan" : "Plaka"}</th><th>Güzergah</th><th class="s">km</th></tr></thead><tbody>` +
+  rl.map(r => `<tr class="tik" data-n="${esc(r.n)}"><td>${esc(r.n)}</td><td>${kisaT(r.c)}</td><td>${esc(kisiSutun ? (r.U[0] ? r.U[0].ad : "") + (r.U.length > 1 ? " +" + (r.U.length - 1) : "") : r.pl || "–")}</td><td title="${esc(r.ne + " → " + r.na)}">${esc(r.na || r.ne)}${r.d !== "Tamamlandı" ? ` <span class="rozet ${r.d === "İptal Edildi" ? "k" : "t"}">${esc(r.d)}</span>` : ""}</td><td class="s" title="${esc(kmIp(r))}">${kmGor(r)}</td></tr>`).join("") + `</tbody></table>` : `<div class="not">Kayıt yok.</div>`;
+const yolBagla = () => $("#d-gov").querySelectorAll("tr[data-n]").forEach(t => t.onclick = () => rezAc(R.find(r => r.n === t.dataset.n)));
+function aracAc(a) {
+  const [b, c] = [D.bas, D.son], km = kmAraligi(a, b, c), yk = yakitAraligi(a, b, c), l = l100(a, b, c), rl = a.rez.filter(r => r.t >= b && r.t <= c).sort((x, y) => y.c.localeCompare(x.c));
+  const sd = a.SD.filter(d => sabitMi(d, b, c)), rkm = topla(rl.filter(r => r.kul && (r.kg || r.gg)), r => r.km);
+  const ay = aylar(b, c < BUGUN ? c : BUGUN).slice(-9).reverse();
+  panelAc(`<span class="etiket-cip">${esc(a.a)}</span>${a.iade ? '<span class="etiket-cip">İade edildi</span>' : ""}<span class="etiket-cip">${esc(a.l)}</span><span class="etiket-cip">${a.g ? "GPS var" : "GPS yok"}</span>${a.it ? '<span class="etiket-cip">İade teyidi gerekli</span>' : ""}`,
+    esc(a.p) + ` <span style="font-weight:400;font-size:14px">· ${esc(a.m + " " + a.mo)}</span>`,
+    `${a.a === "Sabit" ? "Tahsisli: <b>" + esc(a.kisi ? a.kisi.ad : "—") + "</b>" + (a.kisi && a.kisi.bi ? " · " + esc(bas(a.kisi.bi)) : "") : "Havuz aracı"} · Tahsis: ${esc(a.t || "—")}${a.i ? " · İade tarihi " + tr(a.i) : ""}<br>${a.sy ? "Son durum: " + esc((a.sh === "moving" ? "hareketli" : "duruyor") + " · " + a.sy) + (a.ss ? " · son sinyal " + tr(a.ss) : "") : "Son durum bilgisi yok"}`,
+    `<div class="kart4"><div>GPS mesafe<b>${a.g ? sayi(km) + " km" : "–"}</b></div><div>Yakıt alımı<b>${sayi(topla(yk, y => y.l))} L</b></div><div>Tutar<b>${sayi(topla(yk, y => y.tl))} TL</b></div><div>L/100 km (alım)<b>${l ? ond(l.v, 1) : "–"}</b></div></div>
+    <div class="not">Dönem: ${tr(b)} – ${tr(c)}. GPS ${tr(GSON)} gününe kadar.${a.g && (sd.length || rkm) ? ` Bu dönemin km'si: yolculuklarda ${sayi(rkm)}${sd.length ? ` · sabit kullanımda ${sayi(topla(sd, d => sabitKm(d, b, c)))}` : ""}.` : ""}</div>
+    ${a.g ? `<div class="harita-sat"><button class="harita-dug" data-harita="arac">Haritada rota ve km</button><span class="bilgi">İstediğiniz zaman aralığını Canlı Takip'te seçin</span></div>` : ""}
+    ${a.kisi ? `<h3>Tahsisli kişi</h3>${kisiSatir(a.kisi)}` : ""}
+    ${a.SD.length ? `<h3>Sabit kullanım</h3><table class="dt"><colgroup><col style="width:150px"><col><col style="width:62px"><col style="width:58px"></colgroup><thead><tr><th>Kişi</th><th>Dönem</th><th class="s">km</th><th class="s">Yakıt L</th></tr></thead><tbody>${a.SD.map(d => `<tr><td>${esc(d.k.ad)}</td><td>${sabitDonem(d)}<div class="alt-metin">${esc(sabitNeden(d))}</div></td><td class="s">${a.g ? (sabitMi(d, b, c) ? sayi(sabitKm(d, b, c)) : "–") : "–"}</td><td class="s">${sabitMi(d, b, c) ? sayi(topla(sabitYakit(d, b, c), y => y.l)) : "–"}</td></tr>`).join("")}</tbody></table>
+      <div class="not">Sabit kullanımda aracın km'si ve yakıtı tahsisli kişiye yazılır. Havuzdan verilen araçta dönem son rezervasyonun dönüşünün ertesi günü başlar; km ve yakıt sütunları seçili döneme düşen kısımdır.</div>` : ""}
+    <h3>Aylık</h3><table class="dt"><thead><tr><th>Ay</th><th class="s">GPS km</th><th class="s">Yakıt L</th><th class="s">TL</th><th class="s">Yolculuk</th></tr></thead><tbody>${ay.map(m => `<tr><td>${ayAd(m)}</td><td class="s">${a.g ? sayi(kmAraligi(a, ayBas(m), aySon(m))) : "–"}</td><td class="s">${sayi(topla(yakitAraligi(a, ayBas(m), aySon(m)), y => y.l))}</td><td class="s">${sayi(topla(yakitAraligi(a, ayBas(m), aySon(m)), y => y.tl))}</td><td class="s">${a.rez.filter(r => r.kul && r.t.startsWith(m)).length || "–"}</td></tr>`).join("")}</tbody></table>
+    <h3>Yolculuklar (${rl.length})</h3>${yolTablo(rl.slice(0, 40))}
+    <h3>Son yakıt alımları</h3><table class="dt"><thead><tr><th>Tarih</th><th>Şehir</th><th class="s">Litre</th><th class="s">TL</th></tr></thead><tbody>${[...a.yak].reverse().slice(0, 15).map(y => `<tr><td>${tr(y.t)}</td><td>${esc(y.sh)}</td><td class="s">${ond(y.l, 1)}</td><td class="s">${sayi(y.tl)}</td></tr>`).join("")}</tbody></table>`);
+  yolBagla();
+  const hd = $("#d-gov [data-harita]"); if (hd) hd.onclick = () => haritadaGoster(a.p, null, null, null);
+}
+function rezAc(r) {
+  if (!r) return;
+  panelAc(`<span class="etiket-cip">Talep #${esc(r.n)}</span><span class="etiket-cip">${esc(r.d)}</span><span class="etiket-cip">${esc(r.ak)}</span>`,
+    esc(r.ne) + " → " + esc(r.na), `${tr(r.c)} – ${tr(r.v)} · ${r.a ? "<b>" + esc(r.a.p) + "</b> " + esc(r.a.m + " " + r.a.mo.split(" ")[0]) : "plaka atanmamış"}<br>Talep açılışı ${tr(r.o)}`,
+    `<div class="kart4"><div>GPS mesafe<b>${kmGor(r)}${r.kg || r.gg ? " km" : ""}</b></div><div>Gün<b>${r.gn || "–"}</b></div><div>Km kaynağı<b style="font-size:12.5px">${r.kg ? "Mobiliz km sayacı" : r.gg ? "Günlük GPS payı" : "–"}</b></div><div>Kullanan birim<b style="font-size:12.5px">${esc(bas(r.b) || "–")}</b></div></div>
+    ${r.kg ? `<div class="not">Aracın km sayacı çıkışta <b>${ond(r.s1, 1)}</b> (${kisaT(r.t1)}), ${r.kg === 2 ? "şu an" : "dönüşte"} <b>${ond(r.s2, 1)}</b> (${kisaT(r.t2)}). Yolculuk km'si bu iki değerin farkıdır; kaynak Mobiliz GPS.${r.kg === 2 ? " Yolculuk sürüyor; değer her saat güncellenir." : ""}</div>`
+      : r.ck ? `<div class="not">≈ ${r.ck} günde aynı araç başka yolculukta da kullanılmış; o günlerin km'si yolculuklar arasında saate göre paylaştırıldı.</div>` : ""}
+    ${r.a && r.a.g && r.c <= BUGUN + " 23:59" ? `<div class="harita-sat"><button class="harita-dug" data-harita="rez">Rotayı haritada göster</button><span class="bilgi">Canlı Takip'te bu yolculuğun aralığı açılır</span></div>` : ""}
+    ${r.yl ? `<div class="not">Yolculuk sırasında yakıt alımı: <b>${ond(r.yl, 1)} L</b> · ${sayi(r.ytl)} TL (${r.yn} alım, KAMUTOS).</div>` : ""}
+    <div class="not">Gidiş nedeni: ${esc(r.am || "—")}</div>
+    <h3>Kullananlar (${r.U.length})</h3>${r.U.map(u => kisiSatir(u)).join("")}
+    ${r.u.length === 1 && r.u[0] === r.te ? "" : `<h3>Talep eden</h3>${kisiSatir(r.TE)}`}
+    <div class="not">Kullanan birim ${r.bk === "kullanan" ? "yolcuların (yolcu yoksa talep edenin) İK birimidir." : r.bk === "karma" ? "yolcular farklı birimlerden; çoğunluğun birimi alındı." : "yolcular İK'da bulunamadığı için talep edenin birimidir."}</div>`);
+  const hd = $("#d-gov [data-harita]");
+  if (hd) hd.onclick = () => haritadaGoster(r.a.p, new Date(r.c.replace(" ", "T") + ":00+03:00"), new Date(r.v.replace(" ", "T") + ":00+03:00"), r);
+}
+// Canlı Takip'e geçip aracı seçer ve istenen aralığın rotasını ve km'sini açar (yolculuk ya da araç ayrıntısından).
+function haritadaGoster(pl, bas, bit, rez) {
+  detayKapat(); D.sayfa = "canli"; ciz();
+  (async () => {
+    for (let i = 0; i < 60 && !(CN.veri && CN.harita); i++) await new Promise(ok => setTimeout(ok, 250));
+    const a = CN.veri && CN.veri.araclar.find(x => cnKisa(x.p) === cnKisa(pl));
+    if (!a) { $("#cn-alt").innerHTML = `<span>${esc(pl)}: Canlı Takip'te yok (araçta GPS cihazı görünmüyor).</span>`; return; }
+    CN.secili = a.p; cnRotaAc(a.p, bas, bit, rez);
+  })();
+}
+// Kişinin yolculukları: hangi talepte hangi araç, kimlerle, ne kadar km (Mobiliz km sayacı).
+const kisiYolTablo = (rl, k) => rl.length ? `<table class="dt"><colgroup><col style="width:44px"><col style="width:92px"><col style="width:78px"><col style="width:140px"><col><col style="width:58px"><col style="width:46px"></colgroup><thead><tr><th>No</th><th>Çıkış – Dönüş</th><th>Plaka</th><th>Birlikte kullananlar</th><th>Güzergah</th><th class="s">km</th><th class="s" title="Yolculuk sırasında alınan yakıt (litre)">Yakıt</th></tr></thead><tbody>` +
+  rl.map(r => { const kullandi = r.U.some(u => u.i === k.i), diger = r.U.filter(u => u.i !== k.i).map(u => u.ad);
+    const kim = kullandi ? (diger.length ? diger.join(", ") : "yalnız") : "Kullanan: " + r.U.map(u => u.ad).join(", ");
+    return `<tr class="tik" data-n="${esc(r.n)}"><td>${esc(r.n)}</td><td>${kisaT(r.c)}<div class="alt-metin">${kisaT(r.v)}</div></td><td>${esc(r.pl || "–")}</td>`
+      + `<td title="${esc(kim)}">${kullandi ? "" : '<span class="rozet t">talep etti</span> '}${esc(kullandi ? kim : r.U.map(u => u.ad).join(", "))}</td>`
+      + `<td title="${esc(r.ne + " → " + r.na)}">${esc(r.na || r.ne)}${r.d !== "Tamamlandı" ? ` <span class="rozet ${r.d === "İptal Edildi" ? "k" : "t"}">${esc(r.d)}</span>` : ""}</td>`
+      + `<td class="s" title="${esc(kmIp(r))}">${r.kul ? kmGor(r) : "–"}</td><td class="s" title="${r.yl ? esc(`${ond(r.yl, 1)} L · ${sayi(r.ytl)} TL`) : ""}">${r.kul && r.yl ? sayi(r.yl) : "–"}</td></tr>`; }).join("") + `</tbody></table>` : `<div class="not">Kayıt yok.</div>`;
+function kisiAc(o) {
+  const rl = [...o.R].sort((x, y) => y.c.localeCompare(x.c)), gercek = o.R.filter(r => r.kul && r.kg && r.U.some(u => u.i === o.k.i)).length;
+  const [b, c] = donem(), bugun = trSaat(new Date()).slice(0, 10);
+  // Sabit aracın rotası: dönemin son 7 günü (Canlı Takip'te aralık değiştirilebilir; Mobiliz en çok 31 gün verir)
+  const rotaAralik = d => { const son = d.e < bugun ? d.e : bugun, ilk = [d.s, gEkle(son, -6)].sort()[1];
+    return [new Date(ilk + "T00:00:00+03:00"), d.e < bugun ? new Date(gEkle(son, 1) + "T00:00:00+03:00") : new Date()]; };
+  const sabit = o.sab.length ? `<h3>Sabit araç (${o.sab.length})</h3><table class="dt"><colgroup><col style="width:92px"><col><col style="width:62px"><col style="width:58px"><col style="width:64px"><col style="width:56px"></colgroup><thead><tr><th>Plaka</th><th>Sabit kullanım dönemi</th><th class="s">km</th><th class="s">Yakıt L</th><th class="s">TL</th><th></th></tr></thead><tbody>` +
+    o.sab.map((s, i) => `<tr><td title="${esc(s.d.a.m + " " + s.d.a.mo)}"><b>${esc(s.d.a.p)}</b><div class="alt-metin">${esc(s.d.a.m)}</div></td><td title="${esc(sabitNeden(s.d) === "tahsis değişikliği sonrası" ? "Araç listeleri arasında tahsis değişti; kesin gün bilinmediği için önceki listenin ertesi günü alındı." : "")}">${sabitDonem(s.d)}<div class="alt-metin">${esc(sabitNeden(s.d))}</div></td><td class="s">${s.d.a.g ? sayi(s.km) : '<span class="bilgi">GPS yok</span>'}</td><td class="s">${sayi(s.l)}</td><td class="s">${sayi(s.tl)}</td><td>${s.d.a.g ? `<button class="harita-dug kucuk" data-sabit="${i}" title="Son 7 günün rotası; aralığı Canlı Takip'te değiştirebilirsiniz">Rota</button>` : ""}</td></tr>`).join("")
+    + `</tbody></table><div class="not">Sabit araç km'si ve yakıtı, seçili dönemin (${tr(b)} – ${tr(c)}) sabit kullanım günlerine düşen kısmıdır. Havuzdan kişiye verilen araçta sabit kullanım, aracın rezervasyonla son kullanıldığı yolculuğun dönüşünün ertesi günü başlar; öncesindeki yolculuklar zamanındaki yolculara yazılır. Km Mobiliz GPS günlük toplamı, yakıt KAMUTOS alımıdır.</div>` : "";
+  panelAc(`<span class="etiket-cip">${esc(o.rol)}</span>${o.sab.length ? `<span class="etiket-cip">Sabit araç: ${esc(o.sab.map(s => s.d.a.p).join(", "))}</span>` : ""}`,
+    esc(o.k.ad), `${esc([bas(o.k.bi), bas(o.k.en)].filter(Boolean).join(" · ") || "İK'da bulunamadı")}<br>${o.k.tel ? "Telefon " + esc(telGor(o.k.tel)) + " · " : ""}${esc(o.k.ep.toLocaleLowerCase("tr-TR"))}`,
+    `<div class="kart4"><div>Yolculuk<b>${o.yol || "–"}</b></div><div>Yolculuk km<b>${o.kmYol ? sayi(o.km) : "–"}</b></div><div>Sabit araç km<b>${o.sab.length ? sayi(o.skm) : "–"}</b></div><div>Yakıt alımı<b>${o.tyl ? sayi(o.tyl) + " L" : "–"}</b></div></div>
+    <div class="not">Seçili dönem: ${tr(D.bas)} – ${tr(D.son)}${D.f.ay ? " · " + ayAd(D.f.ay) : ""} · ${o.gun || 0} gün yolculukta · ${o.talep || 0} talep açtı · En çok kullandığı araç: ${esc(o.plaka || "–")}.
+      ${o.kmYol ? `Yolculuk km'si, kullandığı ${o.kmYol} yolculuğun km'sidir${gercek < o.kmYol ? ` (${o.kmYol - gercek} yolculukta günlük GPS'ten yaklaşık)` : ""}; aynı yolculuktaki herkes için tam sayılır.` : ""}
+      ${o.tyl ? `Yakıt: ${sayi(o.tyl)} L · ${sayi(o.ttl)} TL${o.yl && o.syl ? ` (yolculuklarda ${sayi(o.yl)} L, sabit araçta ${sayi(o.syl)} L)` : ""}.` : ""}</div>
+    ${sabit}
+    <h3>Yolculuklar ve talepler (${rl.length})</h3>${kisiYolTablo(rl, o.k)}`);
+  yolBagla();
+  $$("#d-gov [data-sabit]").forEach(el => el.onclick = () => { const d = o.sab[+el.dataset.sabit].d, [x, y] = rotaAralik(d); haritadaGoster(d.a.p, x, y, null); });
+}
+const detayKapat = () => { $("#detay").classList.remove("acik"); if (D.sayfa === "canli") { $("#canli-kap").hidden = false; if (CN.harita) CN.harita.invalidateSize(); } };
+$("#d-kapat").onclick = detayKapat;
+
+/* ---------- CANLI TAKİP ----------
+   Mobiliz anlık konumu: yayında 30 saniyede bir doğrudan API'den, bu bilgisayarda konum.js'ten (scripts/canli_konum.py).
+   Harita Leaflet + OpenStreetMap altlığı.
+   Durum: son sinyal 3 saatten eskiyse "sinyal yok"; 15 dakikadan eskiyse "park"; hız > 3 km/sa "hareketli"; kontak açık duruyorsa "kontak açık"; öbürü "park".
+   Aracı o an kimin kullandığı rezervasyondan gelir (çıkış ≤ şimdi ≤ dönüş olan kullanımdaki rezervasyonun yolcuları). */
+const cnKisa = p => String(p || "").replace(/\s/g, "");
+const ARAC_P = new Map(A.map(a => [cnKisa(a.p), a]));
+const CN_RENK = {hareket: "#2F9E5F", rolanti: "#D9822B", park: "#3D66C0", eski: "#9AA3AF"};
+const CN_AD = {hareket: "Hareketli", rolanti: "Kontak açık, duruyor", park: "Park (duruyor)", eski: "Sinyal yok (3 saatten uzun)"};
+const cnDk = (a, simdi) => a.zaman ? (simdi - new Date(a.zaman.replace(" ", "T") + ":00")) / 6e4 : 1e9;
+// Hız ve kontak son sinyaldeki değerdir: 15 dakikadan eski sinyalde araç hareketli/kontağı açık sayılmaz (cihaz uykuda).
+const cnDurum = (a, simdi) => { const dk = cnDk(a, simdi); return dk > 180 ? "eski" : dk > 15 ? "park" : (a.hiz || 0) > 3 ? "hareket" : a.kontak === "A" ? "rolanti" : "park"; };
+const once = dk => dk < 1 ? "az önce" : dk < 60 ? Math.round(dk) + " dk önce" : dk < 1440 ? ond(dk / 60, 1) + " sa önce" : Math.round(dk / 1440) + " gün önce";
+const simdiRez = (arac, t) => arac ? arac.rez.filter(r => r.kul && r.c <= t && r.v >= t) : [];
+async function cnCoz(p) {  // yayında konum.enc.js; anahtar oturumda bir kez türetilir (tuz sabit)
+  const b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  let k = CN.anahtar[p.salt];
+  if (!k) { const ham = await crypto.subtle.importKey("raw", new TextEncoder().encode(RAPOR_SIFRE || ""), "PBKDF2", false, ["deriveKey"]);
+    k = CN.anahtar[p.salt] = await crypto.subtle.deriveKey({name: "PBKDF2", salt: b64(p.salt), iterations: p.it, hash: "SHA-256"}, ham, {name: "AES-GCM", length: 256}, false, ["decrypt"]); }
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64(p.iv)}, k, b64(p.veri));
+  return JSON.parse(await new Response(new Blob([acik]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+}
+/* Canlı akış (kullanıcı isteği 27.09.2026): yayında sayfa konumu 30 saniyede bir doğrudan Mobiliz entegrasyon
+   API'sinden okur. Anahtar şifreli verinin içinde gelir (V.canli) ve yalnız bellekte durur. Mobiliz aynı anda tek istek
+   kabul ettiği için istekler sıraya girer. API'ye ulaşılamazsa saat başı yayımlanan konum dosyası kullanılır. */
+const CANLI_SN = 30, MZ = V.canli && V.canli.anahtar ? V.canli : null;
+const TRZ = new Intl.DateTimeFormat("sv-SE", {timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"});
+const trSaat = d => TRZ.format(d).replace("T", " ");  // "YYYY-MM-DD HH:MM:SS", Türkiye saati
+const mzMs = v => { if (typeof v === "number" || /^\d+$/.test(v || "")) return +v;  // epoch ms ya da tarih metni (bölgesizse Türkiye saati)
+  const s = String(v || "").replace(" ", "T"); return Date.parse(/[zZ]$/.test(s) ? s : /[+-]\d\d:?\d\d$/.test(s) ? s.replace(/([+-]\d\d):?(\d\d)$/, "$1:$2") : s + "+03:00") || 0; };
+const mzZaman = v => v == null || v === "" ? "" : trSaat(new Date(mzMs(v))).slice(0, 16);
+const mzParam = d => trSaat(d).replace(" ", "T") + "%2B0300";
+const trBas = s => String(s || "").toLocaleLowerCase("tr-TR").replace(/(^|[^a-zçğıöşü0-9])([a-zçğıöşü])/g, (m, a, b) => a + b.toLocaleUpperCase("tr-TR"));
+let mzSira = Promise.resolve();
+function mzIstek(yol) {
+  const is = mzSira.then(async () => {
+    for (let d = 0; ; d++) {
+      let r = null, j = null;
+      try { r = await fetch(MZ.taban + yol, {headers: {"Mobiliz-Token": MZ.anahtar}, cache: "no-store"}); if (r.ok) j = await r.json(); } catch (e) { if (d >= 2) throw e; }
+      if (r && (r.status === 401 || r.status === 403)) throw new Error("Mobiliz anahtarı reddedildi");
+      if (j && j.success !== false) return "result" in j ? j.result || [] : j;
+      if (d >= 2) throw new Error("Mobiliz yanıt vermedi" + (r ? " (" + r.status + ")" : ""));
+      await new Promise(t => setTimeout(t, 2000 * (d + 1) + Math.random() * 1500));  // o an başka bir istek sürüyor olabilir
+    }
+  });
+  mzSira = is.catch(() => {});
+  return is;
+}
+// Mobiliz'de etiketi yanlış kalmış cihaz → gerçek plaka (ayarlar/mobiliz_plaka_esleme.json; ör. 34PMS498ARIZALI → 34PMU778)
+const PLAKA_ES = V.meta.plaka_esleme || {}, mzPlaka = p => { p = String(p || "").replace(/\s/g, "").toUpperCase(); return PLAKA_ES[p] || p; };
+const mzArac = x => ({p: mzPlaka(x.plate), mu: x.muId, lat: x.latitude, lon: x.longitude, hiz: x.speed || 0, yon: x.speedDirection,
+  kontak: x.ignition, motor: x.engine, yer: [trBas(x.town), trBas(x.city)].filter(Boolean).join(" · "), mahalle: trBas(x.quarter), yol: x.way || "",
+  zaman: mzZaman(x.gpsTime || x.dataTime), km_sayac: x.distance});
+async function cnDosya() {  // saat başı yayımlanan konum dosyası; son 24 saat rotalarını da taşır
+  if (YAYIN) { const t = await (await fetch("konum.enc.js?t=" + Date.now(), {cache: "no-store"})).text(); CN.dosya = await cnCoz(JSON.parse(t.slice(t.indexOf("=") + 1).trim().replace(/;\s*$/, ""))); }
+  else await new Promise((tamam, hata) => { const s = document.createElement("script"); s.src = "konum.js?t=" + Date.now(); s.onload = () => { CN.dosya = window.KONUM; s.remove(); tamam(); }; s.onerror = () => { s.remove(); hata(); }; document.head.appendChild(s); });
+  CN.izler = CN.dosya.izler || {};
+  return CN.dosya;
+}
+async function cnYukle() {
+  if (CN.yukleniyor) return;
+  CN.yukleniyor = true; CN.son = Date.now();
+  try {
+    if (MZ) {
+      try { const araclar = (await mzIstek("/activity/last") || []).map(mzArac); if (!araclar.length) throw new Error("Mobiliz boş yanıt verdi");
+        CN.veri = {cekildi: trSaat(new Date()), araclar, canli: true}; CN.hata = ""; }
+      catch (e) { CN.hata = String(e.message || e); if (!CN.veri) CN.veri = await cnDosya(); }
+    } else CN.veri = await cnDosya();
+  } catch (e) { if (!CN.veri) { $("#cn-uyari").style.display = ""; $("#cn-uyari").textContent = "Konum verisi alınamadı. Mobiliz bağlantısı kurulunca görünür."; } }
+  finally { CN.yukleniyor = false; }
+  if (D.sayfa === "canli" && CN.veri) canli();
+}
+function canli() {
+  if (!window.L) { $("#cn-uyari").textContent = "Harita kütüphanesi yüklenemedi (internet bağlantısı gerekir)."; return; }
+  if (!CN.veri) { cnYukle(); return; }
+  $("#cn-uyari").style.display = "none";
+  if (!CN.harita) {
+    CN.harita = L.map("harita", {zoomControl: true, attributionControl: true});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 19, attribution: "&copy; OpenStreetMap katkıcıları"}).addTo(CN.harita);
+    CN.katman = L.layerGroup().addTo(CN.harita);
+    CN.harita.on("zoomend", () => $("#harita").classList.toggle("etiketli", CN.harita.getZoom() >= 11));
+    $("#cn-ara").oninput = e => { CN.q = e.target.value.trim(); canli(); };
+  }
+  const K = CN.veri, simdi = new Date(K.cekildi.replace(" ", "T")), t = K.cekildi.slice(0, 16);
+  const hepsi = K.araclar.filter(a => a.lat && a.lon).map(a => Object.assign({}, a, {d: cnDurum(a, simdi), dk: cnDk(a, simdi), arac: ARAC_P.get(cnKisa(a.p))}));
+  const say = k => hepsi.filter(a => a.d === k).length;
+  const kayit = `${K.cekildi.slice(8, 10)}.${K.cekildi.slice(5, 7)} ${K.cekildi.slice(11, 16)}`;
+  $("#cn-zaman").innerHTML = K.canli ? `<i class="cn-nabiz${CN.hata ? " kesik" : ""}"></i>Mobiliz canlı · ${esc(K.cekildi.slice(11, 19))} · ${CANLI_SN} saniyede bir yenilenir${CN.hata ? " · bağlantı kesildi, yeniden deneniyor" : ""}`
+    : MZ ? `<i class="cn-nabiz kesik"></i>Mobiliz · son kayıt ${kayit} · canlı bağlantı kurulamadı, ${CANLI_SN} saniyede bir yeniden deneniyor`
+    : `Mobiliz · son kayıt ${kayit} · saat başı yenilenir`;
+  $("#cn-kpi").innerHTML = [["", "Filo", hepsi.length], ["hareket", "Hareketli", say("hareket")], ["rolanti", "Kontak açık", say("rolanti")], ["park", "Park", say("park")], ["eski", "Sinyal yok", say("eski")]]
+    .map(([k, ad, n]) => `<button data-f="${k}" class="${CN.f === k && k ? "secili" : ""}" title="${k ? esc(CN_AD[k]) + " — süzmek için tıklayın" : "Bütün araçlar"}">${k ? `<i style="background:${CN_RENK[k]}"></i>` : ""}${ad}<b>${n}</b></button>`).join("");
+  $$("#cn-kpi button").forEach(b => b.onclick = () => { CN.f = CN.f === b.dataset.f ? "" : b.dataset.f; canli(); });
+  const q = norm(CN.q);
+  const gor = hepsi.filter(a => (!CN.f || a.d === CN.f) && (!q || norm([a.p, a.arac ? a.arac.p : "", a.yer, a.mahalle, a.yol, a.arac ? kullanimAdi(a.arac) : "", ...simdiRez(a.arac, t).flatMap(r => r.U.map(u => u.ad))].join(" ")).includes(q)));
+  // İşaretler yerinde güncellenir: 30 saniyelik yenilemede açık bilgi kartı kapanmaz, araç haritada kayar.
+  const gorP = new Set(gor.map(a => a.p));
+  for (const [p, m] of Object.entries(CN.isaret)) if (!gorP.has(p)) { CN.katman.removeLayer(m); delete CN.isaret[p]; }
+  for (const a of gor) {
+    const ok = a.d === "hareket" ? `<svg viewBox="0 0 10 10" style="transform:rotate(${a.yon || 0}deg)"><path d="M5 .5 9 9.5 5 7.2 1 9.5z" fill="#fff"/></svg>` : "";
+    const ikon = L.divIcon({className: "cn-isaret", html: `<div class="n" style="background:${CN_RENK[a.d]}">${ok}</div><div class="e">${esc(a.arac ? a.arac.p : a.p)}</div>`, iconSize: [16, 16], iconAnchor: [8, 8], popupAnchor: [0, -8]});
+    const z = a.d === "hareket" ? 1000 : a.d === "rolanti" ? 500 : 0;
+    let m = CN.isaret[a.p];
+    if (m) { m.veri = a; cnKaydir(m, [a.lat, a.lon]); m.setIcon(ikon); m.setZIndexOffset(z); if (m.isPopupOpen()) m.getPopup().update(); continue; }
+    m = L.marker([a.lat, a.lon], {icon: ikon, zIndexOffset: z, title: a.arac ? a.arac.p : a.p}); m.veri = a;
+    m.bindPopup(() => cnKart(m.veri), {maxWidth: 330, autoPanPaddingTopLeft: L.point(MOBIL() ? 10 : 30, MOBIL() ? 10 : 165), autoPanPaddingBottomRight: L.point(MOBIL() ? 10 : 345, MOBIL() ? 10 : 70)}); m.on("click", () => cnSec(a.p, false)); m.addTo(CN.katman); CN.isaret[a.p] = m;
+  }
+  // Rotası şimdiye kadar açık araç hareket ettikçe çizgi uzar.
+  if (CN.izCizgi && CN.izCanli) { const a = gor.find(x => x.p === CN.izP); if (a) { const ll = CN.izCizgi.getLatLngs(), s = ll[ll.length - 1]; if (!s || s.distanceTo([a.lat, a.lon]) > 15) { CN.izCizgi.addLatLng([a.lat, a.lon]); CN.izSon.setLatLng([a.lat, a.lon]); } } }
+  if (CN.ilk && gor.length) { CN.harita.fitBounds(L.latLngBounds(gor.map(a => [a.lat, a.lon])), {paddingTopLeft: MOBIL() ? [30, 30] : [40, 150], paddingBottomRight: MOBIL() ? [30, 30] : [350, 60], maxZoom: 9}); CN.ilk = false; }
+  const sira = {hareket: 0, rolanti: 1, park: 2, eski: 3};
+  const liste = [...gor].sort((x, y) => sira[x.d] - sira[y.d] || (y.hiz || 0) - (x.hiz || 0) || x.p.localeCompare(y.p));
+  $("#cn-araclar").innerHTML = liste.map(a => { const rz = simdiRez(a.arac, t), kim = rz.length && rz[0].U[0] ? rz[0].U[0].ad + (rz[0].U.length > 1 ? " +" + (rz[0].U.length - 1) : "") : a.arac && a.arac.a === "Sabit" && a.arac.kisi ? a.arac.kisi.ad : "";
+    return `<div class="cn-a${CN.secili === a.p ? " secili" : ""}" data-p="${esc(a.p)}" title="${esc(CN_AD[a.d])}"><i style="background:${CN_RENK[a.d]}"></i><b>${esc(a.arac ? a.arac.p : a.p)}</b><span class="h">${a.d === "hareket" ? Math.round(a.hiz) + " km/sa" : esc(once(a.dk))}</span><div class="d">${esc(a.yer || "—")}${kim ? " · " + esc(kim) : ""}</div></div>`; }).join("")
+    || `<div class="bilgi" style="padding:24px;text-align:center">Bu seçimde araç yok</div>`;
+  $$("#cn-araclar .cn-a").forEach(d => d.onclick = () => cnSec(d.dataset.p, true));
+  if (!CN.izP) $("#cn-alt").innerHTML = Object.keys(CN_RENK).map(k => `<span><i style="background:${CN_RENK[k]}"></i>${CN_AD[k]}</span>`).join("") + `<span style="opacity:.75">· Araca tıklayın: ayrıntı, istenen aralıkta rota ve km, canlı izleme</span>`;
+  takipNotu();
+  if (CN.secili && CN.isaret[CN.secili] && CN.acik) CN.isaret[CN.secili].openPopup();
+  setTimeout(() => CN.harita.invalidateSize(), 60);
+}
+// İşaret yeni konuma bir anda sıçramaz, 1,5 saniyede kayar (hareket eden araç haritada ilerler görünür).
+function cnKaydir(m, hedef) {
+  const bas = m.getLatLng(), mesafe = bas.distanceTo(hedef);
+  cancelAnimationFrame(m._anim);
+  if (mesafe < 2 || mesafe > 30000 || document.hidden) { m.setLatLng(hedef); return; }
+  const t0 = performance.now(), sure = 1500;
+  const adim = t => { const k = Math.min(1, (t - t0) / sure), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+    m.setLatLng([bas.lat + (hedef[0] - bas.lat) * e, bas.lng + (hedef[1] - bas.lng) * e]); if (k < 1) m._anim = requestAnimationFrame(adim); };
+  m._anim = requestAnimationFrame(adim);
+}
+function cnSec(p, uc) {
+  CN.secili = p; const m = CN.isaret[p];
+  if (m) { if (uc) CN.harita.flyTo(m.getLatLng(), Math.max(CN.harita.getZoom(), 13), {duration: .6}); setTimeout(() => m.openPopup(), uc ? 650 : 0); }
+  $$("#cn-araclar .cn-a").forEach(d => d.classList.toggle("secili", d.dataset.p === p));
+}
+function cnKart(a) {
+  const ar = a.arac, rz = simdiRez(ar, CN.veri.cekildi.slice(0, 16)), div = document.createElement("div");
+  div.className = "cn-pop";
+  div.innerHTML = `<h4>${esc(ar ? ar.p : a.p)} <span style="font-weight:400;font-size:12px;color:#5F6B78">${esc(ar ? ar.m + " " + ar.mo.split(" ")[0] : "")}</span></h4>
+    <span class="dur" style="background:${CN_RENK[a.d]}">${CN_AD[a.d]}${a.d === "hareket" ? " · " + Math.round(a.hiz) + " km/sa" : ""}</span>
+    <div class="sat" style="margin-top:6px">${esc([a.mahalle, a.yer].filter(Boolean).join(", ") || "—")}${a.yol ? "<br>" + esc(a.yol) : ""}</div>
+    <div class="sat">Son sinyal ${esc(a.zaman.slice(11, 16))} · ${esc(once(a.dk))}</div>
+    ${ar ? `<div class="sat">Kullanım: ${esc(kullanimAdi(ar))}${ar.kisi && ar.kisi.bi ? " · " + esc(bas(ar.kisi.bi)) : ""}</div>` : ""}
+    ${rz.map(r => `<div class="rz"><b>Şu an rezervasyonda</b> · #${esc(r.n)}<br>${esc(r.U.map(u => u.ad).join(", "))}<br><span class="sat">${esc(bas(r.b) || "")}${r.b ? " · " : ""}dönüş ${esc(kisaT(r.v))}</span><br><span class="sat">${esc(r.ne)} → ${esc(r.na)}</span></div>`).join("")}
+    <div class="dug"><button data-k="rota">Rota ve km</button><button data-k="takip" class="${CN.takip === a.p ? "acik" : ""}">${CN.takip === a.p ? "İzlemeyi bırak" : "Canlı izle"}</button>${ar ? `<button data-k="detay">Araç ayrıntısı</button>` : ""}</div>`;
+  div.querySelector('[data-k="rota"]').onclick = () => { if (CN.isaret[a.p]) CN.isaret[a.p].closePopup(); cnRotaAc(a.p); };
+  div.querySelector('[data-k="takip"]').onclick = () => { if (CN.isaret[a.p]) CN.isaret[a.p].closePopup(); cnTakip(a.p); };
+  // Ayrıntı paneli rapor sayfasının içindedir; harita üstünde kalmasın diye panel açıkken harita gizlenir.
+  const d = div.querySelector('[data-k="detay"]'); if (d) d.onclick = () => { $("#canli-kap").hidden = true; aracAc(ar); };
+  return div;
+}
+// Son 24 saat rotası: yayında seçilen aracın noktaları o an Mobiliz'den çekilir (/locations, muId); olmazsa konum dosyasındaki rota.
+function cnSeyrelt(ham) {  // ardışık 20 metreden yakın noktalar atlanır
+  const o = [];
+  for (const x of [...ham].filter(x => x.latitude && x.longitude).sort((a, b) => mzMs(a.time) - mzMs(b.time))) {
+    const n = [x.latitude, x.longitude, mzZaman(x.time).slice(11, 16)], s = o[o.length - 1];
+    if (!s || L.latLng(s[0], s[1]).distanceTo([n[0], n[1]]) > 20) o.push(n); else s[2] = n[2];
+  }
+  return o;
+}
+/* Rota ve km (kullanıcı isteği 28.09.2026): seçilen araç için istenen zaman aralığında gittiği yol ve gerçek km.
+   Yol /locations?muId&startTime&endTime noktalarından çizilir. km, aralığın başındaki ve sonundaki Mobiliz km sayacının
+   farkıdır (rezervasyon km'siyle aynı yöntem; /activity/detail T'den sonraki ilk kaydı, "distance" km sayacıdır).
+   Mobiliz sınırları: aralık en çok 31 gün, başlangıç en çok 180 gün geriye. Bu bilgisayarda (anahtarsız) yalnız
+   saat başı kaydındaki son 24 saat rotası gösterilir. */
+const trGirdi = d => trSaat(d).slice(0, 16).replace(" ", "T");
+const girdiTarih = v => v ? new Date(v + ":00+03:00") : null;
+const kisaD = d => kisaT(trSaat(d).slice(0, 16));
+async function mzSayac(mu, t) {
+  const r = await mzIstek(`/activity/detail?muId=${encodeURIComponent(mu)}&startTime=${mzParam(t)}`), x = Array.isArray(r) ? r[0] : r;
+  return x && x.distance != null ? {km: +x.distance, t: mzZaman(x.time)} : null;
+}
+function cnRotaSil() { if (CN.iz && CN.harita) CN.harita.removeLayer(CN.iz); CN.iz = CN.izCizgi = CN.izSon = null; CN.izP = ""; CN.izCanli = false; }
+function cnRotaKapat() { cnRotaSil(); CN.rota = null; CN.rotaNo = (CN.rotaNo || 0) + 1; $("#cn-rota").hidden = true; $("#canli-kap").classList.remove("rota-acik"); $("#cr-sonuc").innerHTML = ""; cnTakipBirak(); }
+function cnRotaAc(p, bas, bit, rez) {
+  const a = CN.veri && CN.veri.araclar.find(x => x.p === p); if (!a) return;
+  CN.rota = {p};
+  $("#cn-rota").hidden = false; $("#canli-kap").classList.add("rota-acik");
+  $("#cr-plaka").textContent = ARAC_P.get(p) ? ARAC_P.get(p).p : p;
+  const simdi = new Date();
+  $("#cr-bas").value = trGirdi(bas || new Date(simdi - 864e5)); $("#cr-bit").value = trGirdi(bit || simdi);
+  const rz = rez || simdiRez(a.arac, CN.veri.cekildi.slice(0, 16))[0], rb = $('#cn-rota [data-h="rez"]');
+  rb.hidden = !rz; CN.rota.rez = rz || null;
+  $$("#cn-rota .cr-hizli button").forEach(b => b.classList.toggle("secili", !bas && b.dataset.h === "24" || !!rez && b.dataset.h === "rez"));
+  if (MOBIL()) setTimeout(() => $("#cn-rota").scrollIntoView({block: "start", behavior: "smooth"}), 80);  // telefonda panel görünür olsun
+  cnRotaCiz();
+}
+async function cnRotaCiz() {
+  const RT = CN.rota; if (!RT) return;
+  const a = CN.veri.araclar.find(x => x.p === RT.p), ad = esc(ARAC_P.get(RT.p) ? ARAC_P.get(RT.p).p : RT.p), sonuc = $("#cr-sonuc"), simdi = new Date();
+  let bas = girdiTarih($("#cr-bas").value), bit = girdiTarih($("#cr-bit").value);
+  if (!bas || !bit || isNaN(bas) || isNaN(bit) || !(bit > bas)) { sonuc.innerHTML = `<span class="uyari-y">Bitiş, başlangıçtan sonra olmalı.</span>`; return; }
+  if (bas > simdi) { sonuc.innerHTML = `<span class="uyari-y">Başlangıç ileri bir tarihte.</span>`; return; }
+  if (bit > simdi) bit = simdi;
+  if (bit - bas > 31 * 864e5) { sonuc.innerHTML = `<span class="uyari-y">Mobiliz en çok 31 günlük aralık veriyor; aralığı kısaltın.</span>`; return; }
+  if (simdi - bas > 178 * 864e5) { sonuc.innerHTML = `<span class="uyari-y">Mobiliz 180 günden eski kaydı vermiyor.</span>`; return; }
+  cnRotaSil();
+  const no = CN.rotaNo = (CN.rotaNo || 0) + 1, canliMi = simdi - bit < 120e3;
+  sonuc.innerHTML = `<span class="bilgi">Mobiliz'den alınıyor…</span>`;
+  let nk = null, s1 = null, s2 = null, kaynak = "";
+  if (MZ && a && a.mu != null) {
+    try {
+      nk = cnSeyrelt(await mzIstek(`/locations?muId=${encodeURIComponent(a.mu)}&startTime=${mzParam(bas)}&endTime=${mzParam(bit)}`));
+      s1 = await mzSayac(a.mu, bas);
+      s2 = canliMi && a.km_sayac != null ? {km: +a.km_sayac, t: a.zaman} : await mzSayac(a.mu, bit);
+      kaynak = "Mobiliz";
+    } catch (e) { nk = null; }
+  }
+  if (no !== CN.rotaNo) return;  // bu arada başka bir aralık istendi ya da panel kapandı
+  if (!nk) { try { if (!CN.izler) await cnDosya(); } catch (e) {} nk = (CN.izler || {})[RT.p] || []; kaynak = "saat başı kaydı (son 24 saat; seçilebilir aralık yayındaki sitede)"; }
+  if (no !== CN.rotaNo) return;
+  const km = s1 && s2 ? Math.max(0, s2.km - s1.km) : null;
+  const ozet = `<div class="cr-km"><b>${km != null ? ond(km, 1) + " km" : "–"}</b><span>${kisaD(bas)} – ${kisaD(bit)}</span></div>`
+    + `<div class="bilgi">${s1 && s2 ? `Km sayacı ${ond(s1.km, 1)} → ${ond(s2.km, 1)} · ` : ""}${nk.length} nokta · kaynak ${kaynak}${canliMi && nk.length > 1 ? " · araç ilerledikçe çizgi uzar" : ""}</div>`;
+  if (nk.length < 2) { sonuc.innerHTML = ozet + `<div class="bilgi">Bu aralıkta araç hareket etmemiş.</div>`; return; }
+  if (canliMi && a && a.lat) { const s = nk[nk.length - 1]; if (L.latLng(s[0], s[1]).distanceTo([a.lat, a.lon]) > 15) nk.push([a.lat, a.lon, a.zaman.slice(11, 16)]); }
+  const cizgi = L.polyline(nk.map(x => [x[0], x[1]]), {color: "#3D66C0", weight: 4, opacity: .85});
+  const ilkN = L.circleMarker([nk[0][0], nk[0][1]], {radius: 6, color: "#fff", weight: 2, fillColor: "#50A0A8", fillOpacity: 1}).bindTooltip("Başlangıç " + nk[0][2]);
+  const sonN = L.circleMarker([nk[nk.length - 1][0], nk[nk.length - 1][1]], {radius: 6, color: "#fff", weight: 2, fillColor: "#5B5B78", fillOpacity: 1}).bindTooltip(canliMi ? "Şimdiki konum" : "Son nokta " + nk[nk.length - 1][2]);
+  CN.iz = L.layerGroup([cizgi, ilkN, sonN]).addTo(CN.harita); CN.izP = RT.p; CN.izCizgi = cizgi; CN.izSon = sonN; CN.izCanli = canliMi;
+  if (!CN.takip) CN.harita.fitBounds(cizgi.getBounds(), {paddingTopLeft: MOBIL() ? [30, 30] : [370, 160], paddingBottomRight: MOBIL() ? [30, 30] : [360, 70], maxZoom: 15});
+  sonuc.innerHTML = ozet;
+  $("#cn-alt").innerHTML = `<span><i style="background:#3D66C0"></i>${ad} · ${kisaD(bas)} – ${kisaD(bit)} rotası${km != null ? " · " + ond(km, 1) + " km" : ""}</span>`;
+  takipNotu();
+}
+function takipNotu() {
+  $$("#cn-alt .cn-takip-not").forEach(e => e.remove());
+  if (!CN.takip) return;
+  const a = CN.veri && CN.veri.araclar.find(x => x.p === CN.takip), ar = a ? ARAC_P.get(cnKisa(a.p)) : null;
+  $("#cn-alt").insertAdjacentHTML("afterbegin", `<span class="cn-takip-not" style="color:#2F9E5F;font-weight:600"><i class="cn-nabiz" style="margin-right:4px"></i>${esc(ar ? ar.p : CN.takip)} canlı izleniyor · 10 saniyede bir${a && a.zaman ? " · son sinyal " + esc(a.zaman.slice(11, 16)) : ""}</span>`);
+}
+$("#cr-goster").onclick = () => { $$("#cn-rota .cr-hizli button").forEach(b => b.classList.remove("secili")); cnRotaCiz(); };
+$("#cr-kapat").onclick = () => { cnRotaKapat(); canli(); };
+$$("#cn-rota .cr-hizli button").forEach(b => b.onclick = () => {
+  const s = new Date(), gun = new Date(trSaat(s).slice(0, 10) + "T00:00:00+03:00");
+  const [x, y] = {"24": [new Date(s - 864e5), s], bugun: [gun, s], dun: [new Date(gun - 864e5), gun], "7": [new Date(s - 7 * 864e5), s]}[b.dataset.h]
+    || (CN.rota && CN.rota.rez ? [new Date(CN.rota.rez.c.replace(" ", "T") + ":00+03:00"), new Date(CN.rota.rez.v.replace(" ", "T") + ":00+03:00")] : [null, null]);
+  if (!x) return;
+  $("#cr-bas").value = trGirdi(x); $("#cr-bit").value = trGirdi(y > s ? s : y);
+  $$("#cn-rota .cr-hizli button").forEach(c => c.classList.toggle("secili", c === b)); cnRotaCiz(); });
+
+/* Canlı izle: seçilen aracın konumu 10 saniyede bir yalnız o araç için sorulur; harita araçla birlikte kayar,
+   günün rotası çizilir ve araç ilerledikçe uzar. */
+function cnTakipBirak() { clearInterval(CN.takipZ); CN.takipZ = null; CN.takip = ""; }
+function cnTakip(p) {
+  if (CN.takip === p) { cnTakipBirak(); canli(); return; }
+  cnTakipBirak(); CN.takip = p;
+  cnRotaAc(p, new Date(trSaat(new Date()).slice(0, 10) + "T00:00:00+03:00"), new Date());
+  $$("#cn-rota .cr-hizli button").forEach(b => b.classList.toggle("secili", b.dataset.h === "bugun"));
+  const m = CN.isaret[p]; if (m) CN.harita.setView(m.getLatLng(), Math.max(CN.harita.getZoom(), 14));
+  if (MZ) CN.takipZ = setInterval(cnTakipYenile, 10000);
+  canli();
+}
+async function cnTakipYenile() {
+  if (!CN.takip || D.sayfa !== "canli" || document.hidden || CN.yukleniyor) return;
+  const a = CN.veri.araclar.find(x => x.p === CN.takip); if (!a || a.mu == null) return;
+  try {
+    const y = ((await mzIstek(`/activity/last?muId=${encodeURIComponent(a.mu)}`)) || []).map(mzArac)[0];
+    if (!y || !CN.takip) return;
+    Object.assign(a, y); canli();
+    if (y.lat) CN.harita.panTo([y.lat, y.lon], {animate: true, duration: 1});
+    $("#canli-kap").dataset.takipSon = trSaat(new Date());  // izlemenin son yenilenme anı (denetim için)
+  } catch (e) { $("#canli-kap").dataset.takipHata = String(e.message || e); }
+}
+setInterval(() => { if (D.sayfa === "canli" && !document.hidden) cnYukle(); }, CANLI_SN * 1000);
+document.addEventListener("visibilitychange", () => { if (document.hidden || D.sayfa !== "canli") return;
+  if (Date.now() - (CN.son || 0) > CANLI_SN * 1000) cnYukle().then(() => { if (CN.takip) cnTakipYenile(); }); else if (CN.takip) cnTakipYenile(); });
+
+/* ---------- gezinme ---------- */
+function aralik(k) { if (k === "30") return [gEkle(BUGUN, -29), BUGUN]; if (k === "ay") return [BUGUN.slice(0, 8) + "01", BUGUN]; if (k === "yil") return [BUGUN.slice(0, 4) + "-01-01", BUGUN]; return [ILK, BUGUN]; }
+function ciz() {
+  $$(".mdug[data-sayfa]").forEach(b => b.classList.toggle("secili", b.dataset.sayfa === D.sayfa));
+  $$(".sayfa").forEach(s => s.classList.toggle("gizli", s.id !== "s-" + D.sayfa));
+  $$(".t-bas").forEach(i => i.value = D.bas); $$(".t-son").forEach(i => i.value = D.son);
+  $$(".hizli button").forEach(b => b.classList.toggle("secili", aralik(b.dataset.a).join() === [D.bas, D.son].join()));
+  $("#canli-kap").hidden = D.sayfa !== "canli";
+  ({ana, rez, kisi, yakit, canli})[D.sayfa]();
+  kaydet();
+}
+$$(".mdug[data-sayfa]").forEach(b => b.onclick = () => { D.sayfa = b.dataset.sayfa; $("#detay").classList.remove("acik"); ciz(); });
+// Temizle: bu sayfada yapılan her şey başa döner. Canlı Takip'te arama, durum süzgeci, çizilen 24 saat rotası,
+// açık bilgi kartı ve harita görünümü de sıfırlanır.
+$("#temizle").title = "Bütün seçimleri temizle ve başa al";
+$("#temizle").onclick = () => {
+  Object.assign(D, {f: {}, q: "", bas: BUGUN.slice(0, 4) + "-01-01", son: BUGUN}); $("#q").value = "";
+  detayKapat();
+  CN.f = ""; CN.q = ""; CN.secili = ""; if ($("#cn-ara")) $("#cn-ara").value = "";
+  cnRotaKapat();  // rota paneli, çizilen rota ve canlı izleme
+  if (CN.harita) CN.harita.closePopup();
+  CN.ilk = true;
+  ciz(); $$(".tablo,.hlist,#cn-araclar").forEach(t => { t.scrollTop = 0; });
+};
+$$(".t-bas").forEach(i => i.onchange = () => { if (i.value) { D.bas = i.value; if (D.bas > D.son) D.son = D.bas; ciz(); } });
+$$(".t-son").forEach(i => i.onchange = () => { if (i.value) { D.son = i.value; if (D.son < D.bas) D.bas = D.son; ciz(); } });
+$$(".hizli button").forEach(b => b.onclick = () => { [D.bas, D.son] = aralik(b.dataset.a); ciz(); });
+let zam; $("#q").value = D.q; $("#q").oninput = e => { clearTimeout(zam); zam = setTimeout(() => { D.q = e.target.value.trim(); ciz(); }, 180); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") detayKapat(); if (e.key === "/" && document.activeElement !== $("#q")) { e.preventDefault(); D.sayfa = "kisi"; ciz(); $("#q").focus(); } });
+if (!YAYIN) { const acilis = Date.now(); let hareket = Date.now(); ["mousemove", "keydown", "wheel"].forEach(t => addEventListener(t, () => hareket = Date.now(), {passive: true}));
+  setInterval(() => { if (Date.now() - acilis > 9e5 && Date.now() - hareket > 12e4 && !$("#detay").classList.contains("acik")) location.reload(); }, 6e4); }
+ciz();
+}
+
+/* Şifreli yayın: veri AES-256-GCM ile şifrelidir (anahtar PBKDF2-SHA256), tarayıcıda şifreyle çözülür.
+   Aynı sitedeki iki rapor aynı şifreyi kullanır; doğru şifre sekme kapanana kadar hatırlanır. */
+let RAPOR_SIFRE = null;  // canlı konum dosyasını çözmek için (yalnız bellekte)
+async function coz(sifre) {
+  const s = window.FILO_SIFRELI, b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  const ham = await crypto.subtle.importKey("raw", new TextEncoder().encode(sifre), "PBKDF2", false, ["deriveKey"]);
+  const anahtar = await crypto.subtle.deriveKey({name: "PBKDF2", salt: b64(s.salt), iterations: s.it, hash: "SHA-256"}, ham, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64(s.iv)}, anahtar, b64(s.veri));
+  return JSON.parse(await new Response(new Blob([acik]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+}
+if (window.FILO) baslat();
+else if (window.FILO_SIFRELI) {
+  const k = document.getElementById("kilit"), f = document.getElementById("kilit-form"), g = document.getElementById("kilit-sifre"), h = document.getElementById("kilit-hata");
+  const dene = async s => { window.FILO = await coz(s); RAPOR_SIFRE = s; try { sessionStorage.setItem("bilgem_rapor", s); } catch (e) {} k.hidden = true; baslat(); };
+  let hatir = null; try { hatir = sessionStorage.getItem("bilgem_rapor"); } catch (e) {}
+  (hatir ? dene(hatir) : Promise.reject()).catch(() => { k.hidden = false; g.focus(); });
+  f.onsubmit = async e => { e.preventDefault(); h.textContent = "Açılıyor…";
+    try { await dene(g.value); g.value = ""; } catch (x) { h.textContent = "Şifre hatalı. Tekrar deneyin."; g.select(); } };
+}
+</script>
+</body>
+</html>

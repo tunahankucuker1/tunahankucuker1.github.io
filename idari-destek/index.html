@@ -16,9 +16,22 @@ button,input,select{font-family:inherit}
   background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
 /* sol menü */
 .menu{position:absolute;z-index:10;left:24px;top:28px;width:96px;height:664px;border-radius:12px;background:linear-gradient(90deg,#FBFCFE 0%,#E3E7EF 100%);box-shadow:0 6px 18px rgba(46,64,120,.28),inset 0 1px 0 #fff;display:flex;flex-direction:column;align-items:center;padding-top:12px}
-.menu .logo{width:72px;height:auto;margin-bottom:10px}
-.mdug{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;margin-top:12px;color:#40495A;font-size:12.5px}
-.mdug .kut{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#FFFFFF,#EDF0F5);box-shadow:0 3px 8px rgba(46,64,120,.22),inset 0 1px 0 #fff;color:#6B7688;transition:.15s}
+.menu .logo{width:66px;height:auto;margin-bottom:2px}
+.mdug{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;margin-top:9px;color:#40495A;font-size:12.5px;text-decoration:none}
+/* alt sayfa şeridi: Power BI sayfa sekmeleri gibi; raporlar arası geçiş rapor gövdesinde değil burada */
+#serit{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:30;display:flex;align-items:stretch;background:#F3F4F7;border-top:1px solid #D3D8E2;box-shadow:0 -2px 8px rgba(46,64,120,.08);padding-left:14px;font-family:"Segoe UI",system-ui,sans-serif}
+#serit .ok{display:flex;align-items:center;gap:2px;padding-right:10px;color:#8A93A3;font-size:15px}
+#serit .ok a{color:inherit;text-decoration:none;padding:0 5px;border-radius:3px}#serit .ok a:hover{background:#E4E8EF;color:#3D66C0}#serit .ok a.pasif{opacity:.35;pointer-events:none}
+#serit .sek{display:flex;align-items:center;padding:0 22px;font-size:13px;color:#323130;text-decoration:none;border-left:1px solid #DDE1E8;position:relative;white-space:nowrap}
+#serit .sek:last-of-type{border-right:1px solid #DDE1E8}
+#serit .sek:hover{background:#E9ECF2}
+#serit .sek.secili{background:#fff;font-weight:600;color:#1F2A37}
+#serit .sek.secili::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#3D66C0,#50A0A8)}
+#serit .sek svg{width:15px;height:15px;margin-right:7px;color:#5F6B78}#serit .sek.secili svg{color:#3D66C0}
+#serit .sayi{margin-left:7px;background:#D9822B;color:#fff;border-radius:999px;font-size:10.5px;font-weight:600;padding:0 6px;line-height:16px}#serit .sayi:empty{display:none}
+@media (max-width:900px){#serit{overflow-x:auto;padding-left:4px}#serit .sag{display:none}#serit .sek{padding:0 12px;font-size:12.5px}#serit .ok{display:none}}
+#serit .sag{margin-left:auto;display:flex;align-items:center;padding-right:16px;font-size:11.5px;color:#605E5C}
+.mdug .kut{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#FFFFFF,#EDF0F5);box-shadow:0 3px 8px rgba(46,64,120,.22),inset 0 1px 0 #fff;color:#6B7688;transition:.15s}
 .mdug:hover .kut{transform:translateY(-1px);box-shadow:0 6px 12px rgba(46,64,120,.28)}
 .mdug .kut svg{width:28px;height:28px}
 .mdug.secili .kut{background:linear-gradient(135deg,#3F68C1 0%,#4F9DAA 100%);color:#fff;box-shadow:0 4px 12px rgba(61,102,192,.45)}
@@ -81,10 +94,6 @@ svg [data-i]{cursor:pointer}
 .hs .y span{display:block;height:100%}
 .hs .s{font-size:12px;color:#1F2A37}
 /* ısı haritası */
-.isi{position:absolute;display:grid;gap:3px}
-.isi .h{font-size:10.5px;color:#4A5565;text-align:center}
-.isi .g{font-size:11px;color:#4A5565;align-self:center}
-.isi .c{border-radius:3px;display:grid;place-items:center;font-size:10.5px}
 /* mail arama */
 .ara{position:absolute;left:152px;top:44px;width:560px;height:46px}
 .ara input{width:100%;height:46px;border-radius:8px;border:1px solid rgba(255,255,255,.85);background:#fff;padding:0 14px 0 42px;font-size:16px;color:#1F2A37;outline:none;box-shadow:0 3px 10px rgba(20,40,90,.2)}
@@ -113,6 +122,14 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
 .ipucu{position:fixed;z-index:50;pointer-events:none;background:rgba(31,42,55,.95);color:#fff;font-size:12px;padding:6px 9px;border-radius:4px;opacity:0;transition:opacity .1s;max-width:260px;line-height:1.4}
 .ipucu.acik{opacity:1}
 .bilgi{font-size:11px;color:#4A5565}
+/* dönülmemiş mailler: ana sayfadaki uyarı ve sayfa öğeleri */
+.uyari{position:absolute;right:12px;top:8px;z-index:2;appearance:none;border:1px solid rgba(255,214,120,.95);background:rgba(255,184,64,.25);color:#fff;font-size:12px;border-radius:999px;padding:3px 12px;cursor:pointer}
+.uyari:hover{background:rgba(255,184,64,.42)}.uyari b{font-size:14px;margin:0 2px}.uyari:empty{display:none}
+.donem-sec{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:4px}
+.donem-sec button{appearance:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font-size:11px;border-radius:999px;padding:2px 8px;cursor:pointer;white-space:nowrap}
+.donem-sec button.secili,.donem-sec button:hover{background:rgba(255,255,255,.25)}
+.bekle{display:inline-block;min-width:62px;text-align:center;font-size:11px;border-radius:999px;padding:1px 8px;background:rgba(61,102,192,.12);color:#2F4E8F}
+.bekle.orta{background:rgba(199,119,0,.16);color:#8A5300}.bekle.uzun{background:rgba(180,35,24,.14);color:#9A2A1F}
 /* şifre ekranı (yalnız şifreli yayında) */
 #kilit{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
 #kilit[hidden]{display:none}
@@ -123,6 +140,114 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
 .kilit-kart input{width:100%;height:40px;border:1px solid #CBD3E1;border-radius:8px;padding:0 12px;font-size:15px}
 .kilit-kart button{margin-top:12px;width:100%;height:40px;border:0;border-radius:8px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(115deg,#3D66C0,#4F9DAA)}
 .kilit-hata{min-height:18px;margin-top:10px;font-size:12.5px;color:#B42318}
+/* ---------- yazı ve renk dili: kullanıcının örnek aldığı "Your Own KPI" (Zsolt Szabo) Power BI tasarımı (27.09.2026) ----------
+   Dashboard Final.pbix'ten: her yerde Segoe UI normal (yalnız seçili sekme Semibold); başlık 16 pt, bölüm 14 pt, büyük sayı 24 pt;
+   koyu metin #5B5B78, ikincil #9090AD, vurgu #3F68BD; bant üstünde yazı #D9DFF1, sayı #F2F2FF. Büyük harf, kalın etiket yok. */
+:root{--bant1:#5D80C6;--bant2:#5D8ABF;--bant3:#599CAB;--mavi:#3F68BD;--metin:#5B5B78;--gri:#9090AD;--koyu:#5B5B78}
+html,body,button,input,select,textarea{font-family:"Segoe UI","Segoe UI Web (West European)",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif}
+body{color:#5B5B78}
+.num{font-variant-numeric:tabular-nums}
+#sahne,#kilit{background:linear-gradient(135deg,#D9DFF1 0%,#C1CCE2 55%,#B4C4E1 100%)}
+.menu{background:linear-gradient(180deg,#EEF1F4 0%,#D7DFE6 100%);box-shadow:0 6px 16px rgba(80,95,140,.25),inset 0 1px 0 rgba(255,255,255,.8)}
+.mdug{font-size:13px;font-weight:400;color:#9090AD;letter-spacing:0}
+.mdug.secili{font-weight:400;color:#5B5B78}
+.mdug .kut{color:#9090AD;background:linear-gradient(180deg,#F5F7FA,#E3E8EE);box-shadow:0 2px 6px rgba(80,95,140,.2),inset 0 1px 0 #fff}
+.mdug.secili .kut{background:linear-gradient(135deg,#5D80C6 0%,#599CAB 100%);color:#F2F2FF;box-shadow:0 4px 10px rgba(80,110,190,.4)}
+.menu .alt-not{color:#9090AD;font-size:10.5px}
+.bant{box-shadow:0 8px 20px rgba(70,95,160,.3)}
+.cam{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);box-shadow:0 3px 10px rgba(30,50,110,.14);color:#F2F2FF}
+.cam .bs{font-size:15px!important;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.3;color:#D9DFF1}
+.cam .dg{font-weight:400;font-size:32px;letter-spacing:0;color:#F2F2FF}
+.cam .dg small{font-weight:400;font-size:15px;letter-spacing:0;opacity:.85}
+.cam .ek{font-size:11px;letter-spacing:0;color:#D9DFF1}
+.grf-bas{font-size:17px;font-weight:400;letter-spacing:0;color:#D9DFF1}
+.lej{font-size:12px;letter-spacing:0;color:#D9DFF1}
+.tarihler input{font-size:12.5px}
+.hizli button,.donem-sec button{font-weight:400;letter-spacing:0;color:#F2F2FF;font-size:11px}
+.alt{background:rgba(217,223,241,.55);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 20px rgba(70,95,160,.18)}
+.dilim-seridi{background:linear-gradient(180deg,#F1F3F6,#E6EAEF);box-shadow:0 2px 8px rgba(80,95,140,.14)}
+.dilim{background:linear-gradient(180deg,#DCE2E8,#D1D8E0);box-shadow:inset 0 1px 2px rgba(80,95,140,.18)}
+.dilim label{font-size:13px;font-weight:400;color:#9090AD;letter-spacing:0}
+.dilim select{border:0;background:transparent;font-size:13px;color:#5B5B78}
+.panel{background:linear-gradient(160deg,rgba(226,231,243,.8),rgba(205,215,233,.7));border:1px solid rgba(255,255,255,.55);box-shadow:0 2px 8px rgba(80,95,140,.12)}
+.panel .pbas{font-size:17px;font-weight:400;color:#5B5B78;letter-spacing:0}
+.tablo table{font-size:12.5px;color:#5B5B78}
+.tablo th{font-size:12.5px;font-weight:400;letter-spacing:0;text-transform:none;color:#5B5B78;background:rgba(214,221,238,.97)}
+.tablo td .alt-metin{color:#9090AD}
+.tablo tfoot td{font-size:12.5px;font-weight:600;background:rgba(214,221,238,.97)}
+.hs{font-size:12.5px}.hs .ad{color:#5B5B78}.hs .s{font-weight:400;color:#5B5B78}
+.hs.secili .ad{font-weight:600;color:#3F68BD}
+.secim-not{font-weight:400;letter-spacing:0}
+.panel .secim-not{color:#5B5B78}
+.bilgi{color:#9090AD}
+.dbas{background:linear-gradient(115deg,var(--bant1),var(--bant3))}
+.dbas h2{font-weight:400;font-size:19px;letter-spacing:0}
+.dgov h3{font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:#5B5B78}
+.ileti .u b{color:#5B5B78;font-weight:600}.ileti .m{color:#5B5B78}.ileti .u span,.ileti .a{color:#9090AD}
+.kart4 b{font-weight:400;letter-spacing:0}
+.kilit-bant{font-weight:400;letter-spacing:0;background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-kart button{background:linear-gradient(115deg,#5D80C6,#599CAB)}
+.kilit-kart p{color:#5B5B78}
+#serit .sek{font-family:inherit;font-weight:400;color:#5B5B78}
+#serit .sek.secili{font-weight:600;color:#3F68BD}
+#serit .sek.secili::after{background:linear-gradient(90deg,#5D80C6,#599CAB)}
+/* ---------- telefon ve dar ekran: sabit 16:9 sayfa yerine alt alta akan düzen ---------- */
+@media (max-width:900px){
+  html,body{height:auto;overflow:auto}
+  body{padding-bottom:40px;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+  #sahne{position:static;width:auto;height:auto;transform:none!important;overflow:visible;background:none}
+  .menu{position:sticky;top:0;left:auto;width:auto;height:auto;border-radius:0 0 12px 12px;flex-direction:row;align-items:center;gap:4px;padding:6px 8px;overflow-x:auto;z-index:25}
+  .menu .logo{width:36px;margin:0 4px 0 0;flex:none}
+  .mdug{margin-top:0;flex-direction:row;gap:6px;font-size:12px;white-space:nowrap;padding:2px 4px;flex:none}
+  .mdug .kut{width:34px;height:34px;border-radius:9px}.mdug .kut svg{width:18px;height:18px}
+  .menu .alt-not{display:none}
+  .sayfa{position:static}
+  .bant,.alt{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;margin:10px;padding:10px;display:flex;flex-wrap:wrap;gap:10px}
+  .cam,.panel,.ara,.ara-not,.dilim-seridi{position:relative!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;width:auto!important}
+  html,body,#sahne{overflow-x:hidden;max-width:100vw}
+  .bant>*,.alt>*,.cam,.panel{min-width:0;max-width:100%}
+  .cam>svg,.panel>svg{max-width:100%}
+  .dilim-seridi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hs{grid-template-columns:minmax(0,120px) minmax(0,1fr) auto}
+  .cam{flex:1 1 140px}
+  .cam:has(.tarihler){flex-basis:100%}
+  .cam:has(>svg){display:flex;flex-direction:column}
+  .cam>.grf-bas{position:relative!important;top:auto;order:-3;padding:8px 10px 0;font-size:15px}
+  .cam>.lej{position:relative!important;left:auto;top:auto;order:-2;padding:4px 12px 0;flex-wrap:wrap;gap:10px}
+  .cam>.uyari{position:relative!important;right:auto;top:auto;order:-1;align-self:center;margin-top:6px}
+  .cam:has(>svg){flex-basis:100%;height:auto!important;min-height:0}
+  .cam>svg,.panel>svg{position:relative!important;left:auto!important;top:auto!important;display:block;width:100%!important}
+  .panel{flex:1 1 100%;height:auto!important}
+  .panel .hlist{position:relative!important;inset:auto!important;max-height:340px}
+  .panel .tablo{position:relative!important;inset:auto!important;max-height:480px}
+  .tablo table{min-width:760px}
+  .dilim-seridi{flex:1 1 100%;height:auto;grid-template-columns:1fr 1fr}
+  .dilim{height:34px}
+  .ara{flex:1 1 100%;height:46px}.ara-not{flex:1 1 100%}
+  .detay{position:fixed;left:0;right:0;top:0;bottom:34px;width:auto;height:auto;border-radius:0;transform:translateX(105%)}
+  .detay.acik{transform:none}
+  .kilit-kart{width:min(380px,92vw)}
+}
+/* şifre kutusundaki göz: yazılan şifreyi gösterir ya da gizler */
+.sifre-kut{position:relative}
+.kilit-kart .sifre-kut input{padding-right:46px}
+.kilit-kart .goz{position:absolute;right:5px;top:5px;width:30px;height:30px;margin:0;padding:0;border-radius:6px;background:transparent;color:#9090AD;display:grid;place-items:center}
+.kilit-kart .goz:hover{background:#EEF1F7;color:#3F68BD}
+.kilit-kart .goz svg{width:20px;height:20px}
+/* aranabilir süzgeç (28.09.2026): açılır listede arama kutusu; asıl <select> gizli kalır */
+.dilim select.ds-gizli{display:none}
+.ds-dug{flex:1;min-width:0;height:28px;border:0;background:transparent;font:inherit;font-size:13px;color:#5B5B78;display:flex;align-items:center;gap:6px;cursor:pointer;padding:0 2px;text-align:left}
+.ds-dug span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-dug svg{width:14px;height:14px;flex:none}
+.ds-pano{position:fixed;z-index:90;background:#fff;border-radius:10px;box-shadow:0 12px 32px rgba(40,50,90,.28);border:1px solid #DDE2EC;display:flex;flex-direction:column;overflow:hidden;font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,sans-serif;font-size:13px;color:#5B5B78}
+.ds-pano input{margin:8px;height:34px;border:1px solid #CBD3E1;border-radius:7px;padding:0 10px;font:inherit;font-size:13.5px;color:#5B5B78;outline:none}
+.ds-pano input:focus{border-color:#3F68BD;box-shadow:0 0 0 3px rgba(63,104,189,.12)}
+.ds-liste{overflow:auto;padding:0 4px 6px}
+.ds-sec{padding:6px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-sec:hover,.ds-sec.etkin{background:#EEF1F8}
+.ds-sec.secili{color:#3F68BD;font-weight:600}
+.ds-sec mark{background:#FFE58A;color:inherit;border-radius:2px}
+.ds-bos{padding:8px 10px;color:#9090AD}
 </style>
 </head>
 <body>
@@ -131,7 +256,6 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
     <img class="logo" src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
     <button class="mdug" id="temizle" title="Bütün filtreleri temizle"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></span></button>
     <button class="mdug" data-sayfa="ana"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Ana Sayfa</button>
-    <button class="mdug" data-sayfa="hiz"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></span>Hizmet Hızı</button>
     <button class="mdug" data-sayfa="arac"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg></span>Araç ve Yakıt</button>
     <button class="mdug" data-sayfa="mail"><span class="kut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>Mail Arama</button>
     <div class="alt-not" id="guncel"></div>
@@ -140,56 +264,37 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
   <!-- ================= ANA SAYFA ================= -->
   <section class="sayfa" id="s-ana">
     <div class="bant">
-      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih aralığı</div>
         <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
-        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
-      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">E-posta<br>Talebi</div><div class="dg num" id="a-e"></div></div>
-      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Araç<br>Rezervasyonu</div><div class="dg num" id="a-r"></div></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">E-posta<br>talebi</div><div class="dg num" id="a-e"></div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Araç<br>rezervasyonu</div><div class="dg num" id="a-r"></div></div>
       <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>E-posta Talebi</span><span><i class="cz"></i>Araç Rezervasyonu</span></div>
-        <div class="grf-bas">Aylara Göre Talep Adedi</div><svg id="a-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="a-secim"></div></div>
+        <div class="grf-bas">Aylara göre talep adedi</div><svg id="a-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="a-secim" style="top:40px"></div><button class="uyari" id="a-uyari" title="Son 7 günde Gmail'de İdari Destek yanıtı görünmeyen talepler"></button></div>
     </div>
     <div class="alt">
       <div class="dilim-seridi" id="a-dilim"></div>
-      <div class="panel" style="left:10px;top:78px;width:330px;height:302px"><div class="pbas">Hizmet Bölümlerine Göre Talep</div><div class="hlist" id="a-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:10px;top:78px;width:330px;height:302px"><div class="pbas">Hizmet bölümlerine göre talep</div><div class="hlist" id="a-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
       <div class="panel" style="left:350px;top:78px;width:762px;height:302px"><div class="tablo" id="a-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
-    </div>
-  </section>
-
-  <!-- ================= HİZMET HIZI ================= -->
-  <section class="sayfa gizli" id="s-hiz">
-    <div class="bant">
-      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
-        <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
-        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
-      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Medyan<br>İlk Yanıt</div><div class="dg num" id="h-med"></div></div>
-      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">1 Saatte<br>Yanıt</div><div class="dg num" id="h-1s"></div><div class="ek" id="h-kap"></div></div>
-      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Talep oranı</span><span><i class="cz"></i>Kümülatif</span></div>
-        <div class="grf-bas">İlk Yanıt Süresi Dağılımı (iş saati)</div><svg id="h-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="h-secim"></div></div>
-    </div>
-    <div class="alt">
-      <div class="dilim-seridi" id="h-dilim"></div>
-      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Bölümlere Göre Medyan İlk Yanıt (dk)</div><div class="hlist" id="h-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
-      <div class="panel" style="left:380px;top:78px;width:400px;height:302px"><div class="pbas">Talepler Ne Zaman Geliyor?</div><div class="isi" id="h-isi" style="left:10px;top:40px;right:10px;bottom:12px"></div></div>
-      <div class="panel" style="left:790px;top:78px;width:322px;height:302px"><div class="pbas">Aylara Göre Medyan İlk Yanıt</div><svg id="h-ay" width="322" height="262" style="position:absolute;left:0;top:34px"></svg><div class="secim-not" id="h-ay-secim" style="top:30px"></div></div>
     </div>
   </section>
 
   <!-- ================= ARAÇ VE YAKIT ================= -->
   <section class="sayfa gizli" id="s-arac">
     <div class="bant">
-      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih Aralığı</div>
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs">Tarih aralığı</div>
         <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
-        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div></div>
-      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Son Dakika<br>Talebi</div><div class="dg num" id="v-son"></div><div class="ek">24 saatten az önce</div></div>
-      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Yakıt<br>Alımı</div><div class="dg num" id="v-tl"></div><div class="ek" id="v-litre"></div></div>
+        <div class="hizli"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Son dakika<br>talebi</div><div class="dg num" id="v-son"></div><div class="ek">24 saatten az önce</div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Yakıt<br>alımı</div><div class="dg num" id="v-tl"></div><div class="ek" id="v-litre"></div></div>
       <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Rezervasyon</span><span><i class="cz"></i>Kümülatif %</span></div>
-        <div class="grf-bas">Rezervasyon Yolculuktan Ne Kadar Önce Yapılıyor?</div><svg id="v-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="v-secim"></div></div>
+        <div class="grf-bas">Rezervasyon yolculuktan ne kadar önce yapılıyor?</div><svg id="v-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="v-secim"></div></div>
     </div>
     <div class="alt">
       <div class="dilim-seridi" id="v-dilim"></div>
-      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Gidiş Amacı</div><div class="hlist" id="v-amac" style="left:0;top:34px;right:0;bottom:6px"></div></div>
-      <div class="panel" style="left:380px;top:78px;width:360px;height:302px"><div class="pbas">En Çok Rezervasyon Yapan Birimler</div><div class="hlist" id="v-birim" style="left:0;top:34px;right:0;bottom:6px"></div></div>
-      <div class="panel" style="left:750px;top:78px;width:362px;height:302px"><div class="pbas">Aylık Yakıt Alımı (TL) ve TL/Litre</div><svg id="v-yakit" width="362" height="262" style="position:absolute;left:0;top:34px"></svg><div class="secim-not" id="v-yakit-secim" style="top:30px"></div></div>
+      <div class="panel" style="left:10px;top:78px;width:360px;height:302px"><div class="pbas">Gidiş amacı</div><div class="hlist" id="v-amac" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:380px;top:78px;width:360px;height:302px"><div class="pbas" data-ip="&lt;b&gt;Aracı kullanan birim&lt;/b&gt;&lt;br&gt;Yolcuların (yolcu yoksa talep edenin) İK birimi; talep edenin birimi değil.">Aracı kullanan birimler</div><div class="hlist" id="v-birim" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:750px;top:78px;width:362px;height:302px"><div class="pbas">Aylık yakıt alımı (TL) ve TL/litre</div><svg id="v-yakit" width="362" height="262" style="position:absolute;left:0;top:34px"></svg><div class="secim-not" id="v-yakit-secim" style="top:30px"></div></div>
     </div>
   </section>
 
@@ -198,17 +303,35 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
     <div class="bant">
       <div class="ara" style="left:12px;top:14px;width:600px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Kişi, e-posta, konu, cümle, birim, ek adı ile ara…" autocomplete="off" spellcheck="false"></div>
       <div class="ara-not" style="left:14px;top:66px;width:600px">Büyük/küçük harf ve Türkçe karakter fark etmez · birden çok kelime: hepsi aranır · tam ifade: <code>"oda talebi"</code> · hariç: <code>-iptal</code></div>
-      <div class="cam" style="left:12px;top:96px;width:230px;height:150px"><div class="bs">Tarih Aralığı</div>
+      <div class="cam" style="left:12px;top:96px;width:230px;height:150px"><div class="bs">Tarih aralığı</div>
         <div class="tarihler"><input type="date" class="t-bas"><input type="date" class="t-son"></div>
-        <div class="hizli" style="bottom:48px"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="nisan">Nisan'dan</button><button data-a="tum">Tümü</button></div>
+        <div class="hizli" style="bottom:48px"><button data-a="30">30 gün</button><button data-a="ay">Bu ay</button><button data-a="yil" title="Bu yıl: 1 Ocak'tan bugüne">2026</button><button data-a="tum">Tümü</button></div>
         <div class="ek" style="bottom:10px;font-size:11.5px"><label style="cursor:pointer"><input type="checkbox" id="m-ek"> Yalnız eki olanlar</label></div></div>
       <div class="cam" style="left:254px;top:96px;width:175px;height:150px"><div class="bs">Konuşma</div><div class="dg num" id="m-k" style="bottom:36px;font-size:38px"></div></div>
       <div class="cam" style="left:441px;top:96px;width:175px;height:150px"><div class="bs">Talep</div><div class="dg num" id="m-t" style="bottom:36px;font-size:38px"></div></div>
-      <div class="cam" style="left:628px;top:14px;width:482px;height:232px"><div class="grf-bas">Bulunan Konuşmalar · Aylara Göre</div><svg id="m-grafik" width="482" height="232" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="m-secim" style="top:40px"></div></div>
+      <div class="cam" style="left:628px;top:14px;width:482px;height:232px"><div class="grf-bas">Bulunan konuşmalar · aylara göre</div><svg id="m-grafik" width="482" height="232" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="m-secim" style="top:40px"></div></div>
     </div>
     <div class="alt">
       <div class="dilim-seridi" id="m-dilim"></div>
       <div class="panel" style="left:10px;top:78px;width:1102px;height:302px"><div class="tablo" id="m-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= DÖNÜLMEMİŞ MAİLLER ================= -->
+  <section class="sayfa gizli" id="s-donus">
+    <div class="bant">
+      <div class="cam" style="left:12px;top:12px;width:230px;height:108px"><div class="bs" id="dn-donem">Dönem</div>
+        <div class="tarihler"><input type="date" id="dn-bas" title="Başlangıç"><input type="date" id="dn-son" title="Bitiş"></div>
+        <div class="donem-sec"><button data-g="24s" title="Veri anından geriye 24 saat">Son 24 saat</button><button data-g="7">7 gün</button><button data-g="14">14 gün</button><button data-g="30">30 gün</button></div></div>
+      <div class="cam" style="left:12px;top:132px;width:109px;height:114px" id="dn-sayi-kut"><div class="bs" style="font-size:15px">Dönülmemiş<br>talep</div><div class="dg num" id="dn-sayi"></div><div class="ek">yanıtı görünmeyen</div></div>
+      <div class="cam" style="left:133px;top:132px;width:109px;height:114px"><div class="bs" style="font-size:15px">Yanıtı<br>görünen</div><div class="dg num" id="dn-oran"></div><div class="ek" id="dn-oran-ek"></div></div>
+      <div class="cam" style="left:254px;top:12px;width:856px;height:234px"><div class="lej"><span><i></i>Gelen talep</span><span><i class="cz" style="background:#FFC56B"></i>Dönülmemiş</span></div>
+        <div class="grf-bas">Günlere göre gelen ve dönülmemiş talepler</div><svg id="dn-grafik" width="856" height="234" style="position:absolute;left:0;top:0"></svg><div class="secim-not" id="dn-secim"></div></div>
+    </div>
+    <div class="alt">
+      <div class="dilim-seridi" id="dn-dilim"></div>
+      <div class="panel" style="left:10px;top:78px;width:330px;height:302px"><div class="pbas">Bölümlere göre dönülmemiş</div><div class="hlist" id="dn-bolum" style="left:0;top:34px;right:0;bottom:6px"></div></div>
+      <div class="panel" style="left:350px;top:78px;width:762px;height:302px"><div class="tablo" id="dn-tablo" style="left:0;top:0;right:0;bottom:0"></div></div>
     </div>
   </section>
 
@@ -218,18 +341,115 @@ mark{background:#FFE58A;color:inherit;padding:0 1px;border-radius:2px}
     <div class="dgov" id="d-gov"></div>
   </aside>
 </div>
+<nav id="serit" aria-label="Raporlar">
+  <span class="ok"><a data-yon="-1" title="Önceki sayfa">‹</a><a data-yon="1" title="Sonraki sayfa">›</a></span>
+  <a class="sek" data-hedef="idari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>İdari Destek</a>
+  <a class="sek" data-hedef="donus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Dönülmemiş Mailler<span class="sayi" id="serit-sayi"></span></a>
+  <a class="sek" data-hedef="filo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg>Filo</a>
+  <a class="sek" data-hedef="tanitim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/></svg>Tanıtım</a>
+  <a class="sek" data-hedef="rehber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h3M3 12h3M3 17h3"/><circle cx="12.5" cy="10" r="2.6"/><path d="M8.5 16.5c.8-2 2.3-3 4-3s3.2 1 4 3"/></svg>Kurumsal Rehber</a>
+  <a class="sek" data-hedef="kilavuz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>Rapor Kılavuzu</a>
+  <span class="sag" id="serit-sayfa"></span>
+</nav>
+<script>
+/* Alt sayfa şeridi (Power BI sayfa sekmeleri gibi). Yayında site yolları; bu bilgisayarda (file://) yan klasörler.
+   Şifre sekme açıkken hatırlandığı için geçişte yeniden sorulmaz. "Dönülmemiş Mailler" İdari Destek raporunun bir sayfasıdır. */
+(() => { const SIRA = ["idari", "donus", "filo", "tanitim", "rehber", "kilavuz"], yerel = location.protocol === "file:", idari = yerel ? "../canli_rapor/index.html" : "/idari-destek/";
+  // Adres sade kalır: hangi sayfanın açılacağı (ör. Dönülmemiş Mailler) sekme belleğiyle geçer.
+  const yol = {idari, donus: yerel ? idari + "#donus" : idari, filo: yerel ? "../filo_rapor/index.html" : "/filo/", tanitim: yerel ? "../tanitim/index.html" : "/idari-destek/tanitim/", rehber: yerel ? "../rehber_rapor/index.html" : "/rehber/", kilavuz: yerel ? "../kilavuz_rapor/index.html" : "/kilavuz/"};
+  document.querySelectorAll("#serit .sek").forEach(a => a.href = yol[a.dataset.hedef]);
+  document.querySelectorAll("#serit a").forEach(a => a.addEventListener("click", () => { try { if (a.dataset.hedef) sessionStorage.setItem("bilgem_acilis", a.dataset.hedef); } catch (e) {} }));
+  window.seritGuncelle = (secili, sayi) => { const i = SIRA.indexOf(secili);
+    document.querySelectorAll("#serit .sek").forEach(a => a.classList.toggle("secili", a.dataset.hedef === secili));
+    document.querySelectorAll("#serit [data-yon]").forEach(a => { const h = SIRA[i + +a.dataset.yon]; a.classList.toggle("pasif", !h); if (h) { a.href = yol[h]; a.dataset.hedef = h; } else { a.removeAttribute("href"); delete a.dataset.hedef; } });
+    document.getElementById("serit-sayfa").textContent = "Sayfa " + (i + 1) + " / " + SIRA.length;
+    if (sayi != null) document.getElementById("serit-sayi").textContent = sayi || ""; };
+  seritGuncelle("idari"); })();
+</script>
 <div class="ipucu" id="ipucu"></div>
 <div id="kilit" hidden>
   <form id="kilit-form" class="kilit-kart" autocomplete="off">
     <img src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
     <div class="kilit-bant">İdari Destek · Canlı Rapor</div>
     <p>Bu rapor kuruma özel bilgiler içerir ve şifrelidir. Size iletilen şifreyi girin.</p>
-    <input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre">
+    <div class="sifre-kut"><input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre"><button type="button" class="goz" id="kilit-goz" title="Şifreyi göster" aria-label="Şifreyi göster" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <script>(() => { const g = document.getElementById("kilit-sifre"), b = document.getElementById("kilit-goz");
+      const ac = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', kapa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+      b.onclick = () => { const goster = g.type === "password"; g.type = goster ? "text" : "password"; b.innerHTML = goster ? kapa : ac;
+        b.title = goster ? "Şifreyi gizle" : "Şifreyi göster"; b.setAttribute("aria-label", b.title); b.setAttribute("aria-pressed", goster); g.focus(); }; })();</script>
     <button type="submit">Raporu aç</button>
     <div id="kilit-hata" class="kilit-hata"></div>
   </form>
 </div>
 
+<script>
+/* Aranabilir süzgeç (kullanıcı isteği 28.09.2026): sayfadaki her .dilim <select>'i, içinde arama kutusu olan açılır
+   listeye dönüşür. Asıl <select> gizli kalır; değeri ve change olayı sayfa kodunda aynen kullanılır. Süzgeçler
+   yeniden çizildikçe yenileri de dönüştürülür. Türkçe harf ve büyük/küçük harf farkı gözetilmez. */
+(() => {
+  const OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+  const nk = c => c.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i").charAt(0) || c;
+  const norm = s => [...String(s || "")].map(nk).join("");
+  let pano = null;
+  const kapat = () => { if (pano) { pano.remove(); pano = null; } };
+  document.addEventListener("mousedown", e => { if (pano && !pano.contains(e.target) && !e.target.closest(".ds-dug")) kapat(); }, true);
+  addEventListener("resize", kapat);
+  document.addEventListener("scroll", e => { if (pano && !pano.contains(e.target)) kapat(); }, true);
+  function isaretle(t, q) {
+    if (!q) return esc(t);
+    const n = norm(t), i = n.indexOf(q);
+    return i < 0 ? esc(t) : esc(t.slice(0, i)) + "<mark>" + esc(t.slice(i, i + q.length)) + "</mark>" + esc(t.slice(i + q.length));
+  }
+  function ac(sel, dug) {
+    if (pano && pano.sel === sel) { kapat(); return; }
+    kapat();
+    const r = dug.closest(".dilim").getBoundingClientRect(), en = Math.min(Math.max(r.width, 260), innerWidth - 16);
+    const altBos = innerHeight - r.bottom - 44, ustBos = r.top - 12, yukari = altBos < 220 && ustBos > altBos;
+    pano = document.createElement("div"); pano.className = "ds-pano"; pano.sel = sel;
+    Object.assign(pano.style, {left: Math.max(8, Math.min(r.left, innerWidth - en - 8)) + "px", width: en + "px"},
+      yukari ? {bottom: innerHeight - r.top + 4 + "px"} : {top: r.bottom + 4 + "px"});
+    pano.innerHTML = `<input type="search" placeholder="Ara…" aria-label="Seçeneklerde ara" autocomplete="off"><div class="ds-liste" role="listbox"></div>`;
+    document.body.appendChild(pano);
+    const girdi = pano.querySelector("input"), liste = pano.querySelector(".ds-liste");
+    liste.style.maxHeight = Math.max(140, Math.min(320, (yukari ? ustBos : altBos) - 56)) + "px";
+    const secenek = [...sel.options].map(o => ({v: o.value, t: o.textContent, n: norm(o.textContent)}));
+    let gor = [], etkin = 0;
+    const ciz = () => {
+      const q = norm(girdi.value.trim());
+      gor = secenek.filter((o, i) => (i === 0 && o.v === "") || !q || o.n.includes(q));
+      etkin = Math.max(0, Math.min(etkin, gor.length - 1));
+      liste.innerHTML = gor.map((o, i) => `<div class="ds-sec${o.v === sel.value ? " secili" : ""}${i === etkin ? " etkin" : ""}" data-i="${i}" role="option">${isaretle(o.t, o.v === "" ? "" : q)}</div>`).join("")
+        + (q && gor.filter(o => o.v !== "").length === 0 ? `<div class="ds-bos">Eşleşen yok</div>` : "");
+      const e = liste.querySelector(".etkin"); if (e) e.scrollIntoView({block: "nearest"});
+    };
+    const sec = o => { kapat(); if (o && sel.value !== o.v) { sel.value = o.v; sel.dispatchEvent(new Event("change", {bubbles: true})); } };
+    liste.addEventListener("mousedown", e => { const d = e.target.closest(".ds-sec"); if (d) { e.preventDefault(); sec(gor[+d.dataset.i]); } });
+    girdi.addEventListener("input", () => { etkin = girdi.value.trim() ? gor.length && secenek[0].v === "" ? 1 : 0 : 0; ciz(); });
+    girdi.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { etkin++; ciz(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { etkin--; ciz(); e.preventDefault(); }
+      else if (e.key === "Enter") { e.preventDefault(); sec(gor[etkin]); }
+      else if (e.key === "Escape") { e.preventDefault(); kapat(); dug.focus(); }
+    });
+    etkin = Math.max(0, secenek.findIndex(o => o.v === sel.value));
+    ciz();
+    setTimeout(() => girdi.focus(), 0);
+  }
+  function donustur(sel) {
+    sel.dataset.ds = "1"; sel.classList.add("ds-gizli");
+    const dug = document.createElement("button"); dug.type = "button"; dug.className = "ds-dug";
+    const yaz = () => { const o = sel.options[sel.selectedIndex]; dug.innerHTML = `<span>${esc(o ? o.textContent : "")}</span>${OK}`; dug.title = o ? o.textContent : ""; };
+    yaz(); sel.addEventListener("change", yaz);
+    dug.addEventListener("click", e => { e.preventDefault(); ac(sel, dug); });
+    dug.addEventListener("keydown", e => { if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); ac(sel, dug); } });
+    sel.after(dug);
+  }
+  const tara = () => document.querySelectorAll(".dilim select:not([data-ds])").forEach(donustur);
+  new MutationObserver(tara).observe(document.body, {childList: true, subtree: true});
+  tara();
+})();
+</script>
 <script src="veri.enc.js"></script>
 <script>
 function baslat(){
@@ -263,20 +483,30 @@ const TALEP_MAIL = MAIL.filter(m => m.d === "Talep");
 const REZ = (V.rezervasyon || []).map(r => ({t: r[0], s: r[1], on: r[2], yol: r[3], cik: r[4], varis: r[5], du: r[6], am: r[7], bi: birimKanon(r[8]), en: r[9]}));
 const YAKIT = V.yakit_plaka_ay || [];
 
-/* durum (adres çubuğunda saklanır) */
-const D = {sayfa: "ana", bas: V.meta.donem_baslangic, son: BUGUN, q: "", f: {}, ek: false};
-try { Object.assign(D, JSON.parse(decodeURIComponent(location.hash.slice(1)) || "{}")); } catch (e) {}
+/* durum: sekme açıkken tarayıcıda hatırlanır; adres çubuğu hep sade kalır (kullanıcı isteği 27.09.2026).
+   Varsayılan dönem bu yıl. "#donus" ile gelen eski bağlantılar açılır, ardından adres temizlenir. */
+const D = {sayfa: "ana", bas: BUGUN.slice(0, 4) + "-01-01", son: BUGUN, q: "", f: {}, ek: false};
+try { Object.assign(D, JSON.parse(sessionStorage.getItem("idari_durum") || "{}")); } catch (e) {}
+let gelis = ""; try { gelis = sessionStorage.getItem("bilgem_acilis") || ""; sessionStorage.removeItem("bilgem_acilis"); } catch (e) {}
+if (location.hash === "#donus" || gelis === "donus") D.sayfa = "donus";  // alt şeritten "Dönülmemiş Mailler"
+else if (gelis === "idari" && D.sayfa === "donus") D.sayfa = "ana";
+else if (location.hash.length > 3) try { Object.assign(D, JSON.parse(decodeURIComponent(location.hash.slice(1)))); } catch (e) {}
+const adresTemizle = () => { if (location.hash) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} };
+adresTemizle();
 D.f = D.f || {};
-const kaydet = () => { try { history.replaceState(null, "", "#" + encodeURIComponent(JSON.stringify(D))); } catch (e) {} };
+const kaydet = () => { try { sessionStorage.setItem("idari_durum", JSON.stringify(D)); } catch (e) {} };
+$$('.hizli [data-a="yil"]').forEach(b => b.textContent = BUGUN.slice(0, 4));
 
 /* ölçekleme: Power BI "sayfaya sığdır" */
-function olcekle() { const s = Math.min(innerWidth / 1280, innerHeight / 720), x = (innerWidth - 1280 * s) / 2, y = (innerHeight - 720 * s) / 2; $("#sahne").style.transform = `translate(${x}px,${y}px) scale(${s})`; }
+const MQ = matchMedia("(max-width: 900px)"), MOBIL = () => MQ.matches;
+function olcekle() { if (MOBIL()) { $("#sahne").style.transform = "none"; return; } const h = innerHeight - 34, s = Math.min(innerWidth / 1280, h / 720), x = (innerWidth - 1280 * s) / 2, y = (h - 720 * s) / 2; $("#sahne").style.transform = `translate(${x}px,${y}px) scale(${s})`; }
 addEventListener("resize", olcekle); olcekle();
+MQ.addEventListener("change", () => { olcekle(); ciz(); });
 
 /* üst bilgi */
 (() => { const d = new Date(V.meta.uretim.replace(" ", "T") + ":00"), saat = (Date.now() - d) / 36e5;
   $("#guncel").innerHTML = YAYIN ? `<b style="color:#3D66C0">● Yayın kopyası</b>Veri tarihi<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}`
-    : `<b class="${saat > 3 ? "eski" : ""}">● ${saat > 3 ? Math.floor(saat) + " saattir yenilenmedi" : "Canlı"}</b>Son güncelleme<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}<br><span style="opacity:.8">Saat başı yenilenir</span>`; })();
+    : `<b class="${saat > 3 ? "eski" : ""}">● ${saat > 3 ? Math.floor(saat) + " saattir yenilenmedi" : "Canlı"}</b>Son güncelleme<br>${d.getDate()} ${AY[d.getMonth()]} ${V.meta.uretim.slice(11, 16)}`; })();
 
 /* ipucu */
 const IP = $("#ipucu");
@@ -285,24 +515,35 @@ document.addEventListener("mousemove", e => { const h = e.target.closest && e.ta
 
 /* ---------- grafikler (bant içinde beyaz çubuk + yeşil çizgi; Power BI karma grafik gibi) ---------- */
 function karma(svg, etiket, cubuk, cizgi, sec = {}) {
+  // Telefonda grafik kapsayıcının genişliğinde çizilir; çok sütunlu grafikte son 6 sütun gösterilir.
+  svg.dataset.w = svg.dataset.w || svg.getAttribute("width");
+  svg.setAttribute("width", MOBIL() ? Math.max(260, (svg.parentElement.clientWidth || 300) - 2) : svg.dataset.w);
+  // Dar sütunda uzun etiketler eğik ve küçük yazılır (ör. yanıt süresi dilimleri telefonda).
+  if (MOBIL() && +svg.getAttribute("width") / etiket.length < 62 && etiket.some(e => String(e).length > 4)) sec = Object.assign({}, sec, {dar: true, alt: Math.max(sec.alt ?? 30, 50)});
+  if (MOBIL() && etiket.length > 7) { const k = etiket.length - 6, t = sec.tik, e = sec.ek; etiket = etiket.slice(k); cubuk = cubuk.slice(k); if (cizgi) cizgi = cizgi.slice(k);
+    sec = Object.assign({}, sec, {secili: (sec.secili ?? -1) >= k ? sec.secili - k : -1, soluk: sec.soluk && sec.soluk.slice(k), tik: t && (i => t(i + k)), ek: e && (i => e(i + k))}); }
   // Yerleşim (yukarıdan aşağı): başlık ve lejant · çizgi bölgesi · çubuklar · eksen etiketleri. Hiçbiri üst üste binmez.
   const W = +svg.getAttribute("width"), H = +svg.getAttribute("height"), sol = sec.sol ?? 26, sag = sec.sag ?? 26, alt = sec.alt ?? 30;
   const cUst = sec.cUst ?? 60, cH = sec.cH ?? 30, ust = sec.ust ?? (cizgi ? cUst + cH + 30 : 56);
   const n = etiket.length, g = (W - sol - sag) / Math.max(n, 1), bw = Math.min(sec.bw ?? 54, g * .66), ih = H - ust - alt;
-  const cm = Math.max(1, ...cubuk), lm = cizgi ? Math.max(1, ...cizgi) : 1, renk = sec.renk || "#fff", yazi = sec.yazi || "#fff";
+  const cm = Math.max(1, ...cubuk), renk = sec.renk || "#fff", yazi = sec.yazi || "#fff";
   let s = "";
   // Power BI gibi çapraz filtre: sec.tik(i) tıklanınca çağrılır; sec.secili seçili sütundur, diğerleri soluklaşır.
   const secili = sec.secili ?? -1, di = i => sec.tik ? ` data-i="${i}"` : "";
   etiket.forEach((e, i) => { const v = cubuk[i] || 0, h = v / cm * (ih - 18), x = sol + g * i + (g - bw) / 2, y = ust + ih - h;
     const op = secili >= 0 && i !== secili ? .32 : sec.soluk && sec.soluk[i] ? .55 : .96;
-    const ip = esc(`<b>${e}</b><br>${sec.ad1 || ""}: ${sec.f1 ? sec.f1(v) : sayi(v)}${sec.tik ? `<br><i>${i === secili ? "Seçimi kaldırmak" : "Filtrelemek"} için tıklayın</i>` : ""}`);
+    const ip = esc(`<b>${e}</b>${sec.ek ? sec.ek(i) : ""}<br>${sec.ad1 || ""}: ${sec.f1 ? sec.f1(v) : sayi(v)}${cizgi && cizgi[i] != null && sec.ad2 ? `<br>${sec.ad2}: ${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}` : ""}${sec.tik ? `<br><i>${i === secili ? "Seçimi kaldırmak" : "Filtrelemek"} için tıklayın</i>` : ""}`);
     if (sec.tik) s += `<rect x="${sol + g * i}" y="${ust - 8}" width="${g}" height="${ih + 8}" fill="transparent"${di(i)} data-ip="${ip}"/>`;  // geniş tıklama alanı, çubuğun altında
     s += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h, v ? 1.5 : 0)}" fill="${renk}" opacity="${op}"${di(i)} data-ip="${ip}"/>`;
     if (v) s += `<text x="${x + bw / 2}" y="${y - 6}" fill="${yazi}" font-size="12.5" text-anchor="middle" opacity="${secili >= 0 && i !== secili ? .55 : 1}">${sec.f1 ? sec.f1(v) : sayi(v)}</text>`;
-    s += `<text x="${sol + g * i + g / 2}" y="${H - 12}" fill="${yazi}" font-size="12" text-anchor="middle" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`; });
-  if (cizgi) { const cmin = Math.min(...cizgi), yy = v => cUst + (lm > cmin ? (1 - (v - cmin) / (lm - cmin)) : .5) * cH, p = cizgi.map((v, i) => [sol + g * i + g / 2, yy(v)]);
-    s += `<polyline points="${p.map(q => q.join(",")).join(" ")}" fill="none" stroke="${sec.cz || "#9BE3A9"}" stroke-width="2.4"/>`;
-    p.forEach((q, i) => { s += `<circle cx="${q[0]}" cy="${q[1]}" r="${i === secili ? 5.5 : 4}" fill="${sec.cz || "#9BE3A9"}" stroke="#fff" stroke-width="1.2"${di(i)} data-ip="${esc(`<b>${etiket[i]}</b><br>${sec.ad2 || ""}: ${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}`)}"/>`;
+    s += sec.dar ? `<text x="${sol + g * i + g / 2 + 4}" y="${H - alt + 14}" fill="${yazi}" font-size="10" text-anchor="end" transform="rotate(-32 ${sol + g * i + g / 2 + 4} ${H - alt + 14})" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`
+      : `<text x="${sol + g * i + g / 2}" y="${H - 12}" fill="${yazi}" font-size="12" text-anchor="middle" font-weight="${i === secili ? 700 : 400}"${di(i)}>${esc(e)}</text>`; });
+  // Çizgide null "veri yok" demektir (sıfır değil): nokta konmaz; sec.bosYazi o aralığın üstüne yazılır.
+  if (cizgi) { const dolu = cizgi.filter(v => v != null), cmin = Math.min(...dolu), lmx = Math.max(1, ...dolu), yy = v => cUst + (lmx > cmin ? (1 - (v - cmin) / (lmx - cmin)) : .5) * cH, p = cizgi.map((v, i) => v == null ? null : [sol + g * i + g / 2, yy(v)]);
+    s += `<polyline points="${p.filter(Boolean).map(q => q.join(",")).join(" ")}" fill="none" stroke="${sec.cz || "#9BE3A9"}" stroke-width="2.4"/>`;
+    const bos = cizgi.map((v, i) => v == null ? i : -1).filter(i => i >= 0);
+    if (bos.length && sec.bosYazi) s += `<text x="${sol + g * (bos[0] + bos[bos.length - 1] + 1) / 2}" y="${cUst + cH / 2 + 4}" fill="${yazi}" font-size="11" font-style="italic" text-anchor="middle" opacity=".75">${esc(bos.length > 1 ? sec.bosYazi : "—")}</text>`;
+    p.forEach((q, i) => { if (!q) return; s += `<circle cx="${q[0]}" cy="${q[1]}" r="${i === secili ? 5.5 : 4}" fill="${sec.cz || "#9BE3A9"}" stroke="#fff" stroke-width="1.2"${di(i)} data-ip="${esc(`<b>${etiket[i]}</b><br>${sec.ad2 || ""}: ${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}`)}"/>`;
       s += `<text x="${q[0]}" y="${q[1] - 9}" fill="${yazi}" font-size="12" text-anchor="middle">${sec.f2 ? sec.f2(cizgi[i]) : sayi(cizgi[i])}</text>`; }); }
   svg.innerHTML = s;
   if (sec.tik) svg.querySelectorAll("[data-i]").forEach(el => el.addEventListener("click", () => sec.tik(+el.dataset.i)));
@@ -332,7 +573,8 @@ function dilimler(kok, tanim, kayitlar) {
   return kayitlar.filter(r => tanim.every(u => !D.f[u.k] || u.f(r) === D.f[u.k]));
 }
 const tarihte = r => r.t >= D.bas && r.t <= D.son;
-const BOLUM_DILIM = {k: "bolum", ad: "Bölüm", f: m => m.b, gor: v => v + " " + (BOL[v] || "")};
+// Bölümler numarasız gösterilir (kullanıcı isteği 29.09.2026: "02 gibi numaralandırmaları kaldır"); iç anahtar numara kalır.
+const BOLUM_DILIM = {k: "bolum", ad: "Bölüm", f: m => m.b, gor: v => BOL[v] || v};
 const MAIL_DILIM = [BOLUM_DILIM, {k: "tur", ad: "Talep Türü", f: m => m.y}, {k: "kutu", ad: "Kutu", f: m => m.kutu[0]},
   {k: "enstitu", ad: "Enstitü", f: m => m.en, gor: bas}, {k: "birim", ad: "Birim", f: m => m.bi, gor: bas}, {k: "eden", ad: "Talep Eden", f: m => m.bt}];
 
@@ -345,49 +587,25 @@ function ana() {
   const tumR = REZ.filter(r => tarihte(r) && (!D.f.enstitu || r.en === D.f.enstitu) && (!D.f.birim || r.bi === D.f.birim) && (!D.f.bolum || D.f.bolum === "01") && !D.f.tur && !D.f.kutu && (!D.f.eden || D.f.eden === "BİLGEM birimi"));
   const ay = aylar(D.bas, D.son).slice(-12), M = ayda(tumM, D.f.ay), R = ayda(tumR, D.f.ay);
   $("#a-e").textContent = sayi(M.length); $("#a-r").textContent = sayi(R.length);
-  karma($("#a-grafik"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => tumM.filter(m => m.t.startsWith(a)).length), ay.map(a => tumR.filter(r => r.t.startsWith(a)).length),
-    {ad1: "E-posta talebi", ad2: "Araç rezervasyonu", soluk: ay.map(a => a === BUGUN.slice(0, 7)), secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
+  // Araç rezervasyon sistemi 13 Nisan 2026'da başladı: önceki aylar sıfır değil, boş gösterilir.
+  const rIlk = REZ.reduce((a, r) => r.t < a ? r.t : a, "9999").slice(0, 7);
+  karma($("#a-grafik"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => tumM.filter(m => m.t.startsWith(a)).length), ay.map(a => a < rIlk ? null : tumR.filter(r => r.t.startsWith(a)).length),
+    {ad1: "E-posta talebi", ad2: "Araç rezervasyonu", bosYazi: "araç rezervasyon sistemi yoktu", soluk: ay.map(a => a === BUGUN.slice(0, 7)), secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
   secimNot("#a-secim", D.f.ay ? "Seçili ay: " + ayAd(D.f.ay) : "", "ay");
+  const dn = donulmemis(7).length;
+  $("#a-uyari").innerHTML = dn ? `⚠ Son 7 günde dönülmemiş<b>${dn}</b>talep ›` : "";
+  $("#a-uyari").onclick = () => { D.sayfa = "donus"; D.dg = 7; D.f.dgun = ""; ciz(); };
   // bölüm listesi, bölüm dışındaki filtrelerle hesaplanır; seçili bölüm vurgulanır (Power BI çapraz vurgusu)
   const bolumTaban = ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay);
-  hliste($("#a-bolum"), Object.entries(BOL).map(([no, ad]) => ({k: no, ad: no + " " + ad, v: bolumTaban.filter(m => m.b === no).length, tik: () => degistir("bolum", no)})).sort((a, b) => b.v - a.v), {secili: D.f.bolum});
+  hliste($("#a-bolum"), Object.entries(BOL).map(([no, ad]) => ({k: no, ad, v: bolumTaban.filter(m => m.b === no).length, tik: () => degistir("bolum", no)})).sort((a, b) => b.v - a.v), {secili: D.f.bolum});
   const liste = [...M].sort((a, b) => (b.t + b.s).localeCompare(a.t + a.s));
   $("#a-tablo").innerHTML = `<table><colgroup><col style="width:108px"><col style="width:128px"><col><col style="width:140px"><col style="width:130px"><col style="width:60px"></colgroup><thead><tr><th>Talep Tarihi</th><th>Talep Türü</th><th>Konu</th><th>Talep Eden</th><th>Birim</th><th class="s">İlk Yanıt</th></tr></thead><tbody>` +
-    liste.slice(0, 300).map((m, i) => `<tr data-i="${i}" title="Maili görmek için tıklayın"><td class="num">${m.t.split("-").reverse().join(".")} ${m.s}</td><td title="${esc(m.b + " " + (BOL[m.b] || ""))}">${esc(m.y)}</td><td title="${esc(m.u)}">${esc(m.u)}</td><td title="${esc(m.a + " · " + m.e)}">${esc(temizAd(m.a) || m.e)}</td><td title="${esc(bas(m.en))}">${esc(bas(m.bi) || m.bt)}</td><td class="s">${sure(m.yd)}</td></tr>`).join("") +
+    liste.slice(0, 300).map((m, i) => `<tr data-i="${i}" title="Maili görmek için tıklayın"><td class="num">${m.t.split("-").reverse().join(".")} ${m.s}</td><td title="${esc(BOL[m.b] || "")}">${esc(m.y)}</td><td title="${esc(m.u)}">${esc(m.u)}</td><td title="${esc(m.a + " · " + m.e)}">${esc(temizAd(m.a) || m.e)}</td><td title="${esc(bas(m.en))}">${esc(bas(m.bi) || m.bt)}</td><td class="s">${sure(m.yd)}</td></tr>`).join("") +
     `</tbody><tfoot><tr><td>Toplam</td><td></td><td>${sayi(M.length)} talep${liste.length > 300 ? " · ilk 300 satır" : ""}</td><td></td><td></td><td class="s">${sure(medyan(M.filter(m => m.yd != null).map(m => m.yd)))}</td></tr></tfoot></table>`;
   $("#a-tablo").querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => ac(liste[+tr.dataset.i]));
 }
 
-/* ---------- HİZMET HIZI ---------- */
-const KOVA = [["≤15 dk", 15], ["15–60 dk", 60], ["1–2 sa", 120], ["2–4 sa", 240], ["4 sa–1 gün", 540], ["1–2 gün", 1080], ["2 gün+", 1e9]];
-function hiz() {
-  const taban = TALEP_MAIL.filter(tarihte), tumAll = dilimler($("#h-dilim"), MAIL_DILIM, taban), Mall = tumAll.filter(m => m.yd != null);
-  const kovaNo = m => KOVA.findIndex(([, ust]) => m.yd <= ust), kv = D.f.kova === "" || D.f.kova == null ? -1 : +D.f.kova;
-  const May = ayda(Mall, D.f.ay), Mkova = kv >= 0 ? Mall.filter(m => kovaNo(m) === kv) : Mall, M = kv >= 0 ? May.filter(m => kovaNo(m) === kv) : May;
-  const tum = kv >= 0 ? M : ayda(tumAll, D.f.ay);
-  const md = medyan(May.map(m => m.yd));
-  $("#h-med").innerHTML = md == null ? "–" : md < 60 ? Math.round(md) + "<small>dk</small>" : ond(md / 60, 1) + "<small>sa</small>";
-  $("#h-1s").textContent = May.length ? "%" + Math.round(May.filter(m => m.yd <= 60).length / May.length * 100) : "–";
-  $("#h-kap").textContent = `${sayi(May.length)} talepte ölçüldü`;
-  $("#h-kap").title = `Yanıtı Gmail'de görünen ${sayi(May.length)} talep (toplam ${sayi(ayda(tumAll, D.f.ay).length)}). Telefonla ya da kurumsal kutudan bilgi kopyası olmadan verilen yanıtlar ölçülemez.`;
-  const k = KOVA.map((_, i) => May.filter(m => kovaNo(m) === i).length);
-  let kum = 0; const kumy = k.map(v => (kum += v, May.length ? kum / May.length * 100 : 0));
-  karma($("#h-grafik"), KOVA.map(x => x[0]), k.map(v => May.length ? v / May.length * 100 : 0), kumy,
-    {f1: v => "%" + ond(v, 1), f2: v => "%" + Math.round(v), ad1: "Talep oranı", ad2: "Kümülatif", bw: 64, secili: kv, tik: i => { D.f.kova = kv === i ? "" : String(i); ciz(); }});
-  secimNot("#h-secim", kv >= 0 ? "Seçili: " + KOVA[kv][0] : "", "kova");
-  const bt = kv >= 0 ? ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay).filter(m => m.yd != null && kovaNo(m) === kv) : ayda(suz(taban, MAIL_DILIM, "bolum"), D.f.ay).filter(m => m.yd != null);
-  hliste($("#h-bolum"), Object.entries(BOL).map(([no, ad]) => { const v = bt.filter(m => m.b === no).map(m => m.yd); return {k: no, ad: no + " " + ad, v: medyan(v) ?? 0, n: v.length, ip: `<b>${no} ${ad}</b><br>Medyan ilk yanıt: ${sure(medyan(v))}<br>${v.length} talepte ölçüldü`, tik: () => degistir("bolum", no)}; }).filter(r => r.n).sort((a, b) => a.v - b.v), {f: v => Math.round(v) + " dk", renk: "#4A86B8", secili: D.f.bolum});
-  // ısı haritası: gün × saat
-  const saatler = []; for (let h = 7; h <= 18; h++) saatler.push(h);
-  const tb = GUN.slice(0, 5).map(() => saatler.map(() => 0)); for (const m of tum) { const g = (tOku(m.t).getDay() + 6) % 7, h = +m.s.slice(0, 2); if (g < 5) tb[g][Math.min(Math.max(h, 7), 18) - 7]++; }
-  const tm = Math.max(1, ...tb.flat()), isi = $("#h-isi"); isi.style.gridTemplateColumns = `32px repeat(${saatler.length},1fr)`; isi.style.gridTemplateRows = `16px repeat(5,1fr)`;
-  isi.innerHTML = "<div></div>" + saatler.map(h => `<div class="h">${h === 7 ? "≤07" : h === 18 ? "18+" : h}</div>`).join("") + tb.map((r, g) => `<div class="g">${GUN[g]}</div>` + r.map((v, i) => { const o = v / tm; return `<div class="c" style="background:rgba(61,102,192,${(.06 + o * .9).toFixed(2)});color:${o > .45 ? "#fff" : "#2B3440"}" data-ip="${esc(`<b>${GUN[g]} ${saatler[i]}:00</b><br>${v} talep`)}">${v || ""}</div>`; }).join("")).join("");
-  // aylara göre medyan (açık panelde mavi çubuk)
-  const ay = aylar(D.bas, D.son).slice(-8);
-  karma($("#h-ay"), ay.map(a => AY[+a.slice(5, 7) - 1]), ay.map(a => medyan(Mkova.filter(m => m.t.startsWith(a)).map(m => m.yd)) ?? 0), null,
-    {renk: "#4A86B8", yazi: "#2B3440", ust: 30, alt: 28, sol: 10, sag: 10, bw: 30, f1: v => Math.round(v) + " dk", ad1: "Medyan ilk yanıt", secili: ay.indexOf(D.f.ay), tik: i => degistir("ay", ay[i])});
-  secimNot("#h-ay-secim", D.f.ay ? ayAd(D.f.ay) : "", "ay");
-}
+/* Hizmet Hızı sayfası kaldırıldı (kullanıcı kararı 29.09.2026: "kaç dakikada döndüğümüz çok da önemli değil"). */
 
 /* ---------- ARAÇ VE YAKIT ---------- */
 const ONKOVA = [["2 saatten az", 2], ["2–12 saat", 12], ["12–24 saat", 24], ["1–3 gün", 72], ["3–7 gün", 168], ["7 gün+", 1e9]];
@@ -418,7 +636,7 @@ function arac() {
   const ay = [...new Set(Y.map(x => x[1]))].sort().slice(-8);
   const tlAy = ay.map(a => Y.filter(x => x[1] === a).reduce((s, x) => s + x[3], 0)), ltAy = ay.map(a => Y.filter(x => x[1] === a).reduce((s, x) => s + x[2], 0));
   karma($("#v-yakit"), ay.map(a => AY[+a.slice(5, 7) - 1]), tlAy, tlAy.map((v, i) => ltAy[i] ? v / ltAy[i] : 0),
-    {renk: "#4A86B8", yazi: "#2B3440", cz: "#2F9E5F", cUst: 22, cH: 30, ust: 86, alt: 28, sol: 10, sag: 10, bw: 28, f1: v => ond(v / 1e6, 2) + " mn", f2: v => ond(v, 1) + " TL", ad1: "Yakıt alımı (TL)", ad2: "TL/litre", secili: ay.indexOf(D.f.yay), tik: i => degistir("yay", ay[i])});
+    {renk: "#4A86B8", yazi: "#5B5B78", cz: "#2F9E5F", cUst: 22, cH: 30, ust: 86, alt: 28, sol: 10, sag: 10, bw: 28, f1: v => ond(v / 1e6, 2) + " mn", f2: v => ond(v, 1) + " TL", ad1: "Yakıt alımı (TL)", ad2: "TL/litre", secili: ay.indexOf(D.f.yay), tik: i => degistir("yay", ay[i])});
   secimNot("#v-yakit-secim", D.f.yay ? ayAd(D.f.yay) : "", "yay");
 }
 
@@ -446,10 +664,70 @@ function mail() {
   $("#m-tablo").querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => ac(g[+tr.dataset.i]));
 }
 
+/* ---------- DÖNÜLMEMİŞ MAİLLER ----------
+   E-posta talebi olup Gmail'de İdari Destek'ten hiçbir yanıtı görünmeyen konuşmalar (yd boş). Telefonla ya da
+   kurumsal kutudan bilgi kopyası olmadan verilen yanıt burada görünmez; liste kontrol edilecekler listesidir. */
+const SIMDI = new Date(V.meta.uretim.replace(" ", "T") + ":00");
+function isDk(a, b) {  // iki an arası çalışma dakikası (hafta içi 08:30–17:30); mail_arama.is_dakikasi ile aynı
+  if (b <= a) return 0; let top = 0; const t = new Date(a); t.setHours(0, 0, 0, 0);
+  for (; t <= b; t.setDate(t.getDate() + 1)) { const w = t.getDay(); if (w === 0 || w === 6) continue;
+    const gb = new Date(t), gs = new Date(t); gb.setHours(8, 30, 0, 0); gs.setHours(17, 30, 0, 0);
+    const s = Math.max(a, gb), e = Math.min(b, gs); if (e > s) top += (e - s) / 6e4; }
+  return top;
+}
+const bekler = m => isDk(new Date(m.t + "T" + m.s + ":00"), SIMDI);
+const donulmemis = g => TALEP_MAIL.filter(m => m.yd == null && m.t >= gEkle(BUGUN, -(g - 1)) && m.t <= BUGUN);
+/* Dönem (kullanıcı isteği 29.09.2026): Son 24 saat (saat saat), 7 / 14 / 30 gün ya da seçilen tarih aralığı.
+   D.dg: "24s" | "7" | "14" | "30" | "ozel" (D.dbas–D.dson). Grafik 24 saatte saatlik, 45 günden uzun aralıkta haftalık. */
+const p2 = n => String(n).padStart(2, "0"), yerel = d => iso(d) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes());
+function donusDonem() {
+  if (D.dg === "24s") { const esik = new Date(SIMDI - 864e5); return {s24: true, ilk: iso(esik), son: iso(SIMDI), esik: yerel(esik)}; }
+  if (D.dg === "ozel" && D.dbas && D.dson) return {ilk: D.dbas, son: D.dson};
+  const g = +D.dg || 7; return {g, ilk: gEkle(BUGUN, -(g - 1)), son: BUGUN};
+}
+function donus() {
+  const DN = donusDonem(), {ilk, son} = DN, gunSay = Math.round((tOku(son) - tOku(ilk)) / 864e5) + 1;
+  const kisa = t => +t.slice(8, 10) + " " + AY[+t.slice(5, 7) - 1];
+  // grafik kovaları: saat (24 saat), gün, hafta (45 günden uzun)
+  const tip = DN.s24 ? "saat" : gunSay > 45 ? "hafta" : "gun", kovalar = [];
+  const haftaBasi = t => { const d = tOku(t); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return iso(d); };
+  if (tip === "saat") { const s = new Date(SIMDI); s.setMinutes(0, 0, 0); for (let i = 23; i >= 0; i--) { const d = new Date(s - i * 36e5); kovalar.push(iso(d) + " " + p2(d.getHours())); } }
+  else if (tip === "hafta") { for (let t = haftaBasi(ilk); t <= son; t = gEkle(t, 7)) kovalar.push(t); }
+  else for (let t = ilk; t <= son; t = gEkle(t, 1)) kovalar.push(t);
+  const kovasi = m => tip === "saat" ? m.t + " " + m.s.slice(0, 2) : tip === "hafta" ? haftaBasi(m.t) : m.t;
+  const etiket = k => tip === "saat" ? k.slice(11) : kisa(k), kovaAd = k => tip === "saat" ? kisa(k) + " " + k.slice(11) + ":00" : tip === "hafta" ? kisa(k) + " haftası" : kisa(k);
+  $$(".donem-sec button").forEach(b => b.classList.toggle("secili", b.dataset.g === String(D.dg || 7)));
+  $("#dn-bas").value = ilk; $("#dn-son").value = son; $("#dn-bas").max = $("#dn-son").max = BUGUN;
+  $("#dn-donem").textContent = DN.s24 ? "Son 24 saat" : "Dönem";
+  const taban = TALEP_MAIL.filter(m => DN.s24 ? (m.t + " " + m.s) >= DN.esik && (m.t + " " + m.s) <= yerel(SIMDI) : m.t >= ilk && m.t <= son), tum = dilimler($("#dn-dilim"), MAIL_DILIM, taban);
+  const gunde = d => D.f.dgun ? d.filter(m => kovasi(m) === D.f.dgun) : d, G = gunde(tum), DON = G.filter(m => m.yd == null);
+  $("#dn-sayi").textContent = sayi(DON.length);
+  $("#dn-oran").textContent = G.length ? "%" + Math.round((G.length - DON.length) / G.length * 100) : "–"; $("#dn-oran-ek").textContent = `${sayi(G.length - DON.length)} / ${sayi(G.length)} talep`;
+  $("#dn-sayi-kut").setAttribute("data-ip", esc("<b>Dönülmemiş talep</b><br>Gmail'de İdari Destek'ten yanıt görünmeyen e-posta talepleri. Telefonla ya da kutu dışından verilen yanıt burada görünmez; kontrol edilecekler listesidir."));
+  karma($("#dn-grafik"), kovalar.map(etiket), kovalar.map(k => tum.filter(m => kovasi(m) === k).length), kovalar.map(k => tum.filter(m => kovasi(m) === k && m.yd == null).length),
+    {ad1: "Gelen talep", ad2: "Dönülmemiş", cz: "#FFC56B", bw: kovalar.length > 14 ? 18 : 46, ek: i => tip === "gun" ? "" : "<br>" + kovaAd(kovalar[i]),
+      soluk: kovalar.map(k => { if (tip !== "gun") return false; const w = tOku(k).getDay(); return w === 0 || w === 6; }), secili: kovalar.indexOf(D.f.dgun), tik: i => degistir("dgun", kovalar[i])});
+  $("#dn-grafik").parentElement.querySelector(".grf-bas").textContent = `${tip === "saat" ? "Saatlere" : tip === "hafta" ? "Haftalara" : "Günlere"} göre gelen ve dönülmemiş talepler`;
+  secimNot("#dn-secim", D.f.dgun ? "Seçili " + (tip === "saat" ? "saat" : tip === "hafta" ? "hafta" : "gün") + ": " + kovaAd(D.f.dgun) : "", "dgun");
+  const bt = gunde(suz(taban, MAIL_DILIM, "bolum")).filter(m => m.yd == null);
+  hliste($("#dn-bolum"), Object.entries(BOL).map(([no, ad]) => ({k: no, ad, v: bt.filter(m => m.b === no).length, tik: () => degistir("bolum", no)})).filter(r => r.v).sort((a, b) => b.v - a.v), {renk: "#D9822B", secili: D.f.bolum});
+  const liste = DON.map(m => ({m, dk: bekler(m)})).sort((a, b) => b.dk - a.dk);
+  const rozet = dk => `<span class="bekle ${dk > 1080 ? "uzun" : dk > 540 ? "orta" : ""}">${sure(dk)}</span>`;
+  $("#dn-tablo").innerHTML = `<table><colgroup><col style="width:104px"><col style="width:88px"><col style="width:92px"><col><col style="width:150px"><col style="width:128px"><col style="width:46px"></colgroup><thead><tr><th>Geliş</th><th>Bekliyor</th><th>Kutu</th><th>Konu</th><th>Talep Eden</th><th>Talep Türü</th><th class="s">İleti</th></tr></thead><tbody>` +
+    liste.map((x, i) => `<tr data-i="${i}" title="Maili görmek için tıklayın"><td class="num">${x.m.t.split("-").reverse().join(".").slice(0, 5)} ${x.m.s}</td><td>${rozet(x.dk)}</td><td>${esc(x.m.kutu.join(", "))}</td><td title="${esc(x.m.u)}"><div class="ust-metin">${esc(x.m.u || "(konu yok)")}</div><div class="alt-metin">${esc((x.m.i[0].m || "").slice(0, 110).replace(/\s+/g, " "))}</div></td><td title="${esc(x.m.a + " · " + x.m.e)}"><div class="ust-metin">${esc(temizAd(x.m.a) || x.m.e)}</div><div class="alt-metin">${esc(bas(x.m.bi) || x.m.bt)}</div></td><td title="${esc(x.m.y)}">${esc(x.m.y)}</td><td class="s">${x.m.i.length}</td></tr>`).join("") +
+    (liste.length ? "" : `<tr><td colspan="7" style="text-align:center;padding:40px;color:#2F9E5F">Bu seçimde dönülmemiş talep yok.</td></tr>`) +
+    `</tbody><tfoot><tr><td colspan="7">${sayi(liste.length)} talep · en uzun bekleyen üstte · bekleme iş saatiyle (hafta içi 08:30–17:30), veri anına göre</td></tr></tfoot></table>`;
+  $("#dn-tablo").querySelectorAll("tbody tr[data-i]").forEach(tr => tr.onclick = () => ac(liste[+tr.dataset.i].m));
+}
+$$(".donem-sec button").forEach(b => b.onclick = () => { D.dg = b.dataset.g; D.f.dgun = ""; ciz(); });
+// Tarih aralığı elle seçilince dönem "özel" olur; başlangıç bitişten sonra olamaz.
+$("#dn-bas").onchange = $("#dn-son").onchange = e => { const DN = donusDonem(); let b = $("#dn-bas").value || DN.ilk, s = $("#dn-son").value || DN.son;
+  if (b > s) { if (e.target.id === "dn-bas") s = b; else b = s; } Object.assign(D, {dg: "ozel", dbas: b, dson: s}); D.f.dgun = ""; ciz(); };
+
 /* ---------- konuşma ayrıntısı ---------- */
 function ac(m) {
   if (!m) return; const re = vRe(sorgu(D.q));
-  $("#d-etiket").innerHTML = `<span class="etiket-cip">${esc(m.b !== "00" ? m.b + " " + (BOL[m.b] || "") : "Talep sayılmaz")}</span><span class="etiket-cip">${esc(m.d === "Talep" ? m.y : m.d)}</span>`;
+  $("#d-etiket").innerHTML = `<span class="etiket-cip">${esc(m.b !== "00" ? BOL[m.b] || m.b : "Talep sayılmaz")}</span><span class="etiket-cip">${esc(m.d === "Talep" ? m.y : m.d)}</span>`;
   $("#d-konu").innerHTML = vurgula(m.u || "(konu yok)", re);
   $("#d-bilgi").innerHTML = `${esc(m.kutu.join(", "))} · başlatan ${esc(m.a)} &lt;${esc(m.e)}&gt;${m.bi ? " · " + esc(bas(m.bi)) : ""}<br>${m.i.length} ileti · ilk yanıt ${sure(m.yd)} · son hareket ${esc(m.son)}`;
   $("#d-gov").innerHTML = m.i.map(x => `<div class="ileti"><div class="u"><b>${vurgula(x.a || x.e, re)}</b><span>${esc(x.z.slice(8, 10) + "." + x.z.slice(5, 7) + "." + x.z.slice(0, 4) + " " + x.z.slice(11))}</span></div>
@@ -459,18 +737,28 @@ function ac(m) {
 $("#d-kapat").onclick = () => $("#detay").classList.remove("acik");
 
 /* ---------- gezinme ---------- */
-function aralik(k) { if (k === "30") return [gEkle(BUGUN, -29), BUGUN]; if (k === "ay") return [BUGUN.slice(0, 8) + "01", BUGUN]; if (k === "nisan") return [V.meta.donem_baslangic, BUGUN]; return [MAIL.reduce((a, m) => m.t < a ? m.t : a, BUGUN), BUGUN]; }
+function aralik(k) { if (k === "30") return [gEkle(BUGUN, -29), BUGUN]; if (k === "ay") return [BUGUN.slice(0, 8) + "01", BUGUN]; if (k === "yil") return [BUGUN.slice(0, 4) + "-01-01", BUGUN]; return [MAIL.reduce((a, m) => m.t < a ? m.t : a, BUGUN), BUGUN]; }
 function ciz() {
-  $$(".mdug[data-sayfa]").forEach(b => b.classList.toggle("secili", b.dataset.sayfa === D.sayfa));
-  $$(".sayfa").forEach(s => s.classList.toggle("gizli", s.id !== "s-" + D.sayfa));
   $$(".t-bas").forEach(i => i.value = D.bas); $$(".t-son").forEach(i => i.value = D.son);
   $$(".hizli button").forEach(b => b.classList.toggle("secili", aralik(b.dataset.a).join() === [D.bas, D.son].join()));
   $("#m-ek").checked = !!D.ek;
-  ({ana, hiz, arac, mail})[D.sayfa]();
+  const SAYFA = {ana, arac, mail, donus};
+  if (!SAYFA[D.sayfa]) D.sayfa = "ana";  // kaldırılan sayfa (ör. Hizmet Hızı) oturumda kalmışsa
+  $$(".mdug[data-sayfa]").forEach(b => b.classList.toggle("secili", b.dataset.sayfa === D.sayfa));
+  $$(".sayfa").forEach(s => s.classList.toggle("gizli", s.id !== "s-" + D.sayfa));
+  SAYFA[D.sayfa]();
+  if (window.seritGuncelle) seritGuncelle(D.sayfa === "donus" ? "donus" : "idari", donulmemis(7).length);
   kaydet();
 }
+// Alt şeritte "İdari Destek" ve "Dönülmemiş Mailler" bu raporun sayfalarıdır: sayfa yenilenmeden geçilir.
+$$("#serit a").forEach(a => a.addEventListener("click", e => { const h = a.dataset.hedef; if (h !== "idari" && h !== "donus") return;
+  e.preventDefault(); try { sessionStorage.removeItem("bilgem_acilis"); } catch (x) {} D.sayfa = h === "donus" ? "donus" : (D.sayfa === "donus" ? "ana" : D.sayfa); $("#detay").classList.remove("acik"); ciz(); }));
+addEventListener("hashchange", () => { if (location.hash === "#donus") { D.sayfa = "donus"; ciz(); } adresTemizle(); });
 $$(".mdug[data-sayfa]").forEach(b => b.onclick = () => { D.sayfa = b.dataset.sayfa; $("#detay").classList.remove("acik"); ciz(); });
-$("#temizle").onclick = () => { D.f = {}; D.q = ""; D.ek = false; $("#q").value = ""; ciz(); };
+// Temizle: bu sayfada yapılan her şey başa döner (süzgeçler, arama, tarih aralığı, dönem seçimi, açık ayrıntı, kaydırma).
+$("#temizle").title = "Bütün seçimleri temizle ve başa al";
+$("#temizle").onclick = () => { Object.assign(D, {f: {}, q: "", ek: false, bas: BUGUN.slice(0, 4) + "-01-01", son: BUGUN}); delete D.dg; delete D.dbas; delete D.dson;
+  $("#q").value = ""; $("#detay").classList.remove("acik"); ciz(); $$(".tablo,.hlist").forEach(t => { t.scrollTop = 0; }); };
 $$(".t-bas").forEach(i => i.onchange = () => { if (i.value) { D.bas = i.value; if (D.bas > D.son) D.son = D.bas; ciz(); } });
 $$(".t-son").forEach(i => i.onchange = () => { if (i.value) { D.son = i.value; if (D.son < D.bas) D.bas = D.son; ciz(); } });
 $$(".hizli button").forEach(b => b.onclick = () => { [D.bas, D.son] = aralik(b.dataset.a); ciz(); });
@@ -497,9 +785,12 @@ async function coz(sifre) {
 if (window.CANLI) baslat();
 else if (window.CANLI_SIFRELI) {
   const k = document.getElementById("kilit"), f = document.getElementById("kilit-form"), g = document.getElementById("kilit-sifre"), h = document.getElementById("kilit-hata");
-  k.hidden = false; g.focus();
+  // Aynı sitedeki filo raporu da aynı şifreyi kullanır; doğru şifre sekme kapanana kadar hatırlanır.
+  const dene = async s => { window.CANLI = await coz(s); try { sessionStorage.setItem("bilgem_rapor", s); } catch (e) {} k.hidden = true; baslat(); };
+  let hatir = null; try { hatir = sessionStorage.getItem("bilgem_rapor"); } catch (e) {}
+  (hatir ? dene(hatir) : Promise.reject()).catch(() => { k.hidden = false; g.focus(); });
   f.onsubmit = async e => { e.preventDefault(); h.textContent = "Açılıyor…";
-    try { window.CANLI = await coz(g.value); g.value = ""; k.hidden = true; baslat(); }
+    try { await dene(g.value); g.value = ""; }
     catch (x) { h.textContent = "Şifre hatalı. Tekrar deneyin."; g.select(); } };
 }
 </script>
