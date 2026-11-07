@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>İdari Destek · Tanıtım Sunumu</title>
+<style>
+/* Claude Design'daki "İdari Destek Anlık Faaliyet Raporu" sunumunu (tanitim/sunum.html) alt şeritle birlikte gösterir. */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#142D43;font-family:"Segoe UI",system-ui,sans-serif}
+#sunum{position:fixed;left:0;top:0;right:0;bottom:34px;width:100%;height:calc(100% - 34px);border:0;background:#142D43}
+#bekle{position:fixed;left:0;top:0;right:0;bottom:34px;display:grid;place-items:center;color:#C9D6E6;font-size:14px}
+#serit{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:30;display:flex;align-items:stretch;background:#F3F4F7;border-top:1px solid #D3D8E2;box-shadow:0 -2px 8px rgba(46,64,120,.08);padding-left:14px;font-family:"Segoe UI",system-ui,sans-serif}
+#serit .ok{display:flex;align-items:center;gap:2px;padding-right:10px;color:#8A93A3;font-size:15px}
+#serit .ok a{color:inherit;text-decoration:none;padding:0 5px;border-radius:3px}#serit .ok a:hover{background:#E4E8EF;color:#3D66C0}#serit .ok a.pasif{opacity:.35;pointer-events:none}
+#serit .sek{display:flex;align-items:center;padding:0 22px;font-size:13px;color:#323130;text-decoration:none;border-left:1px solid #DDE1E8;position:relative;white-space:nowrap}
+#serit .sek:last-of-type{border-right:1px solid #DDE1E8}
+#serit .sek:hover{background:#E9ECF2}
+#serit .sek.secili{background:#fff;font-weight:600;color:#1F2A37}
+#serit .sek.secili::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#3D66C0,#50A0A8)}
+#serit .sek svg{width:15px;height:15px;margin-right:7px;color:#5F6B78}#serit .sek.secili svg{color:#3D66C0}
+#serit .sayi{margin-left:7px;background:#D9822B;color:#fff;border-radius:999px;font-size:10.5px;font-weight:600;padding:0 6px;line-height:16px}#serit .sayi:empty{display:none}
+@media (max-width:900px){#serit{overflow-x:auto;padding-left:4px}#serit .sag{display:none}#serit .sek{padding:0 12px;font-size:12.5px}#serit .ok{display:none}}
+#serit .sag{margin-left:auto;display:flex;align-items:center;padding-right:16px;font-size:11.5px;color:#605E5C}
+#kilit{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(135deg,#DFE5F5 0%,#CDD6EF 50%,#B8C5E3 100%)}
+#kilit[hidden]{display:none}
+.kilit-kart{width:380px;border-radius:16px;background:linear-gradient(180deg,#FBFCFE,#E9EDF4);box-shadow:0 18px 50px rgba(46,64,120,.35);padding:26px 28px 22px;text-align:center}
+.kilit-kart img{width:92px}
+.kilit-bant{margin:14px -28px 14px;padding:12px;color:#fff;font-size:17px;background:linear-gradient(115deg,#3D66C0,#50A0A8)}
+.kilit-kart p{font-size:13px;color:#4A5565;margin:0 0 14px;line-height:1.45}
+.kilit-kart input{width:100%;height:40px;border:1px solid #CBD3E1;border-radius:8px;padding:0 12px;font-size:15px}
+.kilit-kart button{margin-top:12px;width:100%;height:40px;border:0;border-radius:8px;color:#fff;font-size:15px;cursor:pointer;background:linear-gradient(115deg,#3D66C0,#4F9DAA)}
+.kilit-hata{min-height:18px;margin-top:10px;font-size:12.5px;color:#B42318}
+/* şifre kutusundaki göz: yazılan şifreyi gösterir ya da gizler */
+.sifre-kut{position:relative}
+.kilit-kart .sifre-kut input{padding-right:46px}
+.kilit-kart .goz{position:absolute;right:5px;top:5px;width:30px;height:30px;margin:0;padding:0;border-radius:6px;background:transparent;color:#9090AD;display:grid;place-items:center}
+.kilit-kart .goz:hover{background:#EEF1F7;color:#3F68BD}
+.kilit-kart .goz svg{width:20px;height:20px}
+</style>
+</head>
+<body>
+<div id="bekle">Sunum açılıyor…</div>
+<iframe id="sunum" title="İdari Destek Anlık Faaliyet Raporu" hidden></iframe>
+<nav id="serit" aria-label="Raporlar">
+  <span class="ok"><a data-yon="-1" title="Önceki sayfa">‹</a><a data-yon="1" title="Sonraki sayfa">›</a></span>
+  <a class="sek" data-hedef="idari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>İdari Destek</a>
+  <a class="sek" data-hedef="donus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Dönülmemiş Mailler<span class="sayi" id="serit-sayi"></span></a>
+  <a class="sek" data-hedef="filo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v4H3z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/></svg>Filo</a>
+  <a class="sek" data-hedef="tanitim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/></svg>Tanıtım</a>
+  <a class="sek" data-hedef="rehber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M3 7h3M3 12h3M3 17h3"/><circle cx="12.5" cy="10" r="2.6"/><path d="M8.5 16.5c.8-2 2.3-3 4-3s3.2 1 4 3"/></svg>Kurumsal Rehber</a>
+  <a class="sek" data-hedef="kilavuz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>Rapor Kılavuzu</a>
+  <span class="sag" id="serit-sayfa"></span>
+</nav>
+<script>
+/* Alt sayfa şeridi (Power BI sayfa sekmeleri gibi). Yayında site yolları; bu bilgisayarda (file://) yan klasörler.
+   Şifre sekme açıkken hatırlandığı için geçişte yeniden sorulmaz. "Dönülmemiş Mailler" İdari Destek raporunun bir sayfasıdır. */
+(() => { const SIRA = ["idari", "donus", "filo", "tanitim", "rehber", "kilavuz"], yerel = location.protocol === "file:", idari = yerel ? "../canli_rapor/index.html" : "/idari-destek/";
+  // Adres sade kalır: hangi sayfanın açılacağı (ör. Dönülmemiş Mailler) sekme belleğiyle geçer.
+  const yol = {idari, donus: yerel ? idari + "#donus" : idari, filo: yerel ? "../filo_rapor/index.html" : "/filo/", tanitim: yerel ? "../tanitim/index.html" : "/idari-destek/tanitim/", rehber: yerel ? "../rehber_rapor/index.html" : "/rehber/", kilavuz: yerel ? "../kilavuz_rapor/index.html" : "/kilavuz/"};
+  document.querySelectorAll("#serit .sek").forEach(a => a.href = yol[a.dataset.hedef]);
+  document.querySelectorAll("#serit a").forEach(a => a.addEventListener("click", () => { try { if (a.dataset.hedef) sessionStorage.setItem("bilgem_acilis", a.dataset.hedef); } catch (e) {} }));
+  window.seritGuncelle = (secili, sayi) => { const i = SIRA.indexOf(secili);
+    document.querySelectorAll("#serit .sek").forEach(a => a.classList.toggle("secili", a.dataset.hedef === secili));
+    document.querySelectorAll("#serit [data-yon]").forEach(a => { const h = SIRA[i + +a.dataset.yon]; a.classList.toggle("pasif", !h); if (h) { a.href = yol[h]; a.dataset.hedef = h; } else { a.removeAttribute("href"); delete a.dataset.hedef; } });
+    document.getElementById("serit-sayfa").textContent = "Sayfa " + (i + 1) + " / " + SIRA.length;
+    if (sayi != null) document.getElementById("serit-sayi").textContent = sayi || ""; };
+  seritGuncelle("tanitim"); })();
+</script>
+<div id="kilit" hidden>
+  <form id="kilit-form" class="kilit-kart" autocomplete="off">
+    <img src="logo_renkli.svg" alt="TÜBİTAK BİLGEM">
+    <div class="kilit-bant">İdari Destek · Tanıtım Sunumu</div>
+    <p>Bu sunum kuruma özeldir ve şifrelidir. Size iletilen şifreyi girin.</p>
+    <div class="sifre-kut"><input id="kilit-sifre" type="password" placeholder="Şifre" aria-label="Şifre"><button type="button" class="goz" id="kilit-goz" title="Şifreyi göster" aria-label="Şifreyi göster" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <script>(() => { const g = document.getElementById("kilit-sifre"), b = document.getElementById("kilit-goz");
+      const ac = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', kapa = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+      b.onclick = () => { const goster = g.type === "password"; g.type = goster ? "text" : "password"; b.innerHTML = goster ? kapa : ac;
+        b.title = goster ? "Şifreyi gizle" : "Şifreyi göster"; b.setAttribute("aria-label", b.title); b.setAttribute("aria-pressed", goster); g.focus(); }; })();</script>
+    <button type="submit">Sunumu aç</button>
+    <div id="kilit-hata" class="kilit-hata"></div>
+  </form>
+</div>
+<script src="veri.enc.js"></script>
+<script>
+/* Bu bilgisayarda sunum.html doğrudan açılır. Yayında sunum şifrelidir (AES-256-GCM, PBKDF2-SHA256); çözülen sayfa
+   çerçeve içinde gösterilir. Şifre öbür raporlarla aynıdır ve sekme açıkken hatırlanır. */
+const cerceve = document.getElementById("sunum"), bekle = document.getElementById("bekle");
+function goster(src) { cerceve.onload = () => { bekle.hidden = true; try { cerceve.contentWindow.focus(); } catch (e) {} }; cerceve.src = src; cerceve.hidden = false; }
+async function coz(sifre) {
+  const s = window.TANITIM_SIFRELI, b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  const ham = await crypto.subtle.importKey("raw", new TextEncoder().encode(sifre), "PBKDF2", false, ["deriveKey"]);
+  const anahtar = await crypto.subtle.deriveKey({name: "PBKDF2", salt: b64(s.salt), iterations: s.it, hash: "SHA-256"}, ham, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+  const acik = await crypto.subtle.decrypt({name: "AES-GCM", iv: b64(s.iv)}, anahtar, b64(s.veri));
+  return new Response(new Blob([acik]).stream().pipeThrough(new DecompressionStream("gzip"))).blob();
+}
+if (window.TANITIM_SIFRELI) {
+  const k = document.getElementById("kilit"), f = document.getElementById("kilit-form"), g = document.getElementById("kilit-sifre"), h = document.getElementById("kilit-hata");
+  const dene = async s => { const b = await coz(s); try { sessionStorage.setItem("bilgem_rapor", s); } catch (e) {} k.hidden = true; goster(URL.createObjectURL(new Blob([b], {type: "text/html"}))); };
+  let hatir = null; try { hatir = sessionStorage.getItem("bilgem_rapor"); } catch (e) {}
+  (hatir ? dene(hatir) : Promise.reject()).catch(() => { k.hidden = false; g.focus(); });
+  f.onsubmit = async e => { e.preventDefault(); h.textContent = "Açılıyor…";
+    try { await dene(g.value); g.value = ""; } catch (x) { h.textContent = "Şifre hatalı. Tekrar deneyin."; g.select(); } };
+} else {
+  goster("sunum.html");
+}
+</script>
+</body>
+</html>
